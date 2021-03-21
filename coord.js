@@ -148,7 +148,7 @@ Transf = function (TuoqiuCanshu, CentralMeridian, EastOffset) {
         var fen = value.split("°")[1].split("′")[0];
         var miao = value.split("°")[1].split("′")[1].split('″')[0];
 
-        return Math.abs(du) + Math.abs(fen) / 60 + Math.abs(miao) / 3600;
+        return Math.abs(du) + Math.abs(fen) / 60 + miao / 3600;
     }
 
 }
