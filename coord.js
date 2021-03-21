@@ -140,7 +140,7 @@ Transf = function (TuoqiuCanshu, CentralMeridian, EastOffset) {
         value = Math.abs(value);
         var v1 = Math.floor(value);//度
         var v2 = Math.floor((value - v1) * 60);//分
-        var v3 = Math.round((value - v1) * 3600 % 60);//秒
+        var v3 = Math.round((value - v1) * 3600 % 60,3);//秒
         return v1 + '°' + v2 + '\′' + v3 + '″';
     };
     DegreeConvertBack=function(value) { ///<summary>度分秒转换成为度</summary>
@@ -148,7 +148,7 @@ Transf = function (TuoqiuCanshu, CentralMeridian, EastOffset) {
         var fen = value.split("°")[1].split("′")[0];
         var miao = value.split("°")[1].split("′")[1].split('″')[0];
 
-        return Math.abs(du) + Math.abs(fen) / 60 + miao / 3600;
+        return Math.abs(du) + Math.abs(fen) / 60 + Math.abs(miao) / 3600;
     }
 
 }
