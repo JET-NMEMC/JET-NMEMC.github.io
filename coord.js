@@ -140,7 +140,7 @@ Transf = function (TuoqiuCanshu, CentralMeridian, EastOffset) {
         value = Math.abs(value);
         var v1 = Math.floor(value);//度
         var v2 = Math.floor((value - v1) * 60);//分
-        var v3 = (((value - v1) * 60)-v2)*60).toFixed(3);//秒
+        var v3 = ((value - v1) * 3600 % 60).toFixed(3);//秒
         return v1 + '°' + v2 + '\′' + v3 + '″';
     };
     DegreeConvertBack=function(value) { ///<summary>度分秒转换成为度</summary>
