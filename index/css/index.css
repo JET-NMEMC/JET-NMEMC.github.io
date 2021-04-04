@@ -1,0 +1,56 @@
+*{
+    margin: 0;
+    padding: 0;    
+}
+h1{
+    
+}
+body{
+    background: rgba(196, 202, 204, 0.452);
+    background-image: url(../res/A3.jpg);
+}
+
+a{
+    text-decoration: none;
+    position: absolute;
+    left: 50%;
+    top: 10%;
+    transform: translate(-50%,50%);
+    font-size: 20px;
+    background: linear-gradient(90deg,#03a9f4,#dd68aa,#e4e673,#64b4da);
+    background-size: 400%;
+    width: 300px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    color: rgb(10, 10, 10);
+    border-radius: 50px;
+    z-index: 1;
+}
+a::before{
+    content: "";
+    position: absolute;
+    left: -5px;
+    right: -5px;
+    top: -5px;
+    bottom: -5px;
+    /* border: 1px solid red; */
+    background: linear-gradient(90deg,#03a9f4,#dd68aa,#e4e673,#64b4da);
+    background-size: 400%;
+    border-radius: 100px;
+    filter: blur(20px);
+    z-index: -1;
+}
+a:hover::before{
+    animation: sun 8s infinite;
+}
+
+a:hover{
+    animation: sun 8s infinite;
+}
+
+@keyframes sun{
+    100%{
+        background-position: -400% 0;
+    }
+}
