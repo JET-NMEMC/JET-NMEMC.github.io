@@ -17,7 +17,7 @@ Input format:
 （3）输出结果可直接复制并粘贴到excel中使用，无需分列。
 
 ## reference 参考
-本文的源码参考了以下文章，链接 https://blog.csdn.net/jianyi7659/article/details/7583339，增加了新的坐标系统并修改了部分参数和计算精度。
+本文的源码参考了以下文章，增加了新的坐标系统并修改了部分参数和计算精度，链接 https://blog.csdn.net/jianyi7659/article/details/7583339.
 The source code of this article refers to the following article, link https://blog.csdn.net/jianyi7659/article/details/7583339. New coordinate system has been added, and some parameters and calculation accuracy have been modified.
 
 ## Special statement 特别声明
