@@ -1,0 +1,21 @@
+输入格式：
+（1）大地坐标转平面坐标：纬度在前，经度在后,中间无论逗号、空格均可分隔;以度表示时，不含末尾°（如37.12345）;支持excel直接复制粘贴;
+（2）平面坐标转大地坐标：X(N)在前，Y(E)在后,中间无论逗号、空格均可分隔;支持excel直接复制粘贴;
+（3）输出结果可直接复制并粘贴到excel中使用，无需分列。
+
+注意事项：
+该示例对一些转换参数进行了默认设置，以适合在中国的应用，其他需求需修改代码。
+
+特别声明：
+本工具仅供学习交流使用，请勿用于商业用途，作者不对转换结果准确性负责，请谨慎使用！！！
+
+Input format:
+(1) Geographic coordinates to plane coordinates: latitude first, longitude second, and either comma or space can be separated in the middle; when expressed in degrees, the end ° is not included (such as 37.12345); it supports direct copy and paste of excel;
+(2) Plane coordinates to geographic coordinates: X (N) in the front, Y (E) in the back, no matter comma or space in the middle can be separated; support excel to copy and paste directly;
+(3) The output result can be directly copied and pasted into excel for use, no need to separate columns.
+
+Precautions:
+In this example, some conversion parameters are set by default to suit the application in China. Other requirements need to modify the code.
+
+Special statement: 
+This tool is only for learning and communication, please do not use it for commercial purposes, the author is not responsible for the accuracy of the conversion results, please use it with caution! ! !
