@@ -21,6 +21,7 @@
 
 <body>
     <h2>自动等差刻度等值线(auto level/contour/breaks)</h2>
+    <p><a href="index.html">返回主页</a></p>
     <div style="border-style:solid; border-width:1px; border-color:#000;padding: 10px;">
         <p>输入:一个最小值(value MIN)、最大值(value
             MAX)，以及你想要的分段数量(TargetNm)。输出:最合适的等差序列，为了使用方便美观，以1,2,3,5及他们与10的整数次幂(含负整数)的乘积为步长,依次判断并选出与计划分段数量(TargetNm)最为符合和接近的步长，据此形成等差序列。大多数情况下，最终生成的分段个数会在你想得到的个数上下波动，但一定是最适宜的。
@@ -44,13 +45,8 @@
             <span style="color: fuchsia;">点击这里 (Click here)</span> <button onclick=main()
                 style="height: 30px;width: 100px;font-size: 18px; background-color: cyan;">generate</button>
         </p>
-        <!-- <p>breaks:</p>
-        <p>
-            <textarea id="text" cols="90" rows="2" style="font-size: 20px;"></textarea>
-        </p> -->
         生成的等差刻度(arithmetic breaks):
         <p id="text"></p>
-
     </div>
     <h2>自动颜色图例等值面填充(auto colorlegend contour map fill)</h2>
     <p>
@@ -62,20 +58,20 @@
         </select>
     </p>
     <p>基于autobreaks通过线性插值得到的颜色 (Color sequence obtained according to linear interpolation based on autobreaks):</p>
-    <div style="border-style:solid; border-width:1px; border-color:#000;padding: 10px;">
-
-        <p>
-        <div style="height: 10px;">
-            <div id="interp color"></div>
+    <p>
+        <div style="border-style:solid; border-width:1px; border-color:#000;padding: 10px;">
+            <p>
+            <div style="height: 10px;">
+                <div id="interp color"></div>
+            </div>
+            </p>
         </div>
-        </p>
-    </div>
+    </p>
     通过线性插值得到的十六进制颜色列表 (Hexadecimal color list obtained according to linear interpolation):
     <p id="list"></p>
     <p>颜色列表的线性填充结果 (Linear filling based on the final color list):
-    <div id="corlrbox" style="height:50px; width: 80%;"></div>
+    <div id="corlrbox" style="height:40px; width: 80%;"></div>
     </p>
-
 </body>
 
 <script>
@@ -86,7 +82,6 @@
 
         var countourSet = autobreak(Tvaluemin, Tvaluemax, TargetN);
         console.log("自动生成的色斑比例尺序列", countourSet);
-
         // var levelmin=countourSet.levelMin;
         // var levelmax=countourSet.levelMax;
         // var levelnum=countourSet.levelnum;
@@ -94,9 +89,8 @@
         var breaks = countourSet.breaks;
         document.getElementById("text").innerText = countourSet.breaks.join(" / ");
 
-
         var obj = document.getElementById("colorpattern");
-        colorpattern = obj.options[obj.selectedIndex].value;
+        var colorpattern = obj.options[obj.selectedIndex].value;
         console.log(colorpattern);
 
         var colorSet = colordatabase[colorpattern];
@@ -121,19 +115,17 @@
             labels += '<i style="background:' + finalcolorlist[i] + '"></i>';
         }
         div.innerHTML = labels;
-
         document.getElementById("list").innerText = finalcolorlist2;
     }
 
     function rand() {
         var a = 10 * (1 - 2 * Math.random());
         var b = 50 * (1 - 2 * Math.random());
-        var vmax,vmin;
+        var vmax, vmin;
         console.log(a, b);
         if (a > b) { vmax = a; vmin = b } else { vmax = b; vmin = a };
         document.getElementById("Tvaluemin").value = vmin.toFixed(5);
         document.getElementById("Tvaluemax").value = vmax.toFixed(5);
-
     }
 
 </script>
