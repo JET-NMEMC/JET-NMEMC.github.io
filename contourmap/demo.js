@@ -67,14 +67,14 @@ function initDemoMap() {
   var layerControl = L.control.layers(baseLayers);
   layerControl.addTo(map);
   map.setView([37, 117], 4);
-  var layerControl2 = L.control.layers(baseLayers2);
-  layerControl2.addTo(map);
+  // var layerControl2 = L.control.layers(baseLayers2);
+  // layerControl2.addTo(map);
   // map.setView([37, 117], 4);
 
   return {
     map: map,
     layerControl: layerControl,
-    layerControl2: layerControl2,
+    // layerControl2: layerControl2,
 
   };
 }
@@ -83,7 +83,7 @@ function initDemoMap() {
 var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
-var layerControl2 = mapStuff.layerControl2;
+// var layerControl2 = mapStuff.layerControl2;
 
 
 // $.getJSON("https://danwild.github.io/leaflet-velocity/wind-gbr.json", function (data) {
@@ -158,7 +158,7 @@ var Graticulelayer = L.latlngGraticule({
     { start: 8, end: 10, interval: 1 }
   ]
 })
-layerControl2.addOverlay(Graticulelayer, "经纬网");
+layerControl.addOverlay(Graticulelayer, "经纬网");
 
 const colordatabase = new Object();//配色方案，全局变量,可自定义添加新行
 colordatabase.bgyr = [  
