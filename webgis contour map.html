@@ -103,7 +103,7 @@
                 var latlngs_clip = [];
                 for (var i = 0; i < res.length; i++) { latlngs_clip.push([res[i].y, res[i].x]) };
                 var polygon = L.polygon(latlngs_clip, { color: 'red', weight:1.5, fillOpacity: 0 });
-                layerControl2.addOverlay(polygon, "边界");
+                layerControl.addOverlay(polygon, "边界");
                 map.fitBounds(polygon.getBounds());
                 console.log("bounds",polygon.getBounds());
                 // 绘制散点
