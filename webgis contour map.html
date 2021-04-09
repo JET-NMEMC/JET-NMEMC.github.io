@@ -65,7 +65,7 @@
     <script src="contourmap/demo.js"></script>
     <script>
         //---------------------------------------------------------------------------------------------------------------主程序
-        const TargetN = 15; //设置拟绘制色带个数
+        const TargetN = 10; //设置拟绘制色带个数
         var data;     //声明全局，存放json对象；
         var xiangmu;  //声明全局，存放项目名序列;
         var lngs = [];
@@ -161,7 +161,7 @@
                     from = grades[i - 1];
                     to = grades[i];
                     labels.push(
-                        '<i style="background:' + colors[i] + '"></i> ' +
+                        '<i style="background:' + colors[i-1] + '"></i> ' +
                         from + (to ? '&ndash;' + to : '+'));
                 }
                 div.innerHTML = labels.join('<br>');
@@ -204,6 +204,9 @@
             //RGB颜色转换为16进制，存入colors
             var colors = [];
             for (var i = 0; i < interpcolor[0].length; i++) { colors.push(colorRGB2Hex(interpcolor[0][i], interpcolor[1][i], interpcolor[2][i])) };
+            
+            console.log("映射颜色序列", colors);
+            colors.shift();
             console.log("映射颜色序列", colors);
             //将得到的格网grid，按颜色带渲染至canvas上
             mycanvas.width = 1000; mycanvas.height = 1000;
