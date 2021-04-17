@@ -83,6 +83,22 @@ function initDemoMap() {
 var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
+
+map.locate({
+  setView: true,
+  maxZoom: 16
+});
+
+map.on('locationfound', function(e) {
+  var radius = e.accuracy / 2;
+  L.marker(e.latlng).addTo(map).bindPopup("你在这里");
+  L.circle(e.latlng, radius).addTo(map);
+});
+
+map.on('locationerror', function(e) {
+  console.log('定位出错=====>', e);
+});
+
 // var layerControl2 = mapStuff.layerControl2;
 
 
