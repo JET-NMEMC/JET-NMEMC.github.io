@@ -44,6 +44,36 @@ a {
     border-radius: 10px;
     z-index: 1;
 }
+#showsetting {
+    position: fixed;
+    top:40%;
+    left: 40%;
+    /* display:none; */
+    /* width:150px; */
+    /* height:20px; */
+    border:1px solid rgb(0, 0, 0);
+    background-color:#f9f9f9;
+    padding: 12px 36px;
+    opacity: 1;
+    text-align:center;
+    /* padding-top:30px; */
+    /* border-radius: 10px; */
+}
+#showtools {
+    position: fixed;
+    top:20%;
+    left: 40%;
+    /* display:none; */
+    /* width:150px; */
+    /* height:20px; */
+    border:1px solid rgb(0, 0, 0);
+    background-color:#f9f9f9;
+    padding: 10px 10px;
+    opacity: 1;
+    text-align:center;
+    /* padding-top:30px; */
+    /* border-radius: 10px; */
+}
 #select {
     position:fixed;    
     top: 50%;
