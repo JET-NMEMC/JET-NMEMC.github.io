@@ -61,7 +61,8 @@ function initDemoMap() {
   };
 
   var map = L.map("map", {
-    layers: [Esri_WorldImagery]
+    layers: [Esri_WorldImagery],
+    zoomControl: false
   });
 
   var layerControl = L.control.layers(baseLayers);
@@ -86,16 +87,16 @@ var layerControl = mapStuff.layerControl;
 
 map.locate({
   setView: true,
-  maxZoom: 16
+  maxZoom: 5
 });
 
-map.on('locationfound', function(e) {
+map.on('locationfound', function (e) {
   var radius = e.accuracy / 2;
   L.marker(e.latlng).addTo(map).bindPopup("你在这里");
   L.circle(e.latlng, radius).addTo(map);
 });
 
-map.on('locationerror', function(e) {
+map.on('locationerror', function (e) {
   console.log('定位出错=====>', e);
 });
 
@@ -177,7 +178,7 @@ var Graticulelayer = L.latlngGraticule({
 layerControl.addOverlay(Graticulelayer, "经纬网");
 
 const colordatabase = new Object();//配色方案，全局变量,可自定义添加新行
-colordatabase.bgyr = [  
+colordatabase.bgyr = [
   { r: 0, g: 0, b: 255, weight: 0 },
   { r: 30, g: 30, b: 255, weight: 10 },
   { r: 0, g: 255, b: 0, weight: 40 },
@@ -256,30 +257,30 @@ function autobreak(Tvaluemin, Tvaluemax, TargetN) {
 
   function getvaluenumber(x) {
     for (var i = 0; i < 10; i++) {
-        while (Math.abs(Number(x.toFixed(i)) - x)/x < 0.0001) {                
-            return i;
-        };
+      while (Math.abs(Number(x.toFixed(i)) - x) / x < 0.0001) {
+        return i;
+      };
     };
-}
+  }
   var tttmax = Math.floor(Tvaluemax / DX);
   var tttmin = Math.floor(Tvaluemin / DX);
 
-  nnn=getvaluenumber(DX);
+  nnn = getvaluenumber(DX);
 
   var levelMax = tttmax * DX + DX;
-  levelMax=Number(levelMax.toFixed(nnn));
+  levelMax = Number(levelMax.toFixed(nnn));
 
   var levelMin = tttmin * DX;
   levelMin = Number(levelMin.toFixed(nnn));
 
   var levelnum = (levelMax - levelMin) / DX;
   levelnum = Math.round(levelnum);
-  
+
   var percentage = (100 * (Tvaluemax - Tvaluemin) / (levelMax - levelMin)).toFixed(1);
-  
+
 
   var breaks = [];
-  
+
   for (var jj = 0; jj < levelnum + 1; jj++) {
     breaks.push(Number(levelMin + jj * DX).toFixed(nnn));
   }
