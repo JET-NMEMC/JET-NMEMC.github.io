@@ -44,16 +44,36 @@
 </head>
 
 <body>
-    <div>    
-    <canvas id="mycanvas" style="display: none;"></canvas>
-    </div>
+    <div><canvas id="mycanvas" style="display: none;"></canvas></div>
     <div id="map"></div>
-    <div>
+    <!-- <div>
         <input type="button" id="act1" value="WELCOME" onclick="msg('你好，欢迎使用！')" />
+    </div> -->
+    <img src="contourmap/设置2.png" width="30px" onclick="showsetting('showsetting')" style="position: fixed; left:10px; bottom:10px ;">
+    <div id="showsetting" style="display: none;">
+        <button onclick="showsetting('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
+        <p>Mapping Setting</p>
+        <p>计划带数: <input type="text" id="TargetN" value="10" style="height: 25px; width: 82px;"></p>
+        配色方案: <select id="colorpattern" style="height: 30px; width: 90px;">
+            <option value="rainbow">rainbow</option>
+            <option value="bgyr" selected=selected>bgyr</option>
+            <option value="jet">jet</option>
+            <option value="cool">cool</option>
+        </select>
     </div>
+    <img src="contourmap/工程绘图.png" width="35px" onclick="showsetting('showtools')" style="position: fixed; left:10px; bottom:50px;">
+    <div id="showtools" style="display: none;">
+        <div style="float:left;">
+            <textarea id="" cols="50" rows="30"></textarea>
+        </div>
+        <div style="float:right;"><button>点集合</button></div>
+        <div><button>多边形</button></div>
+        <div><button>多段线</button></div>
+    </div>
+
     <div id="ShowDiv" name="ShowDiv"></div>
     <div>
-        <input type="file" style="position: fixed; left:60px;top:12px ;" value="" onchange="impexcel(this)"
+        <input type="file" style="position: fixed; left:10px; top:10px ;" value="" onchange="impexcel(this)"
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
     </div>
     <div>
@@ -65,8 +85,8 @@
     <script src="contourmap/demo.js"></script>
     <script>
         //---------------------------------------------------------------------------------------------------------------主程序
-        const TargetN = 10; //设置拟绘制色带个数
-        var data;     //声明全局，存放json对象；
+        var TargetN;//设置拟绘制色带个数
+        var data;     //声明全局，存放json对象;
         var xiangmu;  //声明全局，存放项目名序列;
         var lngs = [];
         var lats = [];
@@ -81,6 +101,12 @@
         var figurectrol = {};
         var legend;
         var countourmap;
+
+        function showsetting(idname){
+            var obj=document.getElementById(idname);
+            if (obj.style.display=="none"){obj.style.display="block"}
+            else{obj.style.display="none"}
+        };
         //----------------------------------------------------------------------------------单击事件，开始新项目
         $("#select").change(function () {
             var newxiangmu = $("#select").val();
@@ -107,11 +133,16 @@
                 map.fitBounds(polygon.getBounds());
                 console.log("bounds",polygon.getBounds());
                 // 绘制散点
-                for (var i = 0; i < lats.length; i++) { L.circle([lats[i], lngs[i]], { 
-                    radius: 2,
-                    color: '#FF00FF', //颜色
-                    // fillColor: '#FF00FF',
-                }).addTo(map) };
+                // for (var i = 0; i < lats.length; i++) { L.circle([lats[i], lngs[i]], { 
+                //     radius: 2,
+                //     color: '#FF00FF', //颜色
+                //     // fillColor: '#FF00FF',
+                // }).addTo(map) };
+                var sites = L.layerGroup();
+                for (var i = 0; i < lats.length; i++) { 
+                    L.marker([lats[i], lngs[i]]).bindPopup(data[i].site.toString()).addTo(sites)
+                };
+                layerControl.addOverlay(sites, "sites");
                 //生成canvas插值多边形，leaf调换x,y
                 var lnglats_clip = [];
                 for (var i = 0; i < res.length; i++) { lnglats_clip.push([res[i].x, res[i].y]) };
@@ -132,11 +163,13 @@
                 var beginTime = +new Date();
                 finishlist.push(newxiangmu);
                 console.log("开始绘制---------------" + newxiangmu);
-
+                TargetN = $('#TargetN').val(); //设置拟绘制色带个数
                 // let gridArea=china; 如果插值范围超过散点的范围，需重新设置x,y,range
                 // let gridArea=data_range;
                 let gridArea = area_clip;
-                const colorpattern = "bgyr";//设置配色方案,rainbow_gist,rainbow,jet,cool,div_greenred,bgyr
+                // const colorpattern = "bgyr";//设置配色方案,rainbow_gist,rainbow,jet,cool,div_greenred,bgyr
+                const colorpattern = $('#colorpattern option:selected').text();
+                // getSelectedText("colorpattern");
                 console.log("配色方案", colorpattern);
                 const colorSet = colordatabase[key = colorpattern];
 
@@ -197,7 +230,7 @@
 
             var countourSet = autobreak(Tvaluemin, Tvaluemax, TargetN);
             var breaks = countourSet.breaks;
-            console.log("自动生成的breaks段数", countourSet.levelnum);
+            // console.log("自动生成的breaks段数", countourSet.levelnum);
             console.log("自动生成的breaks序列", breaks);
 
             var interpcolor = interp1(colorSet, countourSet);            
@@ -205,7 +238,7 @@
             var colors = [];
             for (var i = 0; i < interpcolor[0].length; i++) { colors.push(colorRGB2Hex(interpcolor[0][i], interpcolor[1][i], interpcolor[2][i])) };
             
-            console.log("映射颜色序列", colors);
+            // console.log("映射颜色序列", colors);
             colors.shift();
             console.log("映射颜色序列", colors);
             //将得到的格网grid，按颜色带渲染至canvas上
