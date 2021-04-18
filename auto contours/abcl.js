@@ -57,7 +57,7 @@ function getvaluenumber(x) {
 }
 //---------------根据最大值、最小值、拟形成色带数量，生成序列-----------------
 function autobreak(Tvaluemin, Tvaluemax, TargetN) {
-    if (Tvaluemin >= Tvaluemax) { alert("wrong position") };
+    // if (Tvaluemin > Tvaluemax) { alert("wrong position") };
     var DX;
     var a = [];
     var j = -8;
