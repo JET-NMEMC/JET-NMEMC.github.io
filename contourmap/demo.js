@@ -85,20 +85,23 @@ var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
 
-map.locate({
-  setView: true,
-  maxZoom: 5
-});
+if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  map.locate({
+    setView: true,
+    maxZoom: 5
+  });
 
-map.on('locationfound', function (e) {
-  var radius = e.accuracy / 2;
-  L.marker(e.latlng).addTo(map).bindPopup("你在这里");
-  L.circle(e.latlng, radius).addTo(map);
-});
+  map.on('locationfound', function (e) {
+    var radius = e.accuracy / 2;
+    L.marker(e.latlng).addTo(map).bindPopup("你在这里");
+    L.circle(e.latlng, radius).addTo(map);
+    console.log('定位成功=====>', e);
+  });
 
-map.on('locationerror', function (e) {
-  console.log('定位出错=====>', e);
-});
+  map.on('locationerror', function (e) {
+    console.log('定位出错=====>', e);
+  });
+};
 
 // var layerControl2 = mapStuff.layerControl2;
 
@@ -150,15 +153,15 @@ $.getJSON("https://danwild.github.io/leaflet-velocity/wind-global.json", functio
   layerControl.addOverlay(velocityLayer, "Wind - Global");
 });
 
-var china = [];
-var chinageo = [];
-$.getJSON("https://geo.datav.aliyun.com/areas_v2/bound/100000.json", function (json) {
-  var value1 = json.features[0].geometry.coordinates;
-  // console.log(value1);
-  for (var i = 0; i < value1.length; i++) { china.push(value1[i][0]) };
-  // for (var i=0;i<value1.length;i++){china.push(value1[i][0])};
-  // layerControl2.addOverlay(velocityLayer, "china");
-});
+// var china = [];
+// var chinageo = [];
+// $.getJSON("https://geo.datav.aliyun.com/areas_v2/bound/100000.json", function (json) {
+//   var value1 = json.features[0].geometry.coordinates;
+//   // console.log(value1);
+//   for (var i = 0; i < value1.length; i++) { china.push(value1[i][0]) };
+//   // for (var i=0;i<value1.length;i++){china.push(value1[i][0])};
+//   // layerControl2.addOverlay(velocityLayer, "china");
+// });
 
 function msg(text) {
   $("#ShowDiv").show();
@@ -222,7 +225,7 @@ colordatabase.div_greenred = [
 
 //---------------根据最大值、最小值、拟形成色带数量，生成序列-----------------
 function autobreak(Tvaluemin, Tvaluemax, TargetN) {
-  if (Tvaluemin >= Tvaluemax) { alert("wrong position") };
+  // if (Tvaluemin > Tvaluemax) { alert("wrong position") };
   var DX;
   var a = [];
   var j = -8;
@@ -264,7 +267,7 @@ function autobreak(Tvaluemin, Tvaluemax, TargetN) {
   }
   var tttmax = Math.floor(Tvaluemax / DX);
   var tttmin = Math.floor(Tvaluemin / DX);
-
+  console.log(DX);
   nnn = getvaluenumber(DX);
 
   var levelMax = tttmax * DX + DX;
