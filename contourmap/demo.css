@@ -76,7 +76,7 @@ a {
 }
 #select {
     position:fixed;    
-    top: 50%;
+    top: 10%;
     left:1%;
     /* display: inline-block; */
     display: inline;
