@@ -28,13 +28,13 @@ function initDemoMap() {
     attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     subdomains: 'abcd',
     ext: 'png'
-  }
-  );
+  });
   var Esri_OceanBasemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
-  }
-  );
-  var HydroMap = L.tileLayer("https://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/WorldHydroMap/MapServer/tile/{z}/{y}/{x}");
+  });
+  var HydroMap = L.tileLayer("https://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/WorldHydroMap/MapServer/tile/{z}/{y}/{x}", {
+    attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
+  });
 
   var NASAGIBS_ModisTerraChlorophyll = L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_Chlorophyll_A/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
     attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
@@ -45,8 +45,7 @@ function initDemoMap() {
     time: '',
     tilematrixset: 'GoogleMapsCompatible_Level',
     opacity: 0.75
-  }
-  );
+  });
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri卫星": Esri_WorldImagery,
@@ -54,6 +53,7 @@ function initDemoMap() {
     // "WorldPhysical": Esri_WorldPhysical,
     "地形背景": Stamen_TerrainBackground,
     "全球水系": HydroMap,
+    // "Jawg地形": Jawg_Terrain,
     // "NASA叶绿素":NASAGIBS_ModisTerraChlorophyll,
   };
   var baseLayers2 = {
@@ -138,20 +138,20 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 //   layerControl.addOverlay(velocityLayer, "Ocean Current - Great Barrier Reef");
 // });
 
-$.getJSON("https://danwild.github.io/leaflet-velocity/wind-global.json", function (data) {
-  var velocityLayer = L.velocityLayer({
-    displayValues: true,
-    displayOptions: {
-      velocityType: "Global Wind",
-      position: "bottomleft",
-      emptyString: "No wind data"
-    },
-    data: data,
-    maxVelocity: 15
-  });
+// $.getJSON("https://danwild.github.io/leaflet-velocity/wind-global.json", function (data) {
+//   var velocityLayer = L.velocityLayer({
+//     displayValues: true,
+//     displayOptions: {
+//       velocityType: "Global Wind",
+//       position: "bottomleft",
+//       emptyString: "No wind data"
+//     },
+//     data: data,
+//     maxVelocity: 15
+//   });
 
-  layerControl.addOverlay(velocityLayer, "Wind - Global");
-});
+//   layerControl.addOverlay(velocityLayer, "Wind - Global");
+// });
 
 // var china = [];
 // var chinageo = [];
@@ -223,6 +223,19 @@ colordatabase.div_greenred = [
   { r: 165, g: 0, b: 40, weight: 100 }
 ];
 
+function coord2shuzu(id) {
+  var text1 = document.getElementById(id).value;
+  text1 = text1.trim();
+  var yyy = text1.split(/[\n]/); //按行分割
+  // console.log("yyy类型:"+typeof yyy);
+  // console.log(yyy);
+  var shuju = [] //行内分割，写入新数组
+  for (var i = 0; i < yyy.length; i++) {
+    // shuju[i] = yyy[i].split(",");
+    shuju[i] = yyy[i].split(/,|，|\s+/);
+  };
+  return shuju;
+}
 //---------------根据最大值、最小值、拟形成色带数量，生成序列-----------------
 function autobreak(Tvaluemin, Tvaluemax, TargetN) {
   // if (Tvaluemin > Tvaluemax) { alert("wrong position") };
