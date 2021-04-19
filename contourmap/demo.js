@@ -36,16 +36,6 @@ function initDemoMap() {
     attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
   });
 
-  var NASAGIBS_ModisTerraChlorophyll = L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_Chlorophyll_A/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
-    attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
-    bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-    minZoom: 1,
-    maxZoom: 7,
-    format: 'png',
-    time: '',
-    tilematrixset: 'GoogleMapsCompatible_Level',
-    opacity: 0.75
-  });
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri卫星": Esri_WorldImagery,
@@ -54,7 +44,6 @@ function initDemoMap() {
     "地形背景": Stamen_TerrainBackground,
     "全球水系": HydroMap,
     // "Jawg地形": Jawg_Terrain,
-    // "NASA叶绿素":NASAGIBS_ModisTerraChlorophyll,
   };
   var baseLayers2 = {
     // "海洋地理":Esri_OceanBasemap,
@@ -70,21 +59,26 @@ function initDemoMap() {
   map.setView([37, 117], 4);
   // var layerControl2 = L.control.layers(baseLayers2);
   // layerControl2.addTo(map);
-  // map.setView([37, 117], 4);
-
   return {
     map: map,
     layerControl: layerControl,
-    // layerControl2: layerControl2,
-
+    // layerControl2: layerControl2
   };
-}
+};
 
 // demo map
 var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
 
+// add leaflet-geoman controls with some options to the map  
+map.pm.addControls({  
+  position: 'bottomleft',  
+  drawCircle: false,
+  drawCircleMarker: false,
+});
+map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
+//移动端定位位置
 if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   map.locate({
     setView: true,
@@ -104,7 +98,6 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 };
 
 // var layerControl2 = mapStuff.layerControl2;
-
 
 // $.getJSON("https://danwild.github.io/leaflet-velocity/wind-gbr.json", function (data) {
 //   var velocityLayer = L.velocityLayer({
