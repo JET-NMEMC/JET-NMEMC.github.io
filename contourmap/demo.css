@@ -1,14 +1,12 @@
 body {
     margin: 0px;
 }
-
 #heading {
     text-align: center;
     padding: 20px;
     background: #333;
     color: #CCC;
 }
-
 a {
     color: #3388ff;
 }
@@ -27,14 +25,11 @@ a {
     background:linear-gradient(90deg,#0162c8,#55e7fc);
     z-index: 1;
 }
-
 #ShowDiv {
     position: fixed;
     top:1%;
     left: 42%;
     display:none;
-    /* width:150px; */
-    /* height:20px; */
     border:1px solid #ccc;
     background-color:#f9f9f9;
     padding: 12px 36px;
@@ -48,9 +43,6 @@ a {
     position: fixed;
     top:40%;
     left: 40%;
-    /* display:none; */
-    /* width:150px; */
-    /* height:20px; */
     border:1px solid rgb(0, 0, 0);
     background-color:#f9f9f9;
     padding: 12px 36px;
@@ -63,9 +55,6 @@ a {
     position: fixed;
     top:10%;
     left: 10%;
-    /* display:none; */
-    /* width:150px; */
-    /* height:20px; */
     border:1px solid rgb(0, 0, 0);
     background-color:#f9f9f9;
     padding: 10px 10px;
@@ -87,13 +76,10 @@ a {
     font-size: 18px;
     letter-spacing: 2px;
     border-radius: 20px;
-    /* background:linear-gradient(160deg, #0093E9 0%, #80D0C7 100%); */
     background-color: #85FFBD;
     background: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%);
     z-index: 1;
 }
-
-
 #map {
     position:absolute;
     height: 100%;
@@ -102,7 +88,6 @@ a {
     border-color: brown;
     z-index: -1;
 }
-
 .leaflet-canvas-layer {
     opacity: 1;
 }
