@@ -58,6 +58,10 @@
     <div id="showsetting" style="display: none;">
         <button onclick="showsetting('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
         <p>Mapping Setting</p>
+        <p>
+            <input type="file"  value="" onchange="impexcel(this)"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+        </p>
         <p>计划带数: <input type="text" id="TargetN" value="10" style="height: 25px; width: 82px;"></p>
         <p>图层透明: <input type="text" id="opacity" value="0.5" style="height: 25px; width: 82px;"></p>
         配色方案: <select id="colorpattern" style="height: 30px; width: 90px;">
@@ -75,7 +79,7 @@
         <p>NewlayerName: <input type="text" id="NewlayerName" value="Newlayer"></p>
         <div>
             <div style="float:left;">
-                <textarea id="textarea" cols="50" rows="30" style="resize: none;">ZJ01QSX335 121.4581 28.6888&#10;ZJ01QSX336 121.5875 28.6744&#10;ZJ01QSX319 121.5883 28.6331
+                <textarea id="textarea" cols="50" rows="30" style="resize: none;">A335 121.4581 28.6888&#10;A336 121.5875 28.6744&#10;A319 121.5883 28.6331
                 </textarea>
             </div>
             <div style="float:right;"><button onclick="drawsite()" style="height: 30px;">点集合</button></div>
@@ -85,10 +89,7 @@
     </div>
 
     <div id="ShowDiv" name="ShowDiv"></div>
-    <div>
-        <input type="file" style="position: fixed; left:10px; top:10px ;" value="" onchange="impexcel(this)"
-            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-    </div>
+
     <div>
         <select id="select" style="display: none;">
         </select>
@@ -178,7 +179,7 @@
                 // const colorpattern = "bgyr";//设置配色方案,rainbow_gist,rainbow,jet,cool,div_greenred,bgyr
                 const colorpattern = $('#colorpattern option:selected').text();
                 // getSelectedText("colorpattern");
-                console.log("配色方案", colorpattern);
+                // console.log("配色方案", colorpattern);
                 const colorSet = colordatabase[key = colorpattern];
 
                 mapping(newxiangmu, data, TargetN, gridArea, colorSet);
@@ -237,8 +238,8 @@
             // console.log(variogram);
             //网格插值模式，对在区域内的格点进行插值，格点精度300个
             var grid = kriging.grid(gridArea, variogram, (yrange[1] - yrange[0]) / 500);
-            console.log(newxiangmu + "插值grid:");
-            console.log(grid);
+            // console.log(newxiangmu + "插值grid:");
+            // console.log(grid);
 
             var Tvaluemin = grid.zlim[0], Tvaluemax = grid.zlim[1];
 
