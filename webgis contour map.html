@@ -15,7 +15,7 @@
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
-    <script src="contourmap/LabelTextCollision.js"></script>
+    <!-- <script src="contourmap/LabelTextCollision.js"></script> -->
     <script src="contourmap/leaflet-velocity.js"></script>
     <style>
         .info {
@@ -44,6 +44,11 @@
         .opt {
             background: rgb(150, 150, 150);
         }
+
+        .my-div-icon {
+            color: rgb(7, 253, 109);
+            font-size: 20px;
+        }
     </style>
 </head>
 
@@ -59,7 +64,7 @@
         <button onclick="showsetting('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
         <p>Mapping Setting</p>
         <p>
-            <input type="file"  value="" onchange="impexcel(this)"
+            <input type="file" value="" onchange="impexcel(this)"
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
         </p>
         <p>计划带数: <input type="text" id="TargetN" value="10" style="height: 25px; width: 82px;"></p>
@@ -79,17 +84,15 @@
         <p>NewlayerName: <input type="text" id="NewlayerName" value="Newlayer"></p>
         <div>
             <div style="float:left;">
-                <textarea id="textarea" cols="50" rows="30" style="resize: none;">A335 121.4581 28.6888&#10;A336 121.5875 28.6744&#10;A319 121.5883 28.6331
+                <textarea id="textarea" cols="50" rows="30" style="resize: none;">A335 121.4581 30.6888&#10;A336 121.5875 30.6744&#10;A319 121.5883 30.6331
                 </textarea>
             </div>
             <div style="float:right;"><button onclick="drawsite()" style="height: 30px;">点集合</button></div>
             <div><button onclick="drawpolygon()" style="height: 30px;">多边形</button></div>
-            <div><button style="height: 30px;">多段线</button></div>
+            <div><button onclick="drawpolyline()" style="height: 30px;">多段线</button></div>
         </div>
     </div>
-
     <div id="ShowDiv" name="ShowDiv"></div>
-
     <div>
         <select id="select" style="display: none;">
         </select>
@@ -233,7 +236,6 @@
                 }
             };
             var variogram = kriging.train(t, x, y, model, sigma2, alpha);
-            // var variogram = kriging.train(t, x, y, "exponential", 0, 100);
             // console.log(newxiangmu + "训练结果:");
             // console.log(variogram);
             //网格插值模式，对在区域内的格点进行插值，格点精度300个
@@ -276,7 +278,6 @@
             // console.log("maplayer",map._layers);
             // console.log(map._layers._image);
             // console.log(newmap);
-
         }
         //=-----------------------------------------------------------------------------------------结束
         function impexcel(obj) {
@@ -317,19 +318,38 @@
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val();
             console.log(siteData);
+            let icon = L.icon({
+                iconUrl: 'contourmap/icon/位置2(4).png',//marker图片地址
+                iconSize: [50, 50],//marker宽高
+                iconAnchor: [25, 50],//marker中心点位置
+                popupAnchor: [0, -50]
+            });
             var sites = L.layerGroup();
+            var sitesLabel = L.layerGroup();
             // var layers = L.featureGroup().addTo(map);
             for (var i = 0; i < siteData.length; i++) {
-                // var markerlayer = L.marker([siteData[i][2], siteData[i][1]],{text:siteData[i][0].toString()}).bindPopup(siteData[i][0]).addTo(sites)
-                var c=L.circleMarker([siteData[i][2], siteData[i][1]], {radius : 5}).bindPopup(siteData[i][0]).addTo(sites);
+                L.marker([siteData[i][2], siteData[i][1]], { icon: icon, data: "dt" }).bindPopup(siteData[i][0]).addTo(sites);
+                // L.circleMarker([siteData[i][2], siteData[i][1]], {radius : 5}).bindPopup(siteData[i][0]).addTo(sites);
                 // layers.addLayer(c);
-                // ;
+                let markerIcon = L.divIcon({
+                    html: siteData[i][0],//marker标注
+                    className: 'my-div-icon',
+                    iconAnchor: [-25, 70]//文字标注相对位置
+                });
+                L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon }).addTo(sitesLabel);
             };
             sites.addTo(map);
+            sitesLabel.addTo(map);
             layerControl.addOverlay(sites, sitename);
+            layerControl.addOverlay(sitesLabel, sitename + "-Label");
             map.setView([siteData[0][2], siteData[0][1]]);
         };
-       //-------------------------------------------------绘制多边形
+        // sites.on('click', e => {
+        //     let data=e.target.options.data;//marker的属性信息
+        //     console.log(data);
+        // });
+        //Handlers for when drawn shapes are clicked
+        //-------------------------------------------------绘制多边形
         function drawpolygon() {
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val();
@@ -337,9 +357,22 @@
             var latlngs = [];
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
             var polygon = L.polygon(latlngs, { color: 'green', weight: 1, fillOpacity: 0.2 }).addTo(map);
-            polygon.bindPopup(sitename);
+            // polygon.bindPopup(sitename+'<button>Details</button>');
+            polygon.bindPopup('<img src="contourmap/icon/详情.png" onclick=msg("详情")  style="height:20px;"/>'+sitename);
+                        // polygon.bindPopup(sitename);
             layerControl.addOverlay(polygon, sitename);
             map.fitBounds(polygon.getBounds());
+        };
+        function drawpolyline() {
+            var siteData = coord2shuzu('textarea');
+            var sitename = $("#NewlayerName").val();
+            console.log(siteData);
+            var latlngs = [];
+            for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
+            var polyline = L.polyline(latlngs, { color: 'blue', weight: 1, fillOpacity: 0.2 }).addTo(map);
+            polyline.bindPopup(sitename);
+            layerControl.addOverlay(polyline, sitename);
+            map.fitBounds(polyline.getBounds());
         };
 
         //---------------------------------------------------------------------生成左侧选项卡
@@ -362,7 +395,7 @@
         };
 
         //提取json中的所有属性名称，进入数组
-        function getkey(json) { 
+        function getkey(json) {
             var s = [];
             for (var keys in json[0]) {
                 s.push(keys);
