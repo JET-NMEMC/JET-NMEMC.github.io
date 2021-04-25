@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
     <link rel="stylesheet" href="contourmap/leaflet-velocity.css" />
+    <link rel="stylesheet" href="contourmap/leaflet-measure.css">
     <link rel="stylesheet" href="contourmap/demo.css" />
 
     <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script>
@@ -58,7 +59,7 @@
     <!-- <div>
         <input type="button" id="act1" value="WELCOME" onclick="msg('你好，欢迎使用！')" />
     </div> -->
-    <img src="contourmap/设置2.png" width="50px" onclick="showsetting('showsetting')"
+    <img src="contourmap/icon2/设置2.png" width="50px" onclick="showsetting('showsetting')"
         style="position: fixed; left:80px; bottom:10px;">
     <div id="showsetting" style="display: none;">
         <button onclick="showsetting('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
@@ -76,7 +77,7 @@
             <option value="cool">cool</option>
         </select>
     </div>
-    <img src="contourmap/工程绘图.png" width="55px" onclick="showsetting('showtools')"
+    <img src="contourmap/icon2/工程绘图.png" width="55px" onclick="showsetting('showtools')"
         style="position: fixed; left:150px; bottom:10px;">
     <div id="showtools" style="display: none;">
         <p><button onclick="showsetting('showtools')" style="position: absolute; top: 1px; right: 1px;">X</button></p>
@@ -99,6 +100,7 @@
     </div>
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
     <script src="contourmap/kriging.js"></script>
+    <script src="contourmap/leaflet-measure.js"></script>
     <script src="contourmap/demo.js"></script>
     <script>
         //---------------------------------------------------------------------------------------------------------------主程序
