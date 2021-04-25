@@ -71,13 +71,23 @@ var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
 
-// add leaflet-geoman controls with some options to the map  
+
+// 添加绘图按钮
 map.pm.addControls({  
   position: 'bottomleft',  
   drawCircle: false,
   drawCircleMarker: false,
 });
 map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
+
+// 添加测量按钮
+var measureControl = new L.Control.Measure({
+  position: 'bottomleft',
+  primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
+  primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
+});
+measureControl.addTo(map);
+
 //移动端定位位置
 if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   map.locate({
