@@ -3,8 +3,10 @@ function initDemoMap() {
     "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     {
       attribution:
-        "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, " +
-        "AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+        "&copy; Esri"
+      // attribution:
+      //   "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, " +
+      //   "AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
     }
   );
   var Esri_OceanBasemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
@@ -46,8 +48,8 @@ function initDemoMap() {
     zoomControl: false
   });
 
-  var layerControl = L.control.layers(baseLayers,overlayLayers);
-  layerControl.addTo(map);
+  var layerControl = L.control.layers(baseLayers,overlayLayers).addTo(map);
+  // layerControl.addTo(map);
   map.setView([37, 117], 4);
   // var layerControl2 = L.control.layers(baseLayers2);
   // layerControl2.addTo(map);
@@ -64,12 +66,24 @@ var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
 
 // 添加绘图按钮
-map.pm.addControls({
+map.pm.setGlobalOptions({ measurements: { measurement: true, displayFormat: 'metric',totalLength: true} });
+map.pm.setLang('zh');
+var drawct=map.pm.addControls({
   position: 'bottomleft',
+  // bottom:'50px',
   drawCircle: false,
   drawCircleMarker: false,
 });
+// console.log(drawct);
 map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
+// console.log(map.pm.Toolbar);
+// map.pm.enableGlobalEditMode(layer.pm.enable({  
+//   allowSelfIntersection: false,  
+// }));  
+map.on('pm:globaldragmodetoggled', e => {  
+  console.log(e);  
+});  
+
 
 // 添加测量按钮
 var measureControl = new L.Control.Measure({
