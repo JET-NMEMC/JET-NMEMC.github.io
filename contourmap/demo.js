@@ -7,44 +7,36 @@ function initDemoMap() {
         "AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
     }
   );
-
-  var Esri_DarkGreyCanvas = L.tileLayer(
-    "http://{s}.sm.mapstack.stamen.com/" +
-    "(toner-lite,$fff[difference],$fff[@23],$fff[hsl-saturation@20])/" +
-    "{z}/{x}/{y}.png",
-    {
-      attribution:
-        "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, " +
-        "NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
-    }
-  );
-  var Esri_WorldPhysical = L.tileLayer(
-    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}",
-    {
-      attribution: "Tiles &copy; Esri &mdash; Source: US National Park Service"
-    }
-  );
-  var Stamen_TerrainBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}{r}.{ext}', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    subdomains: 'abcd',
-    ext: 'png'
-  });
   var Esri_OceanBasemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
   });
   var HydroMap = L.tileLayer("https://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/WorldHydroMap/MapServer/tile/{z}/{y}/{x}", {
     attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
   });
-
+  var warm= L.tileLayer("https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetWarm/MapServer/tile/{z}/{y}/{x}", {
+    attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
+  });
+  var tianditu_img=L.tileLayer("http://t0.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
+   });
+  var tianditu_ter=L.tileLayer("http://t0.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
+   });
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
-    "Esri卫星": Esri_WorldImagery,
-    // "Grey Canvas": Esri_DarkGreyCanvas,
-    // "WorldPhysical": Esri_WorldPhysical,
-    "地形背景": Stamen_TerrainBackground,
-    "全球水系": HydroMap,
+    "Esri影像": Esri_WorldImagery,
+    "天地图影像":tianditu_img,
+    "天地图地形":tianditu_ter,
+    "Geoq暖色": warm,
+    "Geoq水系": HydroMap,
     // "Jawg地形": Jawg_Terrain,
   };
+
+  var tianditu_label=L.tileLayer("http://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
+    // zoomOffset: 1
+  });  
+  var overlayLayers = {
+    "标注": tianditu_label
+  }
+
   var baseLayers2 = {
     // "海洋地理":Esri_OceanBasemap,
   };
@@ -54,7 +46,7 @@ function initDemoMap() {
     zoomControl: false
   });
 
-  var layerControl = L.control.layers(baseLayers);
+  var layerControl = L.control.layers(baseLayers,overlayLayers);
   layerControl.addTo(map);
   map.setView([37, 117], 4);
   // var layerControl2 = L.control.layers(baseLayers2);
@@ -71,10 +63,9 @@ var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
 
-
 // 添加绘图按钮
-map.pm.addControls({  
-  position: 'bottomleft',  
+map.pm.addControls({
+  position: 'bottomleft',
   drawCircle: false,
   drawCircleMarker: false,
 });
@@ -390,8 +381,6 @@ function Graham_scan(pointSet, ch) {
   // 这里会修改pointSet
   // var ch=new Array();
   var n = pointSet.length;
-  // console.log("扫描凸集"+n);
-  // console.log("扫描凸集"+pointSet[0].x);
   var i, j, k = 0, top = 2;
   var tmp = new Object();
   // 找到一个基点，基本就是保证最下面最左面的点
@@ -447,13 +436,11 @@ function Graham_scan(pointSet, ch) {
     top++;
     ch.push(pointSet[i]);
   }
-  // return ch;
 }
 function multiply(p0, p1, p2) {
   return ((p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y));
 }
 function distance_no_sqrt(p1, p2) {
-  //return(sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y))); 
   return ((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 }
 
