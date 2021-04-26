@@ -101,6 +101,7 @@
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
     <script src="contourmap/kriging.js"></script>
     <script src="contourmap/leaflet-measure.js"></script>
+    <!-- <script src="contourmap/leaflet.ChineseTmsProviders.js"></script> -->
     <script src="contourmap/demo.js"></script>
     <script>
         //---------------------------------------------------------------------------------------------------------------主程序
@@ -181,7 +182,7 @@
                 // let gridArea=china; 如果插值范围超过散点的范围，需重新设置x,y,range
                 // let gridArea=data_range;
                 let gridArea = area_clip;
-                // const colorpattern = "bgyr";//设置配色方案,rainbow_gist,rainbow,jet,cool,div_greenred,bgyr
+
                 const colorpattern = $('#colorpattern option:selected').text();
                 // getSelectedText("colorpattern");
                 // console.log("配色方案", colorpattern);
@@ -346,11 +347,7 @@
             layerControl.addOverlay(sitesLabel, sitename + "-Label");
             map.setView([siteData[0][2], siteData[0][1]]);
         };
-        // sites.on('click', e => {
-        //     let data=e.target.options.data;//marker的属性信息
-        //     console.log(data);
-        // });
-        //Handlers for when drawn shapes are clicked
+
         //-------------------------------------------------绘制多边形
         function drawpolygon() {
             var siteData = coord2shuzu('textarea');
