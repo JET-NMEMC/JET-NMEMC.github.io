@@ -32,12 +32,24 @@ function initDemoMap() {
     // "Jawg地形": Jawg_Terrain,
   };
 
-  var tianditu_label=L.tileLayer("http://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
-    // zoomOffset: 1
+  var tianditu_label1=L.tileLayer("http://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
   });  
+  var tianditu_label2=L.tileLayer("http://t0.tianditu.gov.cn/cia_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cia&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
+  });  
+  var tianditu_label3=L.tileLayer("http://t0.tianditu.gov.cn/eva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=eva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
+  });  
+  // console.log("1");
   var overlayLayers = {
-    "标注": tianditu_label
+    "天地图注记": tianditu_label1,
+    // "天地图注记2": {
+    //   category: "group",
+    //   layers: {
+    //     "purpleLayer": tianditu_label2,
+    //     "purpleairmarker": tianditu_label3,
+    //   }
+    // }
   }
+  console.log(overlayLayers);
 
   var baseLayers2 = {
     // "海洋地理":Esri_OceanBasemap,
@@ -49,6 +61,8 @@ function initDemoMap() {
   });
 
   var layerControl = L.control.layers(baseLayers,overlayLayers).addTo(map);
+  // var layerControl = L.control.layersBrowser(baseLayers,overlayLayers).addTo(map);
+  
   // layerControl.addTo(map);
   map.setView([37, 117], 4);
   // var layerControl2 = L.control.layers(baseLayers2);
@@ -65,24 +79,27 @@ var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
 
+
+// var command = L.control({position: 'topleft'}); 
+// command.onAdd = function (map) {
+//     var div = L.DomUtil.create('div','command'); 
+//     div.innerHTML = '<form><input id="command" type="checkBox"/>command</form>'; 
+//     return div;
+// }; 
+// command.addTo(map);
+
 // 添加绘图按钮
-map.pm.setGlobalOptions({ measurements: { measurement: true, displayFormat: 'metric',totalLength: true} });
 map.pm.setLang('zh');
 var drawct=map.pm.addControls({
   position: 'bottomleft',
-  // bottom:'50px',
   drawCircle: false,
   drawCircleMarker: false,
 });
-// console.log(drawct);
 map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
-// console.log(map.pm.Toolbar);
-// map.pm.enableGlobalEditMode(layer.pm.enable({  
-//   allowSelfIntersection: false,  
-// }));  
+
 map.on('pm:globaldragmodetoggled', e => {  
-  console.log(e);  
-});  
+  console.log(e);
+});
 
 
 // 添加测量按钮
