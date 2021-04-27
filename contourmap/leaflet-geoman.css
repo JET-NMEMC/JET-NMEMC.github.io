@@ -1,3 +1,8 @@
+/* 设置工具栏宽度 */
+:root {
+  --awidth:35px;
+}
+
 .marker-icon,
 .marker-icon:focus {
   background-color: #ffffff;
@@ -69,9 +74,6 @@
 .leaflet-pm-toolbar .leaflet-pm-actions-container a.leaflet-pm-action:first-child:not(.pos-right),
 .leaflet-pm-toolbar .leaflet-pm-actions-container a.leaflet-pm-action:last-child.pos-right {
   border-radius: 0;  
-}
-:root {
-  --awidth:40px;
 }
 
 .leaflet-pm-toolbar .button-container a.leaflet-buttons-control-button {
