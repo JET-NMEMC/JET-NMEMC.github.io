@@ -53,8 +53,8 @@ a {
 }
 #showtools {
     position: fixed;
-    top:10%;
-    left: 10%;
+    top:1%;
+    left: 15%;
     border:1px solid rgb(0, 0, 0);
     background-color:#f9f9f9;
     padding: 10px 10px;
