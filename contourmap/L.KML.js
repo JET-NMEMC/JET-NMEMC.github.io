@@ -1,8 +1,10 @@
 /*!
 	Copyright (c) 2011-2015, Pavel Shramov, Bruno Bergot - MIT licence
 */
-
 L.KML = L.FeatureGroup.extend({
+	// kmlOptions: {
+	// 	async: true
+	// },
 
 	initialize: function (kml, kmlOptions) {
 		this._kml = kml;
@@ -102,7 +104,7 @@ L.Util.extend(L.KML, {
 						options.opacity = parseInt(value.substring(0, 2), 16) / 255.0;
 						options.color = '#' + value.substring(6, 8) + value.substring(4, 6) + value.substring(2, 4);
 					} else if (key === 'width') {
-						options.weight = parseInt(value);
+						options.weight = parseFloat(value);
 					} else if (key === 'Icon') {
 						ioptions = _parse(e);
 						if (ioptions.href) { options.href = ioptions.href; }
