@@ -29,7 +29,10 @@
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
     <script src="contourmap/kriging.js"></script>
     <script src="contourmap/leaflet-measure.js"></script>
-    <script src="contourmap/L.KML.js"></script>
+    <script src="https://unpkg.com/leaflet-kmz@latest/dist/leaflet-kmz.js"></script>
+    <!-- <script src="https://unpkg.com/togeojson@0.14.2"></script>
+    <script src="contourmap/leaflet.filelayer.js"></script>
+    <script src="contourmap/L.KML.js"></script> -->
     <!-- <script src="contourmap/LabelTextCollision.js"></script> -->
     <!-- <script src="contourmap/leaflet-velocity.js"></script> -->
     <style>
@@ -90,7 +93,8 @@
             <option value="cool">cool</option>
         </select>
         <p>kml Setting</p>
-        <input type="file" id="file" value="" onchange="addkml('file')" />
+        <input type="file" id="file" value="" onchange="addkml()" />
+        <input type="button" value="" onclick="addkml()">
         <!-- <input id="File1" type="file" />
         <input id="btAdd" type="button" value="Add" onclick="alert(document.getElementById('File1').value);" /> -->
     </div>
@@ -115,11 +119,9 @@
         <select id="select" style="display: none;">
         </select>
     </div>
-
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
-
     <script src="contourmap/demo.js"></script>
     <script>
             //---------------------------------------------------------------------------------------------------------------主程序
@@ -139,23 +141,36 @@
             var figurectrol = {};
             var legend;
             var countourmap;
-            function addkml(id){
-                var filepath=getPath(document.getElementById(id)); //input:file的id
-                console.log(filepath);
-                fetch("contourmap/example2.kml")
-                .then(res => res.text())
-                .then(kmltext => {
-                    // Create new kml overlay
-                    const parser = new DOMParser();
-                    const kml = parser.parseFromString(kmltext, 'text/xml');
-                    const track = new L.KML(kml);
-                    map.addLayer(track);
 
-                    // Adjust map to show the kml
-                    const bounds = track.getBounds();
-                    map.fitBounds(bounds);
-                });
+            function addkml(){
+                // var layer = omnivore.kml('example.kml').addTo(map);
             }
+
+        //     var style = {
+        //         color: 'red',
+        //         opacity: 1.0,
+        //         fillOpacity: 1.0,
+        //         weight: 2,
+        //         clickable: false
+        //     };
+        //     L.Control.FileLayerLoad.LABEL = '<img class="icon" width="20px" src="contourmap/icon/详情.png" alt="file icon"/>';
+        //     control = L.Control.fileLayerLoad({
+        //         fitBounds: true,
+        //         layerOptions: {
+        //             style: style,
+        //             pointToLayer: function (data, latlng) {
+        //                 return L.circleMarker(
+        //                     latlng,
+        //                     { style: style }
+        //                 );
+        //             }
+        //         }
+        //     });
+        // control.addTo(map);
+        // control.loader.on('data:loaded', function (e) {
+        //     var layer = e.layer;
+        //     console.log(layer);
+        // });
 
             //----------------------------------------------------------------------------------单击事件，开始新项目
             $("#select").change(function () {
