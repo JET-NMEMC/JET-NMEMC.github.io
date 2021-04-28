@@ -78,6 +78,7 @@ function initDemoMap() {
 var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
+// var layerControl2 = mapStuff.layerControl2;
 
 
 // var command = L.control({position: 'topleft'}); 
@@ -116,20 +117,17 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
     setView: true,
     maxZoom: 5
   });
-
   map.on('locationfound', function (e) {
     var radius = e.accuracy / 2;
     L.marker(e.latlng).addTo(map).bindPopup("你在这里");
     L.circle(e.latlng, radius).addTo(map);
     console.log('定位成功=====>', e);
   });
-
   map.on('locationerror', function (e) {
     console.log('定位出错=====>', e);
   });
 };
 
-// var layerControl2 = mapStuff.layerControl2;
 
 // $.getJSON("https://danwild.github.io/leaflet-velocity/wind-gbr.json", function (data) {
 //   var velocityLayer = L.velocityLayer({
