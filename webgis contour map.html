@@ -94,7 +94,6 @@
         </select>
         <p>kml Setting</p>
         <input type="file" id="file" value="" onchange="addkml()" />
-        <input type="button" value="" onclick="addkml()">
         <!-- <input id="File1" type="file" />
         <input id="btAdd" type="button" value="Add" onclick="alert(document.getElementById('File1').value);" /> -->
     </div>
@@ -122,6 +121,7 @@
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+    <!-- <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script> -->
     <script src="contourmap/demo.js"></script>
     <script>
             //---------------------------------------------------------------------------------------------------------------主程序
@@ -171,7 +171,6 @@
         //     var layer = e.layer;
         //     console.log(layer);
         // });
-
             //----------------------------------------------------------------------------------单击事件，开始新项目
             $("#select").change(function () {
                 var newxiangmu = $("#select").val();
