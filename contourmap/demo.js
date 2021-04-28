@@ -61,9 +61,6 @@ function initDemoMap() {
   });
 
   var layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
-  // var layerControl = L.control.layersBrowser(baseLayers,overlayLayers).addTo(map);
-
-  // layerControl.addTo(map);
   map.setView([37, 117], 4);
   // var layerControl2 = L.control.layers(baseLayers2);
   // layerControl2.addTo(map);
@@ -79,7 +76,6 @@ var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
 // var layerControl2 = mapStuff.layerControl2;
-
 
 // var command = L.control({position: 'topleft'}); 
 // command.onAdd = function (map) {
@@ -101,7 +97,6 @@ map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 
 map.on('pm:globaldragmodetoggled', e => {
   console.log(e);
 });
-
 
 // 添加测量按钮
 var measureControl = new L.Control.Measure({
@@ -128,7 +123,6 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   });
 };
 
-
 // $.getJSON("https://danwild.github.io/leaflet-velocity/wind-gbr.json", function (data) {
 //   var velocityLayer = L.velocityLayer({
 //     displayValues: true,
@@ -141,7 +135,6 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 //     data: data,
 //     maxVelocity: 10
 //   });
-
 //   layerControl.addOverlay(velocityLayer, "Wind - Great Barrier Reef");
 // });
 
@@ -157,7 +150,6 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 //     maxVelocity: 0.6,
 //     velocityScale: 0.1 // arbitrary default 0.005
 //   });
-
 //   layerControl.addOverlay(velocityLayer, "Ocean Current - Great Barrier Reef");
 // });
 
@@ -172,7 +164,6 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 //     data: data,
 //     maxVelocity: 15
 //   });
-
 //   layerControl.addOverlay(velocityLayer, "Wind - Global");
 // });
 
@@ -203,7 +194,8 @@ var Graticulelayer = L.latlngGraticule({
 })
 layerControl.addOverlay(Graticulelayer, "经纬网");
 
-const colordatabase = new Object();//配色方案，全局变量,可自定义添加新行
+//-------------------------------------------配色方案，可自定义添加新行
+const colordatabase = new Object();
 colordatabase.bgyr = [
   { r: 0, g: 0, b: 255, weight: 0 },
   { r: 30, g: 30, b: 255, weight: 10 },
@@ -316,7 +308,6 @@ function autobreak(Tvaluemin, Tvaluemax, TargetN) {
   levelnum = Math.round(levelnum);
 
   var percentage = (100 * (Tvaluemax - Tvaluemin) / (levelMax - levelMin)).toFixed(1);
-
 
   var breaks = [];
 
@@ -474,47 +465,4 @@ function distance_no_sqrt(p1, p2) {
 }
 
 
-function getvl(obj) {
-  //判断浏览器
-  var Sys = {};
-  var ua = navigator.userAgent.toLowerCase();
-  var s;
-  (s = ua.match(/msie ([\d.]+)/)) ? Sys.ie = s[1] :
-    (s = ua.match(/firefox\/([\d.]+)/)) ? Sys.firefox = s[1] :
-      (s = ua.match(/chrome\/([\d.]+)/)) ? Sys.chrome = s[1] :
-        (s = ua.match(/opera.([\d.]+)/)) ? Sys.opera = s[1] :
-          (s = ua.match(/version\/([\d.]+).*safari/)) ? Sys.safari = s[1] : 0;
-  var file_url = "";
-  if (Sys.ie <= "6.0") {
-    //ie5.5,ie6.0
-    file_url = obj.value;
-  } else if (Sys.ie >= "7.0") {
-    //ie7,ie8
-    obj.select();
-    file_url = document.selection.createRange().text;
-  } else if (Sys.firefox) {
-    //fx
-    //file_url = document.getElementById("file").files[0].getAsDataURL();//获取的路径为FF识别的加密字符串
-    file_url = readFileFirefox(obj);
-  } else if (Sys.chrome) {
-    file_url = obj.value;
-  }
-  alert(file_url);
-}
-
-function getPath(obj) {
-  if (obj) {
-    if (window.navigator.userAgent.indexOf("MSIE") >= 1) {
-      obj.select();
-      return document.selection.createRange().text;
-    }
-    else if (window.navigator.userAgent.indexOf("Firefox") >= 1) {
-      if (obj.files) {
-        return obj.files.item(0).getAsDataURL();
-      }
-      return obj.value;
-    }
-    return obj.value;
-  }
-}
 
