@@ -21,20 +21,18 @@
     <link rel="stylesheet" href="contourmap/leaflet-measure.css">
     <link rel="stylesheet" href="contourmap/demo.css" />
 
-    <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- <script src="contourmap/leaflet-velocity.js"></script> -->
     <script src="contourmap/leaflet-geoman.min.js"></script>
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
-    <script src="contourmap/kriging.js"></script>
     <script src="contourmap/leaflet-measure.js"></script>
-    <script src="https://unpkg.com/leaflet-kmz@latest/dist/leaflet-kmz.js"></script>
-    <!-- <script src="https://unpkg.com/togeojson@0.14.2"></script>
-    <script src="contourmap/leaflet.filelayer.js"></script>
-    <script src="contourmap/L.KML.js"></script> -->
+    <!-- <script src="https://unpkg.com/leaflet-kmz@latest/dist/leaflet-kmz.js"></script> -->
+    <script src="contourmap/L.KML.js"></script>
     <!-- <script src="contourmap/LabelTextCollision.js"></script> -->
-    <!-- <script src="contourmap/leaflet-velocity.js"></script> -->
+
     <style>
         .info {
             padding: 5px 8px;
@@ -79,7 +77,7 @@
         style="position: fixed; left:90px; bottom:10px;">
     <div id="showsetting" style="display: none;">
         <button onclick="showHide('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
-        <p>Mapping Setting</p>
+        <p>绘图设置 等值线图</p>
         <p>
             <input type="file" value="" onchange="impexcel(this)"
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
@@ -92,10 +90,13 @@
             <option value="jet">jet</option>
             <option value="cool">cool</option>
         </select>
-        <p>kml Setting</p>
-        <input type="file" id="file" value="" onchange="addkml()" />
-        <!-- <input id="File1" type="file" />
-        <input id="btAdd" type="button" value="Add" onclick="alert(document.getElementById('File1').value);" /> -->
+        <p>导入矢量 图层设置</p>
+        <div id="sidebarBody" class="sidebar-body">
+            <input type="file" id="kmlFileInput" accept=".kml" style="display: none"/>
+            <input type="button" onclick="document.getElementById('kmlFileInput').click()" value="Import kml" class="navbar-button"/>
+            <input type="file" id="jsonFileInput" accept=".json, .geojson" style="display: none"/>
+            <input type="button" onclick="document.getElementById('jsonFileInput').click()" value="Import GeoJSON" class="navbar-button"/>
+        </div>
     </div>
     <img src="contourmap/icon2/绘制3.png" width="50px" onclick="showHide('showtools')"
         style="position: fixed; left:150px; bottom:10px;">
@@ -122,6 +123,7 @@
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
     <!-- <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script> -->
+    <script src="contourmap/kriging.js"></script>
     <script src="contourmap/demo.js"></script>
     <script>
             //---------------------------------------------------------------------------------------------------------------主程序
@@ -141,36 +143,33 @@
             var figurectrol = {};
             var legend;
             var countourmap;
-
-            function addkml(){
-                // var layer = omnivore.kml('example.kml').addTo(map);
+            
+            kmlFileInput.onchange = function(event) {
+                var kmlFileInput = document.getElementById("kmlFileInput");
+                var file = URL.createObjectURL(kmlFileInput.files[0]);
+                // Load kml file
+                fetch(file)
+                    .then(res => res.text())
+                    .then(kmltext => {
+                        // Create new kml overlay
+                        const parser = new DOMParser();
+                        const kml = parser.parseFromString(kmltext, 'text/xml');
+                        const track = new L.KML(kml);
+                        map.addLayer(track);
+                        // Adjust map to show the kml
+                        map.fitBounds(track.getBounds());
+                    }
+                );
             }
-
-        //     var style = {
-        //         color: 'red',
-        //         opacity: 1.0,
-        //         fillOpacity: 1.0,
-        //         weight: 2,
-        //         clickable: false
-        //     };
-        //     L.Control.FileLayerLoad.LABEL = '<img class="icon" width="20px" src="contourmap/icon/详情.png" alt="file icon"/>';
-        //     control = L.Control.fileLayerLoad({
-        //         fitBounds: true,
-        //         layerOptions: {
-        //             style: style,
-        //             pointToLayer: function (data, latlng) {
-        //                 return L.circleMarker(
-        //                     latlng,
-        //                     { style: style }
-        //                 );
-        //             }
-        //         }
-        //     });
-        // control.addTo(map);
-        // control.loader.on('data:loaded', function (e) {
-        //     var layer = e.layer;
-        //     console.log(layer);
-        // });
+            jsonFileInput.onchange = function(event) {
+                var jsonFileInput = document.getElementById("jsonFileInput");
+                var file = URL.createObjectURL(jsonFileInput.files[0]);
+                // Load GeoJSON file
+                $.getJSON(file, function(data){
+                    var geojsonfeatures = L.geoJson(data).addTo(map);
+                    map.fitBounds(geojsonfeatures.getBounds());
+                });
+            }
             //----------------------------------------------------------------------------------单击事件，开始新项目
             $("#select").change(function () {
                 var newxiangmu = $("#select").val();
