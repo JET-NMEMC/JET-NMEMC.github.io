@@ -15,29 +15,29 @@ function initDemoMap() {
   var HydroMap = L.tileLayer("https://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/WorldHydroMap/MapServer/tile/{z}/{y}/{x}", {
     attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
   });
-  var warm= L.tileLayer("https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetWarm/MapServer/tile/{z}/{y}/{x}", {
+  var warm = L.tileLayer("https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetWarm/MapServer/tile/{z}/{y}/{x}", {
     attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
   });
-  var tianditu_img=L.tileLayer("http://t0.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
-   });
-  var tianditu_ter=L.tileLayer("http://t0.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
-   });
+  var tianditu_img = L.tileLayer("http://t0.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+  });
+  var tianditu_ter = L.tileLayer("http://t0.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+  });
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri影像": Esri_WorldImagery,
-    "天地图影像":tianditu_img,
-    "天地图地形":tianditu_ter,
+    "天地图影像": tianditu_img,
+    "天地图地形": tianditu_ter,
     "Geoq暖色": warm,
     "Geoq水系": HydroMap,
     // "Jawg地形": Jawg_Terrain,
   };
 
-  var tianditu_label1=L.tileLayer("http://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
-  });  
-  var tianditu_label2=L.tileLayer("http://t0.tianditu.gov.cn/cia_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cia&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
-  });  
-  var tianditu_label3=L.tileLayer("http://t0.tianditu.gov.cn/eva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=eva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51",{
-  });  
+  var tianditu_label1 = L.tileLayer("http://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+  });
+  var tianditu_label2 = L.tileLayer("http://t0.tianditu.gov.cn/cia_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cia&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+  });
+  var tianditu_label3 = L.tileLayer("http://t0.tianditu.gov.cn/eva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=eva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+  });
   // console.log("1");
   var overlayLayers = {
     "天地图注记": tianditu_label1,
@@ -49,7 +49,7 @@ function initDemoMap() {
     //   }
     // }
   }
-  console.log(overlayLayers);
+  // console.log(overlayLayers);
 
   var baseLayers2 = {
     // "海洋地理":Esri_OceanBasemap,
@@ -60,9 +60,9 @@ function initDemoMap() {
     zoomControl: false
   });
 
-  var layerControl = L.control.layers(baseLayers,overlayLayers).addTo(map);
+  var layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
   // var layerControl = L.control.layersBrowser(baseLayers,overlayLayers).addTo(map);
-  
+
   // layerControl.addTo(map);
   map.setView([37, 117], 4);
   // var layerControl2 = L.control.layers(baseLayers2);
@@ -90,14 +90,14 @@ var layerControl = mapStuff.layerControl;
 
 // 添加绘图按钮
 map.pm.setLang('zh');
-var drawct=map.pm.addControls({
+var drawct = map.pm.addControls({
   position: 'bottomleft',
   drawCircle: false,
   drawCircleMarker: false,
 });
 map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
 
-map.on('pm:globaldragmodetoggled', e => {  
+map.on('pm:globaldragmodetoggled', e => {
   console.log(e);
 });
 
@@ -475,4 +475,48 @@ function distance_no_sqrt(p1, p2) {
   return ((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 }
 
+
+function getvl(obj) {
+  //判断浏览器
+  var Sys = {};
+  var ua = navigator.userAgent.toLowerCase();
+  var s;
+  (s = ua.match(/msie ([\d.]+)/)) ? Sys.ie = s[1] :
+    (s = ua.match(/firefox\/([\d.]+)/)) ? Sys.firefox = s[1] :
+      (s = ua.match(/chrome\/([\d.]+)/)) ? Sys.chrome = s[1] :
+        (s = ua.match(/opera.([\d.]+)/)) ? Sys.opera = s[1] :
+          (s = ua.match(/version\/([\d.]+).*safari/)) ? Sys.safari = s[1] : 0;
+  var file_url = "";
+  if (Sys.ie <= "6.0") {
+    //ie5.5,ie6.0
+    file_url = obj.value;
+  } else if (Sys.ie >= "7.0") {
+    //ie7,ie8
+    obj.select();
+    file_url = document.selection.createRange().text;
+  } else if (Sys.firefox) {
+    //fx
+    //file_url = document.getElementById("file").files[0].getAsDataURL();//获取的路径为FF识别的加密字符串
+    file_url = readFileFirefox(obj);
+  } else if (Sys.chrome) {
+    file_url = obj.value;
+  }
+  alert(file_url);
+}
+
+function getPath(obj) {
+  if (obj) {
+    if (window.navigator.userAgent.indexOf("MSIE") >= 1) {
+      obj.select();
+      return document.selection.createRange().text;
+    }
+    else if (window.navigator.userAgent.indexOf("Firefox") >= 1) {
+      if (obj.files) {
+        return obj.files.item(0).getAsDataURL();
+      }
+      return obj.value;
+    }
+    return obj.value;
+  }
+}
 
