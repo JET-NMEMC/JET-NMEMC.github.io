@@ -79,8 +79,10 @@
         <button onclick="showHide('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
         <p>绘图设置 等值线图</p>
         <p>
-            <input type="file" value="" onchange="impexcel(this)"
-                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+            <!-- <input type="file" value="" onchange="impexcel(this)"
+                accept=".xlsx" /> -->
+                <input type="file" id="selectdatafile" accept=".xlsx" onchange="impexcel(this)" style="display: none"/>
+                <input type="button" onclick="document.getElementById('selectdatafile').click()" value="选择散点数据" class="navbar-button"/>
         </p>
         <p>计划带数: <input type="text" id="TargetN" value="10" style="height: 25px; width: 82px;"></p>
         <p>图层透明: <input type="text" id="opacity" value="0.5" style="height: 25px; width: 82px;"></p>
@@ -130,8 +132,7 @@
             var TargetN;//设置拟绘制色带个数
             var data;     //声明全局，存放json对象;
             var xiangmu;  //声明全局，存放项目名序列;
-            var lngs = [];
-            var lats = [];
+
 
             var xrange = [];
             var yrange = [];
@@ -143,9 +144,11 @@
             var figurectrol = {};
             var legend;
             var countourmap;
-            
-            kmlFileInput.onchange = function(event) {
-                var kmlFileInput = document.getElementById("kmlFileInput");
+
+
+            kmlFileInput.onchange = function(event) {  
+                var kmlFileInput = document.getElementById("kmlFileInput"); 
+                var filename = kmlFileInput.files[0].name;
                 var file = URL.createObjectURL(kmlFileInput.files[0]);
                 // Load kml file
                 fetch(file)
@@ -156,24 +159,33 @@
                         const kml = parser.parseFromString(kmltext, 'text/xml');
                         const track = new L.KML(kml);
                         map.addLayer(track);
+                        layerControl.addOverlay(track,filename);
                         // Adjust map to show the kml
                         map.fitBounds(track.getBounds());
                     }
-                );
+                );                
+                showHide('showsetting');
+                msg("导入kml文件"+filename);
             }
+
             jsonFileInput.onchange = function(event) {
                 var jsonFileInput = document.getElementById("jsonFileInput");
+                var filename = jsonFileInput.files[0].name;
                 var file = URL.createObjectURL(jsonFileInput.files[0]);
                 // Load GeoJSON file
                 $.getJSON(file, function(data){
                     var geojsonfeatures = L.geoJson(data).addTo(map);
                     map.fitBounds(geojsonfeatures.getBounds());
-                });
+                });                
+                showHide('showsetting');
+                msg("导入json文件"+filename);
             }
             //----------------------------------------------------------------------------------单击事件，开始新项目
             $("#select").change(function () {
                 var newxiangmu = $("#select").val();
                 if (finishlist == "") {
+                    var lngs = [];
+                    var lats = [];
                     // 读取散点
                     for (var i = 0; i < data.length; i++) { lngs.push(data[i].lng); lats.push(data[i].lat) };
                     // 凸包检测
@@ -194,7 +206,6 @@
                     var polygon = L.polygon(latlngs_clip, { color: 'red', weight: 1.5, fillOpacity: 0 });
                     layerControl.addOverlay(polygon, "边界");
                     map.fitBounds(polygon.getBounds());
-                    console.log("bounds", polygon.getBounds());
                     // 绘制散点
                     // for (var i = 0; i < lats.length; i++) { L.circle([lats[i], lngs[i]], { 
                     //     radius: 2,
@@ -345,6 +356,7 @@
                     xiangmu = getkey(data);//调用函数，提取项目名称的数组
                     console.log("data");
                     console.log(data);
+                    console.log("item");
                     console.log(xiangmu);
                     for (var i = 0; i < data.length; i++) {
                         for (var key in data[i]) {
@@ -364,13 +376,14 @@
                     msg("数据载入完成");
                 }
                 reader.readAsBinaryString(f);
+                showHide('showsetting');
             }
 
             //-------------------------------------------------绘制散点图
             function drawsite() {
                 var siteData = coord2shuzu('textarea');
                 var sitename = $("#NewlayerName").val()+"-点";
-                console.log(siteData);
+                // console.log(siteData);
                 let icon = L.icon({
                     iconUrl: 'contourmap/icon/位置2(4).png',//marker图片地址
                     iconSize: [50, 50],//marker宽高
@@ -402,7 +415,7 @@
             function drawpolygon() {
                 var siteData = coord2shuzu('textarea');
                 var sitename = $("#NewlayerName").val()+"-面";
-                console.log(siteData);
+                // console.log(siteData);
                 var latlngs = [];
                 for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
                 var polygon = L.polygon(latlngs, { color: 'green', weight: 1, fillOpacity: 0.2 }).addTo(map);
@@ -415,7 +428,7 @@
             function drawpolyline() {
                 var siteData = coord2shuzu('textarea');
                 var sitename = $("#NewlayerName").val()+"-线";
-                console.log(siteData);
+                // console.log(siteData);
                 var latlngs = [];
                 for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
                 var polyline = L.polyline(latlngs, { color: 'blue', weight: 1.5}).addTo(map);
