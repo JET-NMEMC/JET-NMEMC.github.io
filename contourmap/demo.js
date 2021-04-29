@@ -38,7 +38,7 @@ function initDemoMap() {
   });
   var tianditu_label3 = L.tileLayer("http://t0.tianditu.gov.cn/eva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=eva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
   });
-  // console.log("1");
+
   var overlayLayers = {
     "天地图注记": tianditu_label1,
     // "天地图注记2": {
@@ -180,7 +180,7 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 function msg(text) {
   $("#ShowDiv").show();
   $("#ShowDiv").html(text);
-  $('#ShowDiv').delay(1000).slideUp();
+  $('#ShowDiv').delay(1500).slideUp();
 };
 //---------------------------------------------------------------------经纬网
 var Graticulelayer = L.latlngGraticule({
@@ -295,7 +295,8 @@ function autobreak(Tvaluemin, Tvaluemax, TargetN) {
   }
   var tttmax = Math.floor(Tvaluemax / DX);
   var tttmin = Math.floor(Tvaluemin / DX);
-  console.log(DX);
+
+  // console.log("step=:"+DX);
   nnn = getvaluenumber(DX);
 
   var levelMax = tttmax * DX + DX;
