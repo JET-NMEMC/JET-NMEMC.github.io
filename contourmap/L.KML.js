@@ -126,7 +126,9 @@ L.Util.extend(L.KML, {
 		if (el && el[0]) { ioptions = _parse(el[0]); }
 		if (ioptions.href) {
 			var iconOptions = {
-				iconUrl: ioptions.href,
+				// iconUrl: ioptions.href,
+				iconUrl: 'contourmap/icon/位置2(3).png',
+				// color:options.color,
 				shadowUrl: null,
 				anchorRef: {x: ioptions.x, y: ioptions.y},
 				anchorType:	{x: ioptions.xunits, y: ioptions.yunits}
