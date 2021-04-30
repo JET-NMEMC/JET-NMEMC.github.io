@@ -73,11 +73,12 @@
     <!-- <div><input type="button" id="act1" value="WELCOME" onclick="test()" /></div> -->
 
     <img src="contourmap/icon2/设置2.png" width="50px" onclick="showHide('showsetting')"
-        style="position: fixed; left:90px; bottom:10px;">
+        style="position: fixed; left:90px; bottom:10px;">        
 
     <div id="showsetting" style="display: none;">
         <button onclick="showHide('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
         <p>等值线图 绘图设置</p>
+        
         <p>
             <input type="file" id="selectdatafile" accept=".xlsx" onchange="impexcel(this)" style="display: none"/>
             <input type="button" onclick="document.getElementById('selectdatafile').click()" value="选择散点数据" class="navbar-button"/>
