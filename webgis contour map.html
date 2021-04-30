@@ -129,6 +129,7 @@
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
     <!-- <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script> -->
     <script src="contourmap/kriging.js"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
     <script src="contourmap/demo.js"></script>
     <script>
             //---------------------------------------------------------------------------------------------------------------主程序
@@ -150,15 +151,39 @@
 
             function drawrigon(){
                 var address=$("#rigon").val();
-                var linkurl="https://restapi.amap.com/v3/config/district?key=2b2bb467194aa9e72e495eafa99bb0c4&keywords="+address+"&subdistrict=0&extensions=base"
-                $.getJSON(linkurl, function (json2) {                    
-                    adcode=json2.districts[0].adcode;
-                    console.log(address,adcode);
-                    var state = "https://geo.datav.aliyun.com/areas_v2/bound/geojson?code="+adcode;
-                    $.getJSON(state, function (json) {
-                        var stateshp=L.geoJson(json).addTo(map);
-                        map.fitBounds(stateshp.getBounds());
-                    });
+                // var linkurl="https://restapi.amap.com/v3/config/district?key=2b2bb467194aa9e72e495eafa99bb0c4&keywords="+address+"&subdistrict=0&extensions=base"
+                // $.getJSON(linkurl, function (json2) {
+                //     adcode=json2.districts[0].adcode;
+                //     console.log(json2);
+                //     console.log(address,adcode);
+                // });
+
+                var opts = {
+                    subdistrict: 0,   //获取边界不需要返回下级行政区
+                    extensions: 'all',  //返回行政区边界坐标组等具体信息
+                    level: 'district'  //查询行政级别为 市
+                };
+                var district = new AMap.DistrictSearch(opts);
+                district.setLevel("district");
+                district.search(address, function(status, result) {
+                // polygons =L.layerGroup();
+                polygons =L.featureGroup();
+                console.log("result=",result);
+                var bounds = result.districtList[0].boundaries;
+                if (bounds) {
+                    for (var i = 0, l = bounds.length; i < l; i++) {
+                        //生成行政区划polygon
+                        L.polygon(bounds[i]).addTo(polygons);
+                    }
+                }
+                polygons.addTo(map);
+                map.fitBounds(polygons.getBounds());
+
+                    // var state = "https://geo.datav.aliyun.com/areas_v2/bound/geojson?code="+adcode;
+                    // $.getJSON(state, function (json) {
+                    //     var stateshp=L.geoJson(json).addTo(map);
+                    //     map.fitBounds(stateshp.getBounds());
+                    // });
                 });
                 showHide('showsetting')
             };
