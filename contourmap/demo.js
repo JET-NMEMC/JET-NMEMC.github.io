@@ -192,7 +192,7 @@ var Graticulelayer = L.latlngGraticule({
     { start: 8, end: 10, interval: 1 }
   ]
 })
-layerControl.addOverlay(Graticulelayer, "经纬网");
+layerControl.addOverlay(Graticulelayer, '经纬网');
 
 //-------------------------------------------配色方案，可自定义添加新行
 const colordatabase = new Object();
