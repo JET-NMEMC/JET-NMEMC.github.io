@@ -465,5 +465,26 @@ function distance_no_sqrt(p1, p2) {
   return ((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 }
 
-
+//---------------------------------------------------------------------------可拖动
+function dragFunc(id) {
+  var Drag = document.getElementById(id);
+  Drag.onmousedown = function(event) {
+      var ev = event || window.event;
+      event.stopPropagation();
+      var disX = ev.clientX - Drag.offsetLeft;
+      var disY = ev.clientY - Drag.offsetTop;
+      document.onmousemove = function(event) {
+          var ev = event || window.event;
+          Drag.style.left = ev.clientX - disX + "px";
+          Drag.style.top = ev.clientY - disY + "px";
+          Drag.style.cursor = "move";
+      };
+  };
+  Drag.onmouseup = function() {
+      document.onmousemove = null;
+      this.style.cursor = "default";
+  };
+};
+dragFunc("showsetting");
+dragFunc("showtools");
 
