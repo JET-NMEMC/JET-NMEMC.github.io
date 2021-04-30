@@ -41,7 +41,7 @@ a {
 }
 #showsetting {
     position: fixed;
-    top:40%;
+    top:1%;
     left: 40%;
     border:1px solid rgb(0, 0, 0);
     background-color:#f9f9f9;
@@ -101,6 +101,26 @@ a {
 }
 
 .navbar-button {
+    width: 200px;
+    margin: 0;
+    padding: 10px;
+    background-color: rgb(121, 120, 120);
+    color: white;
+    border: solid 1px white;
+    border-radius: 4px;
+    display: block;
+}
+.navbar-inputtext {
+    width: 178px;
+    margin: 0;
+    padding: 10px;
+    background-color: rgb(255, 253, 253);
+    color: rgb(0, 0, 0);
+    border: solid 1px rgb(0, 0, 0);
+    border-radius: 4px;
+    display: block;
+}
+.navbar-inputtext2 {
     width: 200px;
     margin: 0;
     padding: 10px;
