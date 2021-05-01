@@ -129,6 +129,7 @@
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
     <!-- <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script> -->
     <script src="contourmap/kriging.js"></script>
+    <script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
     <script src="contourmap/demo.js"></script>
     <script>
@@ -157,7 +158,6 @@
                 //     console.log(json2);
                 //     console.log(address,adcode);
                 // });
-
                 var opts = {
                     subdistrict: 0,   //获取边界不需要返回下级行政区
                     extensions: 'all',  //返回行政区边界坐标组等具体信息
@@ -166,24 +166,49 @@
                 var district = new AMap.DistrictSearch(opts);
                 district.setLevel("district");
                 district.search(address, function(status, result) {
-                // polygons =L.layerGroup();
                 polygons =L.featureGroup();
-                console.log("result=",result);
+                // console.log("result=",result);
                 var bounds = result.districtList[0].boundaries;
+                console.log("bounds[0]=");
+                console.log(bounds[0]);
                 if (bounds) {
                     for (var i = 0, l = bounds.length; i < l; i++) {
+                        var polygon=bounds[i];
+                        // var coord=[];
+                        // for (var j = 0; j < polygon.length; j++) {
+                        //     coord.push([polygon[j].lng,polygon[j].lat])
+                        // }
+                        // var coord2=JSON.stringify(coord);
+                        // console.log(coord2);
+                        // var polygon3 = L.GeoJSON.coordsToLatLngs(coord);
+                        // console.log('polygon3');
+                        // console.log(polygon3);
+
+                        // var features = polygon.map(i => {
+                        //     return {
+                        //     type: "Feature",
+                        //     properties: {
+                        //         // value: i.value
+                        //     },
+                        //     geometry: {
+                        //         type: "Polygon",
+                        //         coordinates: coord
+                        //     }
+                        // }});
+                        // console.log(features);
+                        // var result = gcoord.transform([coord[0][0],coord[0][1]], gcoord.GCJ02, gcoord.WGS84 );
+                        // console.log( result );  // [ 122.99395597, 44.99804071 ]
+
+                        // var polygon2 = gcoord.transform(coord2,gcoord.GCJ02,gcoord.WGS84);
+                        // console.log(polygon2);
+
                         //生成行政区划polygon
-                        L.polygon(bounds[i]).addTo(polygons);
+                        // L.geoJSON(features).addTo(polygons);
+                        L.polygon(polygon).addTo(polygons);
                     }
                 }
                 polygons.addTo(map);
                 map.fitBounds(polygons.getBounds());
-
-                    // var state = "https://geo.datav.aliyun.com/areas_v2/bound/geojson?code="+adcode;
-                    // $.getJSON(state, function (json) {
-                    //     var stateshp=L.geoJson(json).addTo(map);
-                    //     map.fitBounds(stateshp.getBounds());
-                    // });
                 });
                 showHide('showsetting')
             };
