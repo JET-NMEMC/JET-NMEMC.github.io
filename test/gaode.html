@@ -40,8 +40,10 @@
     </div>
     <input id="draw" type="button" class="btn" value="查询" />
 </div>
-<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
-<script type="text/javascript">
+<script src="gcoord.js"></script>
+<script src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
+
+<script>
     //初始化地图对象，加载地图
     var map = new AMap.Map("container", {
         resizeEnable: true,
@@ -69,10 +71,10 @@
             map.remove(polygons)//清除上次结果
             polygons = [];
             polygons = [];
-            console.log("result=",result);
+            // console.log("result=",result);
             var bounds = result.districtList[0].boundaries;
             if (bounds) {
-                for (var i = 0, l = bounds.length; i < l; i++) {
+                for (var i = 0, l = bounds.length; i < l; i++) {                    
                     //生成行政区划polygon
                     var polygon = new AMap.Polygon({
                         strokeWeight: 1,
@@ -84,7 +86,7 @@
                     polygons.push(polygon);
                 }
             }
-            map.add(polygons)
+            map.add(polygons);
             map.setFitView(polygons);//视口自适应
         });
     }
@@ -97,6 +99,31 @@
         }
         return true;
     };
+    // console.log(map);
+
+
+    var guoqi=[116.397556,39.906962];
+    var marker = new AMap.Marker({
+        position: guoqi,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+        title: '国旗'
+    });
+
+    map.add(marker);
+
+    var guoqi2 = gcoord.transform(
+        guoqi,    // 经纬度坐标
+        gcoord.GCJ02,// 当前坐标系
+        gcoord.WGS84     // 目标坐标系                        
+    );
+
+    var marker2 = new AMap.Marker({
+        position: guoqi2,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+        title: '国旗2'
+    });
+    map.add(marker2);
+
+
+
 </script>
 </body>
 </html>
