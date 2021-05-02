@@ -169,49 +169,72 @@
                 polygons =L.featureGroup();
                 // console.log("result=",result);
                 var bounds = result.districtList[0].boundaries;
-                console.log("bounds[0]=");
-                console.log(bounds[0]);
+                // console.log("bounds[0]=");
+                // console.log(bounds[0]);
                 if (bounds) {
                     for (var i = 0, l = bounds.length; i < l; i++) {
                         var polygon=bounds[i];
-                        // var coord=[];
-                        // for (var j = 0; j < polygon.length; j++) {
-                        //     coord.push([polygon[j].lng,polygon[j].lat])
-                        // }
-                        // var coord2=JSON.stringify(coord);
+                        var coord=[];
+                        for (var j = 0; j < polygon.length; j++) {
+                            coord.push([polygon[j].lng,polygon[j].lat])
+                        }
+                        var coord2='['+JSON.stringify(coord)+']';
                         // console.log(coord2);
-                        // var polygon3 = L.GeoJSON.coordsToLatLngs(coord);
-                        // console.log('polygon3');
-                        // console.log(polygon3);
-
-                        // var features = polygon.map(i => {
-                        //     return {
-                        //     type: "Feature",
-                        //     properties: {
-                        //         // value: i.value
-                        //     },
-                        //     geometry: {
-                        //         type: "Polygon",
-                        //         coordinates: coord
-                        //     }
-                        // }});
-                        // console.log(features);
-                        // var result = gcoord.transform([coord[0][0],coord[0][1]], gcoord.GCJ02, gcoord.WGS84 );
-                        // console.log( result );  // [ 122.99395597, 44.99804071 ]
-
-                        // var polygon2 = gcoord.transform(coord2,gcoord.GCJ02,gcoord.WGS84);
-                        // console.log(polygon2);
-
-                        //生成行政区划polygon
-                        // L.geoJSON(features).addTo(polygons);
-                        L.polygon(polygon).addTo(polygons);
+                        var states = {
+                            "type": "Feature",
+                            "properties": {"party": "Republican"},
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": JSON.parse(coord2)
+                            }
+                        };
+                        gcoord.transform(states,gcoord.GCJ02,gcoord.WGS84);
+                        // console.log(states.geometry.coordinates);
+                        L.geoJSON(states, {
+                            style: function(feature) {
+                                color: "#0000ff";                        
+                            }
+                        }).addTo(polygons);
+                        // L.polygon(polygon).addTo(polygons);
                     }
                 }
                 polygons.addTo(map);
                 map.fitBounds(polygons.getBounds());
                 });
-                showHide('showsetting')
+                showHide('showsetting');
             };
+
+            function test(){
+                var states = {
+                    "type": "Feature",
+                    "properties": {"party": "Republican"},
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [121.34124755859375,39.98553841480974],
+                            [121.25885009765625,39.93922484079194],
+                            [121.30828857421875,39.82541310342478],
+                            [121.44561767578125,39.88023492849342],
+                            [121.34124755859375,39.98553841480974]
+                        ]]
+                    }
+                };
+                console.log(states.geometry.coordinates);
+                L.geoJSON(states, {
+                    style: function(feature) {
+                        color: "#0000ff";                        
+                    }
+                }).addTo(map);
+
+                gcoord.transform(states,gcoord.GCJ02,gcoord.WGS84);
+                console.log(states.geometry.coordinates);
+
+                L.geoJSON(states, {
+                    style: function(feature) {
+                        color: "#0000ff";                        
+                    }
+                }).addTo(map);
+            }
 
             kmlFileInput.onchange = function(event) {  
                 var kmlFileInput = document.getElementById("kmlFileInput"); 
