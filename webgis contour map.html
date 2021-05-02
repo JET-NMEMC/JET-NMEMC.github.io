@@ -63,7 +63,7 @@
 
         .my-div-icon {
             color: rgb(7, 253, 109);
-            font-size: 20px;
+            font-size: 15px;
         }
     </style>
 </head>
@@ -128,7 +128,7 @@
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
     <!-- <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script> -->
-    <script src="contourmap/kriging.js"></script>
+    <script src="contourmap/kriging2.js"></script>
     <script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
     <script src="contourmap/demo.js"></script>
@@ -169,8 +169,8 @@
                 polygons =L.featureGroup();
                 // console.log("result=",result);
                 var bounds = result.districtList[0].boundaries;
-                // console.log("bounds[0]=");
-                // console.log(bounds[0]);
+                // console.log("bounds=");
+                // console.log(bounds);
                 if (bounds) {
                     for (var i = 0, l = bounds.length; i < l; i++) {
                         var polygon=bounds[i];
@@ -182,20 +182,25 @@
                         // console.log(coord2);
                         var states = {
                             "type": "Feature",
-                            "properties": {"party": "Republican"},
+                            "properties": {},
                             "geometry": {
                                 "type": "Polygon",
                                 "coordinates": JSON.parse(coord2)
                             }
                         };
-                        gcoord.transform(states,gcoord.GCJ02,gcoord.WGS84);
+                        // console.log(states.geometry.coordinates);
+                        gcoord.transform(states,gcoord.GCJ02,gcoord.WGS84);//输入为geojson时，直接转变输入对象的坐标值
                         // console.log(states.geometry.coordinates);
                         L.geoJSON(states, {
                             style: function(feature) {
-                                color: "#0000ff";                        
+                                return {
+                                    color: '#004CFF',
+                                    weight: 2,
+                                    fillColor: '#3F78FD',
+                                    fillOpacity: 0.3
+                                };
                             }
                         }).addTo(polygons);
-                        // L.polygon(polygon).addTo(polygons);
                     }
                 }
                 polygons.addTo(map);
@@ -265,6 +270,7 @@
                 // Load GeoJSON file
                 $.getJSON(file, function(data){
                     var geojsonfeatures = L.geoJson(data).addTo(map);
+                    layerControl.addOverlay(geojsonfeatures,filename);
                     map.fitBounds(geojsonfeatures.getBounds());
                 });                
                 showHide('showsetting');
@@ -297,16 +303,15 @@
                     layerControl.addOverlay(polygon, "边界");
                     map.fitBounds(polygon.getBounds());
                     // 绘制散点
-                    // for (var i = 0; i < lats.length; i++) { L.circle([lats[i], lngs[i]], { 
-                    //     radius: 2,
-                    //     color: '#FF00FF', //颜色
-                    //     // fillColor: '#FF00FF',
-                    // }).addTo(map) };
-                    var sites = L.layerGroup();
+                    var sites = L.featureGroup();
                     for (var i = 0; i < lats.length; i++) {
-                        L.marker([lats[i], lngs[i]]).bindPopup(data[i].site.toString()).addTo(sites)
+                        // L.marker([lats[i], lngs[i]])
+                        L.circle([lats[i], lngs[i]], {radius: 2, color: '#FF00FF', fillColor: '#FF00FF'})
+                        .bindPopup(data[i].site.toString())
+                        .addTo(sites)
                     };
                     layerControl.addOverlay(sites, "sites");
+
                     //生成canvas插值多边形，leaf调换x,y
                     var lnglats_clip = [];
                     for (var i = 0; i < res.length; i++) { lnglats_clip.push([res[i].x, res[i].y]) };
@@ -391,7 +396,7 @@
                 // console.log(newxiangmu + "训练结果:");
                 // console.log(variogram);
                 //网格插值模式，对在区域内的格点进行插值，格点精度300个
-                var grid = kriging.grid(gridArea, variogram, (yrange[1] - yrange[0]) / 500);
+                var grid = kriging.grid(gridArea, variogram,(xrange[1]-xrange[0])/500, (yrange[1]-yrange[0])/500);
                 // console.log(newxiangmu + "插值grid:");
                 // console.log(grid);
 
@@ -417,21 +422,17 @@
                 var opacity1 = $('#opacity').val();
                 var newmap = L.imageOverlay(Img, imageBounds, { opacity: opacity1 });//将image映射到leaflet图层
                 newmap.options.layerId = newxiangmu; // 给图层（组）绑定自定义id,在options参数里添加
-                var overlayId = newmap._leaflet_id;
                 // layerControl2.addOverlay(newmap, newxiangmu);
                 figurectrol[newxiangmu] = new Object();
                 figurectrol[newxiangmu].overlay = newmap;
-                figurectrol[newxiangmu].overlayId = overlayId;
+                figurectrol[newxiangmu].overlayId = newmap._leaflet_id;
                 figurectrol[newxiangmu].breaks = breaks;
                 figurectrol[newxiangmu].colors = colors;
 
                 // console.log("newmap", newmap);
-                // console.log("图层组", layerControl2);
-                // console.log("图层", layerControl2._layers);
-
+                // console.log("图层组", layerControl);
+                // console.log("图层", layerControl._layers);
                 // console.log("maplayer",map._layers);
-                // console.log(map._layers._image);
-                // console.log(newmap);
             }
             //=-----------------------------------------------------------------------------------------结束
             function impexcel(obj) {
@@ -448,6 +449,10 @@
                     console.log(data);
                     console.log("item");
                     console.log(xiangmu);
+                    if (xiangmu[0]!="site"||xiangmu[1]!="lng"||xiangmu[2]!="lat"){
+                        alert("表格内容不合规则，首行的前三个单元格应依次为字符串site、lng和lat，对应数据列为站名、经度和纬度");
+                        return
+                    };
                     for (var i = 0; i < data.length; i++) {
                         for (var key in data[i]) {
                             // console.log(key+':'+data[i][key]);
@@ -480,8 +485,8 @@
                     iconAnchor: [25, 50],//marker中心点位置
                     popupAnchor: [0, -50]
                 });
-                var sites = L.layerGroup();
-                var sitesLabel = L.layerGroup();
+                var sites = L.featureGroup();
+                var sitesLabel = L.featureGroup();
                 // var layers = L.featureGroup().addTo(map);
                 for (var i = 0; i < siteData.length; i++) {
                     L.marker([siteData[i][2], siteData[i][1]], { icon: icon, data: "dt" }).bindPopup(siteData[i][0]).addTo(sites);
@@ -497,8 +502,8 @@
                 sitesLabel.addTo(map);
                 layerControl.addOverlay(sites, sitename);
                 layerControl.addOverlay(sitesLabel, sitename + "-标注");
-                // map.fitBounds([[siteData[0][2], siteData[0][1]],[siteData[siteData.length][2], siteData[siteData.length][1]]]);
-                map.setView([siteData[0][2], siteData[0][1]],10);
+                map.fitBounds(sites.getBounds());
+                // map.setView([siteData[0][2], siteData[0][1]],10);
             };
 
             //-------------------------------------------------绘制多边形
@@ -510,7 +515,8 @@
                 for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
                 var polygon = L.polygon(latlngs, { color: 'green', weight: 1, fillOpacity: 0.2 }).addTo(map);
                 // polygon.bindPopup(sitename+'<button>Details</button>');
-                polygon.bindPopup('<img src="contourmap/icon/详情.png" onclick=msg("详情")  style="height:20px;"/>' + sitename);
+                polygon.bindPopup(sitename);
+                // polygon.bindPopup(sitename+'<br><img src="contourmap/icon/详情.png" onclick=msg("详情")  style="height:20px;display: inline-block;"/>详情');
                 // polygon.bindPopup(sitename);
                 layerControl.addOverlay(polygon, sitename);
                 map.fitBounds(polygon.getBounds());
@@ -554,7 +560,7 @@
                 }
                 return s
             }
-
+            //凸包检测输出点转为json字符串
             function point2str(po) {
                 var arr = new Array();
                 for (var i = 0; i < po.length; i++) { arr[i] = '[' + po[i].x + "," + po[i].y + ']' };
@@ -562,9 +568,6 @@
                 var arr2 = "[[" + arr.join() + "]]";
                 return arr2;
             }
-
     </script>
-
 </body>
-
 </html>
