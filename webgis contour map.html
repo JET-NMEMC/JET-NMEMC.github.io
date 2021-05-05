@@ -26,9 +26,11 @@
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <!-- <script src="contourmap/leaflet-velocity.js"></script> -->
-    <script src="contourmap/leaflet-geoman.min.js"></script>
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
+    <script src="contourmap/leaflet-geoman.min.js"></script>
     <script src="contourmap/leaflet-measure.js"></script>
+    <link rel="stylesheet" href="contourmap/Leaflet.StyleEditor.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-styleeditor@latest/dist/javascript/Leaflet.StyleEditor.min.js"></script>    
     <!-- <script src="https://unpkg.com/leaflet-kmz@latest/dist/leaflet-kmz.js"></script> -->
     <script src="contourmap/L.KML.js"></script>
     <!-- <script src="contourmap/LabelTextCollision.js"></script> -->
@@ -514,6 +516,7 @@
                 var latlngs = [];
                 for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
                 var polygon = L.polygon(latlngs, { color: 'green', weight: 1, fillOpacity: 0.2 }).addTo(map);
+                console.log(polygon);
                 // polygon.bindPopup(sitename+'<button>Details</button>');
                 polygon.bindPopup(sitename);
                 // polygon.bindPopup(sitename+'<br><img src="contourmap/icon/详情.png" onclick=msg("详情")  style="height:20px;display: inline-block;"/>详情');
