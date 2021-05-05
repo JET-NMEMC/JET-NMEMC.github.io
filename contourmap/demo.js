@@ -40,17 +40,8 @@ function initDemoMap() {
   });
 
   var overlayLayers = {
-    "天地图注记": tianditu_label1,
-    // "天地图注记2": {
-    //   category: "group",
-    //   layers: {
-    //     "purpleLayer": tianditu_label2,
-    //     "purpleairmarker": tianditu_label3,
-    //   }
-    // }
+    "天地图注记": tianditu_label1
   }
-  // console.log(overlayLayers);
-
   var baseLayers2 = {
     // "海洋地理":Esri_OceanBasemap,
   };
@@ -75,6 +66,7 @@ function initDemoMap() {
 var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
+
 // var layerControl2 = mapStuff.layerControl2;
 
 // var command = L.control({position: 'topleft'}); 
@@ -85,7 +77,18 @@ var layerControl = mapStuff.layerControl;
 // }; 
 // command.addTo(map);
 
-// 添加绘图按钮
+//---------------------------------------------------------------------添加经纬网
+var Graticulelayer = L.latlngGraticule({
+  showLabel: true,
+  zoomInterval: [
+    { start: 2, end: 3, interval: 30 },
+    { start: 4, end: 4, interval: 10 },
+    { start: 5, end: 7, interval: 5 },
+    { start: 8, end: 10, interval: 1 }
+  ]
+})
+layerControl.addOverlay(Graticulelayer, '经纬网');
+// -------------------------------------------------------------------添加绘图按钮
 map.pm.setLang('zh');
 var drawct = map.pm.addControls({
   position: 'bottomleft',
@@ -94,9 +97,80 @@ var drawct = map.pm.addControls({
 });
 map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
 
-map.on('pm:globaldragmodetoggled', e => {
-  console.log(e);
+//Initialize the StyleEditor
+// var styleEditor = L.control.styleEditor({
+//   position: "topleft",
+//   useGrouping: false,
+//   // colorRamp: ['#1abc9c', '#2ecc71', '#3498db'],
+//   // markers: ['circle-stroked', 'circle', 'square-stroked', 'square'],
+//   // showTooltip: false,
+
+//   //openOnLeafletDraw: true,
+// });
+// map.addControl(styleEditor);
+
+let styleEditor = L.control.styleEditor({
+  position: 'topleft',
+  colorRamp: ['#1abc9c', '#2ecc71', '#3498db'],
+  markers: ['circle-stroked', 'circle', 'square-stroked', 'square'],
+  showTooltip: false,
+  ignoreLayerTypes :["Marker"],
 });
+map.addControl(styleEditor);
+
+// map.pm.addControls({
+//   drawMarker: true,
+//   drawPolygon: true,
+//   editPolygon: true,
+//   drawSingleline: true,
+//   deleteLayer: true,
+// });
+
+
+// map.on('pm:drawstart', ({ workingLayer }) => {  
+//   workingLayer.on('pm:vertexadded', e => {  
+//    console.log(e);
+//    });
+//  });
+var basedata=new L.featureGroup();
+layerControl.addOverlay(basedata, "临时");
+
+map.on(('pm:create'),e=>{
+  // ||'pm:update'
+  e.layer.addTo(basedata);
+	console.log(e);
+  switch(e.shape) {
+    case 'Polygon':
+      var latbound=e.layer._bounds._northEast.lat.toFixed(6) + '-' + e.layer._bounds._southWest.lat.toFixed(6);
+      var lngbound=e.layer._bounds._northEast.lng.toFixed(6) + '-' + e.layer._bounds._southWest.lng.toFixed(6);
+      e.layer.bindPopup("Polygon<br>纬度范围："+latbound+"<br>经度范围："+lngbound);
+      // console.log(e);
+       break;
+    case 'Marker':
+      e.layer.bindPopup("Marker");
+       break;
+    case 'Line':
+      e.layer.bindPopup("Line");
+       break;
+    case 'Rectangle':
+      e.layer.bindPopup("Rectangle");
+       break;
+    default:
+      e.layer.bindPopup("不知道你画了个啥");
+  }
+});
+
+// map.on('click',function (e) {
+//   // console.log(e);
+//   L.popup().setLatLng(e.latlng).setContent(e.latlng.toString()).openOn(map) //显示鼠标点击位置的经纬度
+// })
+// //双击添加注记
+// map.on('dblclick',function (e){
+// //  L.marker(e.latlng).addTo(map)
+// } )
+
+
+
 
 // 添加测量按钮
 var measureControl = new L.Control.Measure({
@@ -182,17 +256,7 @@ function msg(text) {
   $("#ShowDiv").html(text);
   $('#ShowDiv').delay(1500).slideUp();
 };
-//---------------------------------------------------------------------经纬网
-var Graticulelayer = L.latlngGraticule({
-  showLabel: true,
-  zoomInterval: [
-    { start: 2, end: 3, interval: 30 },
-    { start: 4, end: 4, interval: 10 },
-    { start: 5, end: 7, interval: 5 },
-    { start: 8, end: 10, interval: 1 }
-  ]
-})
-layerControl.addOverlay(Graticulelayer, '经纬网');
+
 
 //-------------------------------------------配色方案，可自定义添加新行
 const colordatabase = new Object();
@@ -487,4 +551,3 @@ function dragFunc(id) {
 };
 dragFunc("showsetting");
 dragFunc("showtools");
-
