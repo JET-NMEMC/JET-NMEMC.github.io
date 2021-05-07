@@ -16,9 +16,10 @@
     <title>webgis</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="contourmap/leaflet-geoman.css" />
+    <link rel="stylesheet" href="contourmap/leaflet-geoman2.css" />
     <!-- <link rel="stylesheet" href="contourmap/leaflet-velocity.css" /> -->
     <link rel="stylesheet" href="contourmap/leaflet-measure.css">
+    <link rel="stylesheet" href="contourmap/Leaflet.StyleEditor.min.css" />
     <link rel="stylesheet" href="contourmap/demo.css" />
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
@@ -27,10 +28,9 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <!-- <script src="contourmap/leaflet-velocity.js"></script> -->
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
-    <script src="contourmap/leaflet-geoman.min.js"></script>
+    <script src="contourmap/leaflet-geoman.min2.js"></script>
+    <!-- <script src="contourmap/Leaflet.StyleEditor.min.js"></script> -->
     <script src="contourmap/leaflet-measure.js"></script>
-    <link rel="stylesheet" href="contourmap/Leaflet.StyleEditor.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-styleeditor@latest/dist/javascript/Leaflet.StyleEditor.min.js"></script>    
     <!-- <script src="https://unpkg.com/leaflet-kmz@latest/dist/leaflet-kmz.js"></script> -->
     <script src="contourmap/L.KML.js"></script>
     <!-- <script src="contourmap/LabelTextCollision.js"></script> -->
@@ -109,12 +109,11 @@
 
     <div id="showtools" style="display: none;">
         <p><button onclick="showHide('showtools')" style="position: absolute; top: 1px; right: 1px;">X</button></p>
-        <!-- <p><input type="checkbox" checked onclick="setCollisionDetection(this.checked)"> Collision detection</p> -->
         <p>图层名: <input type="text" id="NewlayerName" value="New" width="70px"></p>
         <p>边线色：<input type="color" id="edgecolor" value="#2D9900"> 填充色：<input type="color" id="fillcolor" value="#2124c7"></p>
         <div>
             <div style="float:left;">
-                <textarea id="textarea" cols="40" rows="20" style="resize: none;">A335 121.4581 30.6888&#10;A336 121.5875 30.6744&#10;A319 121.5883 30.6331</textarea>
+                <textarea id="textarea" cols="40" rows="20" style="resize: none;">A1 121.4581 30.6888&#10;A2 121.5875 30.6744&#10;A3 121.5883 30.6331</textarea>
             </div>
             <div style="float:right;"><button onclick="drawsite()" style="height: 30px;">点集合</button></div>
             <div><button onclick="drawpolygon()" style="height: 30px;">多边形</button></div>
@@ -132,14 +131,16 @@
     <!-- <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script> -->
     <script src="contourmap/kriging2.js"></script>
     <script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
     <script src="contourmap/demo.js"></script>
+
+        <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet-styleeditor@latest/dist/javascript/Leaflet.StyleEditor.min.js"></script> -->
+    
     <script>
             //---------------------------------------------------------------------------------------------------------------主程序
             var TargetN;//设置拟绘制色带个数
             var data;     //声明全局，存放json对象;
             var xiangmu;  //声明全局，存放项目名序列;
-
 
             var xrange = [];
             var yrange = [];
