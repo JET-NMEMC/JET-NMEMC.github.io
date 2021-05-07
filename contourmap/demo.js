@@ -83,48 +83,38 @@ var Graticulelayer = L.latlngGraticule({
   zoomInterval: [
     { start: 2, end: 3, interval: 30 },
     { start: 4, end: 4, interval: 10 },
-    { start: 5, end: 7, interval: 5 },
-    { start: 8, end: 10, interval: 1 }
+    { start: 5, end: 6, interval: 5 },
+    { start: 7, end: 8, interval: 2 },
+    { start: 9, end: 10, interval: 1 },
+    { start: 11, end: 12, interval: 0.5 }
   ]
 })
 layerControl.addOverlay(Graticulelayer, '经纬网');
+
 // -------------------------------------------------------------------添加绘图按钮
-map.pm.setLang('zh');
-var drawct = map.pm.addControls({
+// map.pm.setLang('zh');
+// var drawct = map.pm.addControls({
+//   position: 'bottomleft',
+//   drawCircle: false,
+//   drawCircleMarker: false,
+// });
+// map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
+
+map.pm.addControls({
   position: 'bottomleft',
   drawCircle: false,
   drawCircleMarker: false,
 });
-map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
 
-//Initialize the StyleEditor
-// var styleEditor = L.control.styleEditor({
-//   position: "topleft",
-//   useGrouping: false,
-//   // colorRamp: ['#1abc9c', '#2ecc71', '#3498db'],
-//   // markers: ['circle-stroked', 'circle', 'square-stroked', 'square'],
-//   // showTooltip: false,
-
-//   //openOnLeafletDraw: true,
-// });
-// map.addControl(styleEditor);
-
-let styleEditor = L.control.styleEditor({
-  position: 'topleft',
-  colorRamp: ['#1abc9c', '#2ecc71', '#3498db'],
-  markers: ['circle-stroked', 'circle', 'square-stroked', 'square'],
+var styleEditor = L.control.styleEditor({
+  position: "bottomleft",
+  colorRamp: ['#007FFF','#7400A1','#3CB371', '#7B68EE','#0000CD','#C71585','#4169E1','#22C32E','#FFFF00','#E60000'],
   showTooltip: false,
-  ignoreLayerTypes :["Marker"],
+  useGrouping: true,
+  defaultMarkerIcon:'circle',
+  // ignoreLayerTypes :["Marker"],
 });
 map.addControl(styleEditor);
-
-// map.pm.addControls({
-//   drawMarker: true,
-//   drawPolygon: true,
-//   editPolygon: true,
-//   drawSingleline: true,
-//   deleteLayer: true,
-// });
 
 
 // map.on('pm:drawstart', ({ workingLayer }) => {  
@@ -132,8 +122,9 @@ map.addControl(styleEditor);
 //    console.log(e);
 //    });
 //  });
-var basedata=new L.featureGroup();
-layerControl.addOverlay(basedata, "临时");
+
+var basedata=new L.layerGroup();
+layerControl.addOverlay(basedata, "临时绘图");
 
 map.on(('pm:create'),e=>{
   // ||'pm:update'
@@ -141,19 +132,24 @@ map.on(('pm:create'),e=>{
 	console.log(e);
   switch(e.shape) {
     case 'Polygon':
-      var latbound=e.layer._bounds._northEast.lat.toFixed(6) + '-' + e.layer._bounds._southWest.lat.toFixed(6);
-      var lngbound=e.layer._bounds._northEast.lng.toFixed(6) + '-' + e.layer._bounds._southWest.lng.toFixed(6);
+      var latbound=e.layer._bounds._southWest.lat.toFixed(6) + '-' + e.layer._bounds._northEast.lat.toFixed(6);
+      var lngbound=e.layer._bounds._southWest.lng.toFixed(6) + '-' + e.layer._bounds._northEast.lng.toFixed(6);
       e.layer.bindPopup("Polygon<br>纬度范围："+latbound+"<br>经度范围："+lngbound);
-      // console.log(e);
+      // e.layer.bindPopup("Polygon<br>纬度范围："+latbound+"<br>经度范围："+lngbound+"<br>"+e.layer._latlngs);
        break;
     case 'Marker':
-      e.layer.bindPopup("Marker");
+      var location=e.marker._latlng;
+      e.layer.bindPopup("Marker<br>"+location);
        break;
     case 'Line':
-      e.layer.bindPopup("Line");
+      var latbound=e.layer._bounds._southWest.lat.toFixed(6) + '-' + e.layer._bounds._northEast.lat.toFixed(6);
+      var lngbound=e.layer._bounds._southWest.lng.toFixed(6) + '-' + e.layer._bounds._northEast.lng.toFixed(6);
+      e.layer.bindPopup("Line<br>纬度范围："+latbound+"<br>经度范围："+lngbound);
        break;
     case 'Rectangle':
-      e.layer.bindPopup("Rectangle");
+      var latbound=e.layer._bounds._southWest.lat.toFixed(6) + '-' + e.layer._bounds._northEast.lat.toFixed(6);
+      var lngbound=e.layer._bounds._southWest.lng.toFixed(6) + '-' + e.layer._bounds._northEast.lng.toFixed(6);
+      e.layer.bindPopup("Rectangle<br>纬度范围："+latbound+"<br>经度范围："+lngbound);
        break;
     default:
       e.layer.bindPopup("不知道你画了个啥");
@@ -164,13 +160,6 @@ map.on(('pm:create'),e=>{
 //   // console.log(e);
 //   L.popup().setLatLng(e.latlng).setContent(e.latlng.toString()).openOn(map) //显示鼠标点击位置的经纬度
 // })
-// //双击添加注记
-// map.on('dblclick',function (e){
-// //  L.marker(e.latlng).addTo(map)
-// } )
-
-
-
 
 // 添加测量按钮
 var measureControl = new L.Control.Measure({
@@ -257,7 +246,6 @@ function msg(text) {
   $('#ShowDiv').delay(1500).slideUp();
 };
 
-
 //-------------------------------------------配色方案，可自定义添加新行
 const colordatabase = new Object();
 colordatabase.bgyr = [
@@ -304,10 +292,8 @@ colordatabase.div_greenred = [
 
 function coord2shuzu(id) {
   var text1 = document.getElementById(id).value;
-  text1 = text1.trim();
+  text1 = text1.trim();//去除字符串最前和最后的空白
   var yyy = text1.split(/[\n]/); //按行分割
-  // console.log("yyy类型:"+typeof yyy);
-  // console.log(yyy);
   var shuju = [] //行内分割，写入新数组
   for (var i = 0; i < yyy.length; i++) {
     // shuju[i] = yyy[i].split(",");
