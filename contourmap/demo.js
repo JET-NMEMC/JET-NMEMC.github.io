@@ -101,13 +101,13 @@ layerControl.addOverlay(Graticulelayer, '经纬网');
 // map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
 
 map.pm.addControls({
-  position: 'bottomleft',
+  position: 'topleft',
   drawCircle: false,
   drawCircleMarker: false,
 });
 
 var styleEditor = L.control.styleEditor({
-  position: "bottomleft",
+  position: "topleft",
   colorRamp: ['#007FFF','#7400A1','#3CB371', '#7B68EE','#0000CD','#C71585','#4169E1','#22C32E','#FFFF00','#E60000'],
   showTooltip: false,
   useGrouping: true,
@@ -163,7 +163,7 @@ map.on(('pm:create'),e=>{
 
 // 添加测量按钮
 var measureControl = new L.Control.Measure({
-  position: 'bottomleft',
+  position: 'topleft',
   primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
   primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
 });
