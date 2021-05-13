@@ -55,7 +55,7 @@ a {
 #showtools {
     position: fixed;
     top:1%;
-    left: 15%;
+    left: 20%;
     border:1px solid rgb(0, 0, 0);
     background-color:#f9f9f9;
     padding: 10px 10px;
@@ -66,15 +66,17 @@ a {
 }
 #select {
     position:fixed;    
-    top: 10%;
-    left:1%;
+    top: 10px;
+    left: 80%;
     /* display: inline-block; */
-    display: inline;
-    padding: 12px 12px;
-    margin: 10px 0;
-    color: rgb(31, 28, 28);
-    text-decoration: none;
+    /* display: inline; */
+    padding: 12px 2px;
+    /* margin: 10px 0; */
+    color: rgb(0, 0, 0);
+    /* text-decoration: none; */
     font-size: 18px;
+    text-align: center;
+    text-align-last:center;
     letter-spacing: 2px;
     border-radius: 20px;
     background-color: #85FFBD;
