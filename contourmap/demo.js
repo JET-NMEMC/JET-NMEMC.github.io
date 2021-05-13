@@ -22,29 +22,31 @@ function initDemoMap() {
   });
   var tianditu_ter = L.tileLayer("http://t0.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
   });
+  var gugedianzi=L.tileLayer("http://mt0.google.cn/vt/lyrs=m@160000000&hl=zh-CN&gl=CN&src=app&y={y}&x={x}&z={z}&s=Ga",{    
+  });
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri影像": Esri_WorldImagery,
     "天地图影像": tianditu_img,
     "天地图地形": tianditu_ter,
-    "Geoq暖色": warm,
-    "Geoq水系": HydroMap,
+    "Geoq暖色火星": warm,
+    "Geoq水系火星": HydroMap,
+    // "谷歌地图":gugedianzi
     // "Jawg地形": Jawg_Terrain,
   };
 
-  var tianditu_label1 = L.tileLayer("http://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+  var tianditu_矢量注记 = L.tileLayer("http://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
   });
-  var tianditu_label2 = L.tileLayer("http://t0.tianditu.gov.cn/cia_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cia&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+  var tianditu_地形注记 = L.tileLayer("http://t0.tianditu.gov.cn/cta_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cta&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
   });
-  var tianditu_label3 = L.tileLayer("http://t0.tianditu.gov.cn/eva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=eva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+  var tianditu_全球境界 = L.tileLayer("http://t0.tianditu.gov.cn/ibo_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ibo&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
   });
 
   var overlayLayers = {
-    "天地图注记": tianditu_label1
+    "天地图矢量注记": tianditu_矢量注记,
+    "天地图地形注记": tianditu_地形注记,
+    "天地图全球境界": tianditu_全球境界,
   }
-  var baseLayers2 = {
-    // "海洋地理":Esri_OceanBasemap,
-  };
 
   var map = L.map("map", {
     layers: [Esri_WorldImagery],
@@ -53,7 +55,7 @@ function initDemoMap() {
 
   var layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
   map.setView([37, 117], 4);
-  // var layerControl2 = L.control.layers(baseLayers2);
+  // var layerControl2 = L.control.layers(baseLayers);
   // layerControl2.addTo(map);
   return {
     map: map,
@@ -130,34 +132,33 @@ map.on(('pm:create'),e=>{
   // ||'pm:update'
   e.layer.addTo(basedata);
 	console.log(e);
-  switch(e.shape) {
-    case 'Polygon':
-      var latbound=e.layer._bounds._southWest.lat.toFixed(6) + '-' + e.layer._bounds._northEast.lat.toFixed(6);
-      var lngbound=e.layer._bounds._southWest.lng.toFixed(6) + '-' + e.layer._bounds._northEast.lng.toFixed(6);
-      e.layer.bindPopup("Polygon<br>纬度范围："+latbound+"<br>经度范围："+lngbound);
-      // e.layer.bindPopup("Polygon<br>纬度范围："+latbound+"<br>经度范围："+lngbound+"<br>"+e.layer._latlngs);
-       break;
-    case 'Marker':
-      var location=e.marker._latlng;
-      e.layer.bindPopup("Marker<br>"+location);
-       break;
-    case 'Line':
-      var latbound=e.layer._bounds._southWest.lat.toFixed(6) + '-' + e.layer._bounds._northEast.lat.toFixed(6);
-      var lngbound=e.layer._bounds._southWest.lng.toFixed(6) + '-' + e.layer._bounds._northEast.lng.toFixed(6);
-      e.layer.bindPopup("Line<br>纬度范围："+latbound+"<br>经度范围："+lngbound);
-       break;
-    case 'Rectangle':
-      var latbound=e.layer._bounds._southWest.lat.toFixed(6) + '-' + e.layer._bounds._northEast.lat.toFixed(6);
-      var lngbound=e.layer._bounds._southWest.lng.toFixed(6) + '-' + e.layer._bounds._northEast.lng.toFixed(6);
-      e.layer.bindPopup("Rectangle<br>纬度范围："+latbound+"<br>经度范围："+lngbound);
-       break;
-    default:
-      e.layer.bindPopup("不知道你画了个啥");
-  }
+  // switch(e.shape) {
+  //   case 'Polygon':
+  //     var latbound=e.layer._bounds._southWest.lat.toFixed(6) + '-' + e.layer._bounds._northEast.lat.toFixed(6);
+  //     var lngbound=e.layer._bounds._southWest.lng.toFixed(6) + '-' + e.layer._bounds._northEast.lng.toFixed(6);
+  //     e.layer.bindPopup("Polygon<br>纬度范围："+latbound+"<br>经度范围："+lngbound);
+  //      break;
+  //   case 'Marker':
+  //     var location=e.marker._latlng;
+  //     e.layer.bindPopup("Marker<br>"+location);
+  //      break;
+  //   case 'Line':
+  //     var latbound=e.layer._bounds._southWest.lat.toFixed(6) + '-' + e.layer._bounds._northEast.lat.toFixed(6);
+  //     var lngbound=e.layer._bounds._southWest.lng.toFixed(6) + '-' + e.layer._bounds._northEast.lng.toFixed(6);
+  //     e.layer.bindPopup("Line<br>纬度范围："+latbound+"<br>经度范围："+lngbound);
+  //      break;
+  //   case 'Rectangle':
+  //     var latbound=e.layer._bounds._southWest.lat.toFixed(6) + '-' + e.layer._bounds._northEast.lat.toFixed(6);
+  //     var lngbound=e.layer._bounds._southWest.lng.toFixed(6) + '-' + e.layer._bounds._northEast.lng.toFixed(6);
+  //     e.layer.bindPopup("Rectangle<br>纬度范围："+latbound+"<br>经度范围："+lngbound);
+  //      break;
+  //   default:
+  //     e.layer.bindPopup("不知道你画了个啥");
+  // }
 });
 
 // map.on('click',function (e) {
-//   // console.log(e);
+//   console.log(e);
 //   L.popup().setLatLng(e.latlng).setContent(e.latlng.toString()).openOn(map) //显示鼠标点击位置的经纬度
 // })
 
