@@ -537,3 +537,4 @@ function dragFunc(id) {
 };
 dragFunc("showsetting");
 dragFunc("showtools");
+dragFunc("select");
