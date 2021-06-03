@@ -119,6 +119,8 @@ var styleEditor = L.control.styleEditor({
 });
 map.addControl(styleEditor);
 
+// var el = document.getElementsByClassName('foo bar')
+
 
 // map.on('pm:drawstart', ({ workingLayer }) => {  
 //   workingLayer.on('pm:vertexadded', e => {  
@@ -163,14 +165,6 @@ map.on(('pm:create'), e => {
 //   L.popup().setLatLng(e.latlng).setContent(e.latlng.toString()).openOn(map) //显示鼠标点击位置的经纬度
 // })
 
-// 添加测量按钮
-var measureControl = new L.Control.Measure({
-  position: 'topleft',
-  primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
-  primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
-});
-measureControl.addTo(map);
-
 // 移动端定位位置
 if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
@@ -186,7 +180,16 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
     drawCircle:true,
 
   }).addTo(map);
-}
+};
+
+
+// 添加测量按钮
+var measureControl = new L.Control.Measure({
+  position: 'topleft',
+  primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
+  primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
+});
+measureControl.addTo(map);
 //移动端定位位置
 // if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 //   map.locate({
