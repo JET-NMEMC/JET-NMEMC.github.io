@@ -314,6 +314,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	}
 
 .leaflet-touch .leaflet-bar a {
+	/* width: 30px;
+	height: 30px; */
 	width: 3rem;
 	height: 3rem;
 	line-height: 30px;
