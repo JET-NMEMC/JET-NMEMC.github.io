@@ -1,8 +1,3 @@
-/* 设置工具栏宽度 */
-:root {
-  --awidth:5rem;
-  /* --awidth:30px; */
-}
 /* 调整小圆圈格式 */
 .marker-icon,
 .marker-icon:focus {
