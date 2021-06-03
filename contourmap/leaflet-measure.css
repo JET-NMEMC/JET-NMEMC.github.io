@@ -46,8 +46,10 @@
 	border-radius:2px
 }
 .leaflet-retina .leaflet-control-measure .leaflet-control-measure-toggle,.leaflet-retina .leaflet-control-measure .leaflet-control-measure-toggle:hover {
-	width:30px;
-	height:30px;
+	width:3rem;
+	height:3rem;
+	/* width:5rem;
+	height:5rem; */
 	/* background-image:url(assets/rulers_@2X.png) */
 	background-image:url(icon2/工程绘图.png);
 }
