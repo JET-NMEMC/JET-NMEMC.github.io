@@ -1,6 +1,7 @@
 /* 设置工具栏宽度 */
 :root {
-  --awidth:30px;
+  --awidth:5rem;
+  /* --awidth:30px; */
 }
 /* 调整小圆圈格式 */
 .marker-icon,
@@ -89,7 +90,7 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  background-size: contain;
+  background-size: 80%;
   background-repeat: no-repeat;
   background-position: center center;
 }
