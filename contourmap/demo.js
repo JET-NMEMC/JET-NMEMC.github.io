@@ -170,14 +170,53 @@ var measureControl = new L.Control.Measure({
 });
 measureControl.addTo(map);
 
-var lc = L.control.locate({
-  position: 'topleft',
-  strings: {
-      title: "Show me where I am, yo!"
-  }
-}).addTo(map);
+var options2 = {
+  enableHighAccuracy: true,
+  timeout: 5000,
+  maximumAge: 0
+};
 
-// //移动端定位位置
+function success(pos) {
+  var crd = pos.coords;
+  console.log('Your current position is:');
+  console.log('Latitude : ' + crd.latitude);
+  console.log('Longitude: ' + crd.longitude);
+  console.log('More or less ' + crd.accuracy + ' meters.');
+  L.marker([crd.latitude,crd.longitude]).addTo(map).bindPopup("你在这里");
+};
+
+function error(err) {
+  console.warn('ERROR(' + err.code + '): ' + err.message);
+};
+
+navigator.geolocation.getCurrentPosition(success, error, options2);
+
+
+// if(navigator.geolocation) {
+//   var id = navigator.geolocation.watchPosition(function(position){
+//       console.log("纬度" + position.coords.latitude + "经度" + position.coords.longitude)
+//   }, function(err){
+//       switch(err.code) {
+//           case err.PERMISSION_DENIED: return "PERMISSION_DENIED";
+//           case err.POSITION_UNAVAILABLE: return "POSITION_UNAVAILABLE";
+//           case err.TIMEOUT: return "TIMEOUT";
+//           default: return "UNKNOWN_ERROR";
+//       }
+//   })
+//   // navigator.geolocation.clearWatch(id); 停止监视
+// }else {
+//   console.log("你的浏览器不支持geolocation");
+// }
+
+
+// var lc = L.control.locate({
+//   position: 'topleft',
+//   strings: {
+//       title: "Show me where I am, yo!"
+//   }
+// }).addTo(map);
+
+//移动端定位位置
 // if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 //   map.locate({
 //     setView: true,
