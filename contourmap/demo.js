@@ -170,22 +170,29 @@ var measureControl = new L.Control.Measure({
 });
 measureControl.addTo(map);
 
-//移动端定位位置
-if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-  map.locate({
-    setView: true,
-    maxZoom: 5
-  });
-  map.on('locationfound', function (e) {
-    var radius = e.accuracy / 2;
-    L.marker(e.latlng).addTo(map).bindPopup("你在这里");
-    L.circle(e.latlng, radius).addTo(map);
-    console.log('定位成功=====>', e);
-  });
-  map.on('locationerror', function (e) {
-    console.log('定位出错=====>', e);
-  });
-};
+var lc = L.control.locate({
+  position: 'topleft',
+  strings: {
+      title: "Show me where I am, yo!"
+  }
+}).addTo(map);
+
+// //移动端定位位置
+// if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+//   map.locate({
+//     setView: true,
+//     maxZoom: 5
+//   });
+//   map.on('locationfound', function (e) {
+//     var radius = e.accuracy / 2;
+//     L.marker(e.latlng).addTo(map).bindPopup("你在这里");
+//     L.circle(e.latlng, radius).addTo(map);
+//     console.log('定位成功=====>', e);
+//   });
+//   map.on('locationerror', function (e) {
+//     console.log('定位出错=====>', e);
+//   });
+// };
 
 // $.getJSON("https://danwild.github.io/leaflet-velocity/wind-gbr.json", function (data) {
 //   var velocityLayer = L.velocityLayer({
