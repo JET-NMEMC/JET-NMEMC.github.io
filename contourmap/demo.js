@@ -102,6 +102,13 @@ layerControl.addOverlay(Graticulelayer, '经纬网');
 //   drawCircleMarker: false,
 // });
 // map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
+// 添加测量按钮
+var measureControl = new L.Control.Measure({
+  position: 'topleft',
+  primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
+  primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
+});
+measureControl.addTo(map);
 
 map.pm.addControls({
   position: 'topleft',
@@ -183,13 +190,7 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 };
 
 
-// 添加测量按钮
-var measureControl = new L.Control.Measure({
-  position: 'topleft',
-  primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
-  primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
-});
-measureControl.addTo(map);
+
 //移动端定位位置
 // if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 //   map.locate({
