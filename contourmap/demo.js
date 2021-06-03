@@ -2,6 +2,7 @@ function initDemoMap() {
   var Esri_WorldImagery = L.tileLayer(
     "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     {
+      maxZoom: 17, 
       attribution:
         "&copy; Esri"
       // attribution:
@@ -22,7 +23,7 @@ function initDemoMap() {
   });
   var tianditu_ter = L.tileLayer("http://t0.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
   });
-  var gugedianzi=L.tileLayer("http://mt0.google.cn/vt/lyrs=m@160000000&hl=zh-CN&gl=CN&src=app&y={y}&x={x}&z={z}&s=Ga",{    
+  var gugedianzi = L.tileLayer("http://mt0.google.cn/vt/lyrs=m@160000000&hl=zh-CN&gl=CN&src=app&y={y}&x={x}&z={z}&s=Ga", {
   });
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
@@ -110,10 +111,10 @@ map.pm.addControls({
 
 var styleEditor = L.control.styleEditor({
   position: "topleft",
-  colorRamp: ['#007FFF','#7400A1','#3CB371', '#7B68EE','#0000CD','#C71585','#4169E1','#22C32E','#FFFF00','#E60000'],
+  colorRamp: ['#007FFF', '#7400A1', '#3CB371', '#7B68EE', '#0000CD', '#C71585', '#4169E1', '#22C32E', '#FFFF00', '#E60000'],
   showTooltip: false,
   useGrouping: true,
-  defaultMarkerIcon:'circle',
+  defaultMarkerIcon: 'circle',
   // ignoreLayerTypes :["Marker"],
 });
 map.addControl(styleEditor);
@@ -125,13 +126,13 @@ map.addControl(styleEditor);
 //    });
 //  });
 
-var basedata=new L.layerGroup();
+var basedata = new L.layerGroup();
 layerControl.addOverlay(basedata, "临时绘图");
 
-map.on(('pm:create'),e=>{
+map.on(('pm:create'), e => {
   // ||'pm:update'
   e.layer.addTo(basedata);
-	console.log(e);
+  console.log(e);
   // switch(e.shape) {
   //   case 'Polygon':
   //     var latbound=e.layer._bounds._southWest.lat.toFixed(6) + '-' + e.layer._bounds._northEast.lat.toFixed(6);
@@ -170,52 +171,22 @@ var measureControl = new L.Control.Measure({
 });
 measureControl.addTo(map);
 
-var options2 = {
-  enableHighAccuracy: true,
-  timeout: 5000,
-  maximumAge: 0
-};
+// 移动端定位位置
+if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  var lc = L.control.locate({
+    position: 'topleft',    
+    // strings: {
+    //   title: "Show me where I am, yo!"
+    // },
+    locateOptions: {
+      maxZoom: 10
+    },
+    initialZoomLevel:false,
+    showCompass:true,
+    drawCircle:true,
 
-function success(pos) {
-  var crd = pos.coords;
-  console.log('Your current position is:');
-  console.log('Latitude : ' + crd.latitude);
-  console.log('Longitude: ' + crd.longitude);
-  console.log('More or less ' + crd.accuracy + ' meters.');
-  L.marker([crd.latitude,crd.longitude]).addTo(map).bindPopup("你在这里");
-};
-
-function error(err) {
-  console.warn('ERROR(' + err.code + '): ' + err.message);
-};
-
-navigator.geolocation.getCurrentPosition(success, error, options2);
-
-
-// if(navigator.geolocation) {
-//   var id = navigator.geolocation.watchPosition(function(position){
-//       console.log("纬度" + position.coords.latitude + "经度" + position.coords.longitude)
-//   }, function(err){
-//       switch(err.code) {
-//           case err.PERMISSION_DENIED: return "PERMISSION_DENIED";
-//           case err.POSITION_UNAVAILABLE: return "POSITION_UNAVAILABLE";
-//           case err.TIMEOUT: return "TIMEOUT";
-//           default: return "UNKNOWN_ERROR";
-//       }
-//   })
-//   // navigator.geolocation.clearWatch(id); 停止监视
-// }else {
-//   console.log("你的浏览器不支持geolocation");
-// }
-
-
-// var lc = L.control.locate({
-//   position: 'topleft',
-//   strings: {
-//       title: "Show me where I am, yo!"
-//   }
-// }).addTo(map);
-
+  }).addTo(map);
+}
 //移动端定位位置
 // if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 //   map.locate({
@@ -565,21 +536,21 @@ function distance_no_sqrt(p1, p2) {
 //---------------------------------------------------------------------------可拖动
 function dragFunc(id) {
   var Drag = document.getElementById(id);
-  Drag.onmousedown = function(event) {
+  Drag.onmousedown = function (event) {
+    var ev = event || window.event;
+    event.stopPropagation();
+    var disX = ev.clientX - Drag.offsetLeft;
+    var disY = ev.clientY - Drag.offsetTop;
+    document.onmousemove = function (event) {
       var ev = event || window.event;
-      event.stopPropagation();
-      var disX = ev.clientX - Drag.offsetLeft;
-      var disY = ev.clientY - Drag.offsetTop;
-      document.onmousemove = function(event) {
-          var ev = event || window.event;
-          Drag.style.left = ev.clientX - disX + "px";
-          Drag.style.top = ev.clientY - disY + "px";
-          Drag.style.cursor = "move";
-      };
+      Drag.style.left = ev.clientX - disX + "px";
+      Drag.style.top = ev.clientY - disY + "px";
+      Drag.style.cursor = "move";
+    };
   };
-  Drag.onmouseup = function() {
-      document.onmousemove = null;
-      this.style.cursor = "default";
+  Drag.onmouseup = function () {
+    document.onmousemove = null;
+    this.style.cursor = "default";
   };
 };
 dragFunc("showsetting");
