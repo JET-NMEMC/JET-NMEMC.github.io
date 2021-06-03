@@ -1,6 +1,7 @@
 /* 设置工具栏宽度 */
 :root {
-  --awidth:30px;
+  --awidth:50px;
+  /* --awidth:5rem; */
 }
 
 .marker-icon,
@@ -78,6 +79,8 @@
 
 .leaflet-pm-toolbar .button-container a.leaflet-buttons-control-button {
   border-radius: 0;  
+  /* width: 5rem;
+  height: 5rem;  */
   width: var(--awidth);
   height: var(--awidth); 
 }
