@@ -172,7 +172,7 @@ map.on(('pm:create'), e => {
 //   L.popup().setLatLng(e.latlng).setContent(e.latlng.toString()).openOn(map) //显示鼠标点击位置的经纬度
 // })
 
-移动端定位位置
+
 if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
     position: 'topleft', 
