@@ -189,6 +189,7 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
     //当用户点击控件时要做什么。 有 inView、inViewNotFollowing 和 outOfView 三个选项。 可能的值是 stop 和 setView，或要继承的行为的名称。
   }).addTo(map);
   // lc.start();
+  map.locate();
 };
 
 
