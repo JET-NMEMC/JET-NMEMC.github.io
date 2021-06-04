@@ -201,7 +201,7 @@ L.control.locate({
   cacheLocation: true,
   position: "topleft",
   flyTo: true,
-  keepCurrentZoomLevel: true,
+  keepCurrentZoomLevel: false,
   circleStyle: {
     interactive: false
   },
