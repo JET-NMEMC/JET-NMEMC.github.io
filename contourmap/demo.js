@@ -172,60 +172,59 @@ map.on(('pm:create'), e => {
 //   L.popup().setLatLng(e.latlng).setContent(e.latlng.toString()).openOn(map) //显示鼠标点击位置的经纬度
 // })
 
-// 移动端定位位置
-// if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-//   var lc = L.control.locate({
-//     position: 'topleft', 
-//     locateOptions: {maxZoom: 17},
-//     follow: true,
-//     continueActive : true,
-//     initialZoomLevel : false,
-//     icon : 'fa fa-location-arrow',// 图标类，fa-location-arrow 或 fa-map-marker
-//     onLocationError: function(err) {alert(err.message)},  // define an error callback function
-//     // showCompass:true,
-//     // drawCircle:true,
-//     setView:'always',//Set the map view (zoom and pan) to the user's location as it updates. Options are false, 'once', 'always', 'untilPan', or 'untilPanOrZoom'
-//     clickBehavior:{inView: 'stop', outOfView: 'setView', inViewNotFollowing: 'inView'}
-//     //当用户点击控件时要做什么。 有 inView、inViewNotFollowing 和 outOfView 三个选项。 可能的值是 stop 和 setView，或要继承的行为的名称。
-//   }).addTo(map);
-//   // lc.start();
-//   // map.locate();
-// };
+移动端定位位置
+if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  var lc = L.control.locate({
+    position: 'topleft', 
+    locateOptions: {maxZoom: 17},
+    follow: true,
+    continueActive : true,
+    initialZoomLevel : false,
+    icon : 'fa fa-location-arrow',// 图标类，fa-location-arrow 或 fa-map-marker
+    onLocationError: function(err) {alert(err.message)},  // define an error callback function
+    // showCompass:true,
+    // drawCircle:true,
+    setView:'always',//Set the map view (zoom and pan) to the user's location as it updates. Options are false, 'once', 'always', 'untilPan', or 'untilPanOrZoom'
+    clickBehavior:{inView: 'stop', outOfView: 'setView', inViewNotFollowing: 'inView'}
+    //当用户点击控件时要做什么。 有 inView、inViewNotFollowing 和 outOfView 三个选项。 可能的值是 stop 和 setView，或要继承的行为的名称。
+  }).addTo(map);
+};
 
 
-L.control.locate({
-  // icon: "icon-gps_fixed",
-  icon : 'fa fa-location-arrow',
-  // iconLoading: "spinner icon-gps_fixed",
-  // setView: "untilPan",
-  cacheLocation: true,
-  position: "topleft",
-  // flyTo: true,
-  // keepCurrentZoomLevel: false,
-  circleStyle: {
-    interactive: false
-  },
-  markerStyle: {
-    interactive: true
-  },
-  metric: false,
-  strings: {
-    title: "My location",
-    popup: function(options) {
-      const loc = controls.locateCtrl._marker.getLatLng();
-      return `<div style="text-align: center;">You are within ${Number(options.distance).toLocaleString()} ${options.unit}<br>from <strong>${loc.lat.toFixed(6)}</strong>, <strong>${loc.lng.toFixed(6)}</strong></div>`;
-    }
-  },
-  locateOptions: {
-    enableHighAccuracy: true,
-    maxZoom: 17
-  },
-  onLocationError: function(e) {
-    hideLoader();
-    // document.querySelector(".leaflet-control-locate").getElementsByTagName("span")[0].className = "icon-gps_off";
-    alert(e.message);
-  }
-}).addTo(map);
+// L.control.locate({
+//   // icon: "icon-gps_fixed",
+//   icon : 'fa fa-location-arrow',
+//   // iconLoading: "spinner icon-gps_fixed",
+//   // setView: "untilPan",
+//   cacheLocation: true,
+//   position: "topleft",
+//   // flyTo: true,
+//   // keepCurrentZoomLevel: false,
+//   circleStyle: {
+//     interactive: false
+//   },
+//   markerStyle: {
+//     interactive: true
+//   },
+//   metric: false,
+//   strings: {
+//     title: "My location",
+//     popup: function(options) {
+//       const loc = controls.locateCtrl._marker.getLatLng();
+//       return `<div style="text-align: center;">You are within ${Number(options.distance).toLocaleString()} ${options.unit}<br>from <strong>${loc.lat.toFixed(6)}</strong>, <strong>${loc.lng.toFixed(6)}</strong></div>`;
+//     }
+//   },
+//   locateOptions: {
+//     enableHighAccuracy: true,
+//     maxZoom: 17
+//   },
+//   onLocationError: function(e) {
+//     hideLoader();
+//     // document.querySelector(".leaflet-control-locate").getElementsByTagName("span")[0].className = "icon-gps_off";
+//     alert(e.message);
+//   }
+// }).addTo(map);
+
 
 //移动端定位位置
 // if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
