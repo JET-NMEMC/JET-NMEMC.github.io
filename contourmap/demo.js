@@ -176,7 +176,9 @@ map.on(('pm:create'), e => {
 if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
     position: 'topleft', 
-    locateOptions: {maxZoom: 17},
+    locateOptions: {maxZoom: 17,
+      enableHighAccuracy: true,
+    },
     // follow: true,
     // continueActive : true,
     // initialZoomLevel : false,
