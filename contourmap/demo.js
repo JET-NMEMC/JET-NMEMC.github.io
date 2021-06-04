@@ -178,14 +178,17 @@ if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
     position: 'topleft', 
     locateOptions: {maxZoom: 17},
     follow: true,
-    initialZoomLevel:false,
+    continueActive : true,
+    initialZoomLevel : false,
+    icon : 'fa fa-location-arrow',// 图标类，fa-location-arrow 或 fa-map-marker
+    onLocationError: function(err) {alert(err.message)},  // define an error callback function
     // showCompass:true,
     // drawCircle:true,
     setView:'always',//Set the map view (zoom and pan) to the user's location as it updates. Options are false, 'once', 'always', 'untilPan', or 'untilPanOrZoom'
     clickBehavior:{inView: 'stop', outOfView: 'setView', inViewNotFollowing: 'inView'}
     //当用户点击控件时要做什么。 有 inView、inViewNotFollowing 和 outOfView 三个选项。 可能的值是 stop 和 setView，或要继承的行为的名称。
   }).addTo(map);
-  lc.start();
+  // lc.start();
 };
 
 
