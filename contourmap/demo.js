@@ -197,11 +197,11 @@ L.control.locate({
   // icon: "icon-gps_fixed",
   icon : 'fa fa-location-arrow',
   // iconLoading: "spinner icon-gps_fixed",
-  setView: "untilPan",
+  // setView: "untilPan",
   cacheLocation: true,
   position: "topleft",
-  flyTo: true,
-  keepCurrentZoomLevel: false,
+  // flyTo: true,
+  // keepCurrentZoomLevel: false,
   circleStyle: {
     interactive: false
   },
