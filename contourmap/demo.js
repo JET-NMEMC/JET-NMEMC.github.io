@@ -2,7 +2,7 @@ function initDemoMap() {
   var Esri_WorldImagery = L.tileLayer(
     "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     {
-      maxZoom: 17, 
+      maxZoom: 17,
       attribution:
         "&copy; Esri"
       // attribution:
@@ -19,17 +19,34 @@ function initDemoMap() {
   var warm = L.tileLayer("https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetWarm/MapServer/tile/{z}/{y}/{x}", {
     attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
   });
+  var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  });
+  var Jawg_Streets = L.tileLayer('https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
+    attribution: '<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    minZoom: 0,
+    maxZoom: 22,
+    subdomains: 'abcd',
+    accessToken: 'DGEPTrYpfvrfrjgNGAF1tziKZBqDBXP1ukNpvd7PEQ8tf6cvdMBI4Md4JetBfC7B'
+  });
   var tianditu_img = L.tileLayer("http://t0.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
   });
   var tianditu_ter = L.tileLayer("http://t0.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
   });
   var gugedianzi = L.tileLayer("http://mt0.google.cn/vt/lyrs=m@160000000&hl=zh-CN&gl=CN&src=app&y={y}&x={x}&z={z}&s=Ga", {
   });
+  var GoogleImage = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+			subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+		});
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri影像": Esri_WorldImagery,
     "天地图影像": tianditu_img,
-    "天地图地形": tianditu_ter,
+    "谷歌影像":GoogleImage,
+    // "天地图地形": tianditu_ter,
+    "OpenStreet": OpenStreetMap_Mapnik,
+    "JawgStreet":Jawg_Streets,
     "Geoq暖色火星": warm,
     "Geoq水系火星": HydroMap,
     // "谷歌地图":gugedianzi
@@ -45,7 +62,7 @@ function initDemoMap() {
 
   var overlayLayers = {
     "天地图矢量注记": tianditu_矢量注记,
-    "天地图地形注记": tianditu_地形注记,
+    "天地图道路注记": tianditu_地形注记,
     "天地图全球境界": tianditu_全球境界,
   }
 
@@ -89,7 +106,8 @@ var Graticulelayer = L.latlngGraticule({
     { start: 5, end: 6, interval: 5 },
     { start: 7, end: 8, interval: 2 },
     { start: 9, end: 10, interval: 1 },
-    { start: 11, end: 12, interval: 0.5 }
+    { start: 11, end: 12, interval: 0.5 },
+    { start: 13, end: 17, interval: 0.1 },
   ]
 })
 layerControl.addOverlay(Graticulelayer, '经纬网');
@@ -126,15 +144,8 @@ var styleEditor = L.control.styleEditor({
 });
 map.addControl(styleEditor);
 
-// var el = document.getElementsByClassName('foo bar')
 
-
-// map.on('pm:drawstart', ({ workingLayer }) => {  
-//   workingLayer.on('pm:vertexadded', e => {  
-//    console.log(e);
-//    });
-//  });
-
+//监听：创建图形时，添加到临时绘图图层
 var basedata = new L.layerGroup();
 layerControl.addOverlay(basedata, "临时绘图");
 
@@ -175,75 +186,18 @@ map.on(('pm:create'), e => {
 
 if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
-    position: 'topleft', 
-    locateOptions: {maxZoom: 17,
+    position: 'topleft',
+    locateOptions: {
+      maxZoom: 17,
       enableHighAccuracy: true,
     },
-    // follow: true,
-    // continueActive : true,
-    // initialZoomLevel : false,
-    icon : 'fa fa-location-arrow',// 图标类，fa-location-arrow 或 fa-map-marker
-    // onLocationError: function(err) {alert(err.message)},  // define an error callback function
-    // showCompass:true,
-    // drawCircle:true,
-    // setView:'always',//Set the map view (zoom and pan) to the user's location as it updates. Options are false, 'once', 'always', 'untilPan', or 'untilPanOrZoom'
-    // clickBehavior:{inView: 'stop', outOfView: 'setView', inViewNotFollowing: 'inView'}
-    //当用户点击控件时要做什么。 有 inView、inViewNotFollowing 和 outOfView 三个选项。 可能的值是 stop 和 setView，或要继承的行为的名称。
+    follow: true,
+    icon: 'fa fa-location-arrow',// 图标类，fa-location-arrow 或 fa-map-marker
+    cacheLocation: true,
+    onLocationError: function (err) { alert(err.message) },  // define an error callback function
+    onLocationFound: function (e) { console.log('定位成功=====>', e) },
   }).addTo(map);
 };
-
-
-// L.control.locate({
-//   // icon: "icon-gps_fixed",
-//   icon : 'fa fa-location-arrow',
-//   // iconLoading: "spinner icon-gps_fixed",
-//   // setView: "untilPan",
-//   cacheLocation: true,
-//   position: "topleft",
-//   // flyTo: true,
-//   // keepCurrentZoomLevel: false,
-//   circleStyle: {
-//     interactive: false
-//   },
-//   markerStyle: {
-//     interactive: true
-//   },
-//   metric: false,
-//   strings: {
-//     title: "My location",
-//     popup: function(options) {
-//       const loc = controls.locateCtrl._marker.getLatLng();
-//       return `<div style="text-align: center;">You are within ${Number(options.distance).toLocaleString()} ${options.unit}<br>from <strong>${loc.lat.toFixed(6)}</strong>, <strong>${loc.lng.toFixed(6)}</strong></div>`;
-//     }
-//   },
-//   locateOptions: {
-//     enableHighAccuracy: true,
-//     maxZoom: 17
-//   },
-//   onLocationError: function(e) {
-//     hideLoader();
-//     // document.querySelector(".leaflet-control-locate").getElementsByTagName("span")[0].className = "icon-gps_off";
-//     alert(e.message);
-//   }
-// }).addTo(map);
-
-
-//移动端定位位置
-// if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-//   map.locate({
-//     setView: true,
-//     maxZoom: 5
-//   });
-//   map.on('locationfound', function (e) {
-//     var radius = e.accuracy / 2;
-//     L.marker(e.latlng).addTo(map).bindPopup("你在这里");
-//     L.circle(e.latlng, radius).addTo(map);
-//     console.log('定位成功=====>', e);
-//   });
-//   map.on('locationerror', function (e) {
-//     console.log('定位出错=====>', e);
-//   });
-// };
 
 // $.getJSON("https://danwild.github.io/leaflet-velocity/wind-gbr.json", function (data) {
 //   var velocityLayer = L.velocityLayer({
@@ -355,7 +309,6 @@ function coord2shuzu(id) {
   var yyy = text1.split(/[\n]/); //按行分割
   var shuju = [] //行内分割，写入新数组
   for (var i = 0; i < yyy.length; i++) {
-    // shuju[i] = yyy[i].split(",");
     shuju[i] = yyy[i].split(/,|，|\s+/);
   };
   return shuju;
@@ -404,27 +357,19 @@ function autobreak(Tvaluemin, Tvaluemax, TargetN) {
   }
   var tttmax = Math.floor(Tvaluemax / DX);
   var tttmin = Math.floor(Tvaluemin / DX);
-
   // console.log("step=:"+DX);
   nnn = getvaluenumber(DX);
-
   var levelMax = tttmax * DX + DX;
   levelMax = Number(levelMax.toFixed(nnn));
-
   var levelMin = tttmin * DX;
   levelMin = Number(levelMin.toFixed(nnn));
-
   var levelnum = (levelMax - levelMin) / DX;
   levelnum = Math.round(levelnum);
-
   var percentage = (100 * (Tvaluemax - Tvaluemin) / (levelMax - levelMin)).toFixed(1);
-
   var breaks = [];
-
   for (var jj = 0; jj < levelnum + 1; jj++) {
     breaks.push(Number(levelMin + jj * DX).toFixed(nnn));
   }
-
   return {
     // "Tvaluemin":Tvaluemin,
     // "Tvaluemax":Tvaluemax,
@@ -436,7 +381,6 @@ function autobreak(Tvaluemin, Tvaluemax, TargetN) {
     "breaks": breaks,
   }
 }
-
 //------------------------------------------------------------------------------将breaks映射到颜色---------
 function interp1(colorSet, countourSet) { //x是样库x，y是样品库y,xi是待插值点
   var rgblist = ["r", "g", "b"];
@@ -444,13 +388,11 @@ function interp1(colorSet, countourSet) { //x是样库x，y是样品库y,xi是�
 
   var xi = countourSet.breaks;
   // console.log("预测序列:", xi);
-
   var x = [];
   for (var i = 0; i < colorSet.length; i++) {
     x.push(countourSet.levelMin + (countourSet.levelMax - countourSet.levelMin) * colorSet[i].weight / 100);
   };
   // console.log("配色的映射值", x);
-
   for (k = 0; k < rgblist.length; k++) {
     var y = [];
     for (var i = 0; i < colorSet.length; i++) {
@@ -521,11 +463,9 @@ function Graham_scan(pointSet, ch) {
       k = i;
     }
   }
-
   tmp = pointSet[0];
   pointSet[0] = pointSet[k];
   pointSet[k] = tmp;
-
   use = n;
   for (i = 1; i < use - 1; i++) {
     k = i;
