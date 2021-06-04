@@ -176,7 +176,8 @@ map.on(('pm:create'), e => {
 if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
     position: 'topleft', 
-    locateOptions: {maxZoom: 14},
+    locateOptions: {maxZoom: 17},
+    follow: true,
     initialZoomLevel:false,
     // showCompass:true,
     // drawCircle:true,
