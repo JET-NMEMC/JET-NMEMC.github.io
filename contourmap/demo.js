@@ -175,18 +175,16 @@ map.on(('pm:create'), e => {
 // 移动端定位位置
 if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
-    position: 'topleft',    
-    // strings: {
-    //   title: "Show me where I am, yo!"
-    // },
-    locateOptions: {
-      maxZoom: 10
-    },
+    position: 'topleft', 
+    locateOptions: {maxZoom: 14},
     initialZoomLevel:false,
-    showCompass:true,
-    drawCircle:true,
-
+    // showCompass:true,
+    // drawCircle:true,
+    setView:'always',//Set the map view (zoom and pan) to the user's location as it updates. Options are false, 'once', 'always', 'untilPan', or 'untilPanOrZoom'
+    clickBehavior:{inView: 'stop', outOfView: 'setView', inViewNotFollowing: 'inView'}
+    //当用户点击控件时要做什么。 有 inView、inViewNotFollowing 和 outOfView 三个选项。 可能的值是 stop 和 setView，或要继承的行为的名称。
   }).addTo(map);
+  lc.start();
 };
 
 
