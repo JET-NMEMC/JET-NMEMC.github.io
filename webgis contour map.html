@@ -6,13 +6,13 @@
     if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
         machine = "mobile";
         if (window.screen.width>window.screen.height){
-            machineStyle="hengping"
+            machineStyle="hengping-mobile"
             var offWidth = window.screen.height / 50; 
             document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px'; 
             console.log(offWidth + 'px');
         }
         else{
-            machineStyle="shuping" 
+            machineStyle="shuping-mobile" 
             var offWidth = window.screen.height / 40;
             document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px';
             console.log(offWidth + 'px');
