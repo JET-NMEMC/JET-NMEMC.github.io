@@ -200,7 +200,7 @@ L.control.locate({
   setView: "untilPan",
   cacheLocation: true,
   position: "topleft",
-  flyTo: false,
+  flyTo: true,
   keepCurrentZoomLevel: true,
   circleStyle: {
     interactive: false
@@ -218,11 +218,11 @@ L.control.locate({
   },
   locateOptions: {
     enableHighAccuracy: true,
-    maxZoom: 18
+    maxZoom: 17
   },
   onLocationError: function(e) {
     hideLoader();
-    document.querySelector(".leaflet-control-locate").getElementsByTagName("span")[0].className = "icon-gps_off";
+    // document.querySelector(".leaflet-control-locate").getElementsByTagName("span")[0].className = "icon-gps_off";
     alert(e.message);
   }
 }).addTo(map);
