@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="Openstreet Rigon/L.rigon.css" />
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <style>
+        .searchbox {
+            position: fixed;
+            right: 10px;
+            top: 10px;
+        }
+
+        .input {
+            width: 200px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .but {
+            width: 50px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div class="searchbox">
+        <input type="text" class="input" value="北京市" id="input">
+        <button class="but" onclick="run()">Go!</button>
+    </div>
+
+    <script>
+        var map = L.map('map').setView([37, 120], 7);
+
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map);
+
+        // L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        //     maxZoom: 17,
+        //     // zoomOffset: -1
+        // }).addTo(map);
+    </script>
+
+    <script>
+
+        function run() {
+            var regionname = $('#input').val();
+            console.log(regionname);
+            if (regionname.trim() != "") {
+                getrigon(regionname, 'YES')
+            }
+            else {
+                alert("请输入省/市/县的名称");
+                return
+            }
+        }
+
+        function getrigon(rigon_name, xiaji) {
+            var rigon_osm_id;
+            $.ajax({
+                url: "https://nominatim.openstreetmap.org/search.php?q=" + rigon_name + "&osmtype=R&polygon_geojson=1&format=jsonv2",
+                // data: { age: 20, sex: 'man' },
+                async: false,
+                dataType: 'json',
+                success: function (result) {
+                    result = result.filter(function (i) {
+                        return i.osm_type.includes('relation');
+                    });
+                    console.log(result);
+                    console.log("搜索结果：" + result[0].display_name);
+                    rigon_osm_id = result[0].osm_id;
+                    map.fitBounds(L.geoJSON(result[0].geojson).getBounds());
+                    if (xiaji != "YES") {
+                        L.geoJSON(result[0].geojson).addTo(map);
+                    }
+                }
+            });
+            console.log("地区代码：R" + rigon_osm_id);
+
+            if (xiaji != "YES") { }
+            else {
+
+                var aSearch = [];
+                $.ajax({
+                    url: "https://www.openstreetmap.org/api/0.6/relation/" + rigon_osm_id + "/full",
+                    // data: { age: 20, sex: 'man' },
+                    async: false,
+                    dataType: 'json',
+                    success: function (result) {
+                        aSearch = result.elements.filter(function (i) {
+                            return i.type.includes('relation');
+                        });
+                    }
+                });
+                console.log(aSearch);
+
+                if (aSearch.length == 1) {
+                    alert("搜索地区没有子区域,请取消选择'生成子区域'功能");
+                }
+
+                for (var i = 0; i < aSearch.length; i++) {
+                    var rigon_id = aSearch[i].id;
+                    if (rigon_id == rigon_osm_id) {
+                        continue
+                    } else {
+                        $.ajax({
+                            url: "https://nominatim.openstreetmap.org/details.php?osmtype=R&osmid=" + rigon_id + "&class=boundary&addressdetails=1&hierarchy=0&group_hierarchy=0&polygon_geojson=1&format=json",
+                            async: false,
+                            dataType: 'json',
+                            success: function (result) {
+                                console.log(result.localname, result.osm_id);
+                                L.geoJSON(result.geometry).bindPopup(result.localname).addTo(map);
+                                let markerIcon = L.divIcon({
+                                    html: result.localname,
+                                    className: 'text-stroke',
+                                    iconSize: [17 * (result.localname.length), 17]
+                                    // iconAnchor: [0, 0]
+                                });
+                                L.marker([result.centroid.coordinates[1], result.centroid.coordinates[0]], { icon: markerIcon }).addTo(map);
+                            }
+                        })
+                    }
+                }
+
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
