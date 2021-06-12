@@ -6,14 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!-- <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script> -->
-    <!-- <script src="https://github.com/gavinr/csv-to-geojson/blob/master/js/libs/CsvToJson.js"></script> -->
-    <!-- <script src="countour/CsvToJson.js"></script> -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="countour/demo.css" />
     <script src="https://npmcdn.com/csv2geojson@latest/csv2geojson.js"></script>
     <script src="https://d3js.org/d3-contour.v1.min.js"></script>
     <script src="countour/kriging-contour.js"></script>
+    <!-- <script src="countour/kriging.js"></script> -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </head>
 
@@ -23,34 +21,34 @@
     <input type="file" id="kmlFileInput" accept=".csv,.xlsx" onchange="geojsondata=readCSVFile(this)"
         style="display: none" />
     <input type="button" onclick="document.getElementById('kmlFileInput').click()" value="Import" />
-    <button onclick="clic()">123</button>
-    <style>
-        #csvFileInput {
-            position: absolute;
-            right: 0px;
-            opacity: 0;
-        }
-    </style>
+    <button onclick="clic()">go</button>
+
     <script src="countour/demo.js"></script>
     <script>
         var geojsondata;
 
 
         function clic() {
-            console.log(JSON.stringify(geojsondata));
+            // console.log(JSON.stringify(geojsondata));
+            console.log(geojsondata);
             //计算克里金等值面
-            let kriging_contours = freegis.kriging_contour(geojsondata, '水温', {
+            // L.geoJSON(geojsondata).addTo(map);
+            var geojsondata2={"type":"FeatureCollection","features":[{"type":"Feature","properties":{"level":"97.40970353544371"},"geometry":{"type":"Point","coordinates":[117.97876368627968,32.00877131403122]}},{"type":"Feature","properties":{"level":"8.850095115735579"},"geometry":{"type":"Point","coordinates":[118.03889593348163,32.04632813947625]}},{"type":"Feature","properties":{"level":"56.26729154029522"},"geometry":{"type":"Point","coordinates":[117.97646342689076,31.97929584501753]}},{"type":"Feature","properties":{"level":"36.09357276692249"},"geometry":{"type":"Point","coordinates":[118.04723945774454,31.962429234168912]}},{"type":"Feature","properties":{"level":"49.1220427210763"},"geometry":{"type":"Point","coordinates":[118.0068168753472,31.96452699645943]}},{"type":"Feature","properties":{"level":"43.274460478991664"},"geometry":{"type":"Point","coordinates":[117.99358370473693,32.013279087871666]}},{"type":"Feature","properties":{"level":"69.93709194431325"},"geometry":{"type":"Point","coordinates":[117.95267661903877,32.00091630479056]}},{"type":"Feature","properties":{"level":"17.475481715221576"},"geometry":{"type":"Point","coordinates":[117.99028198467484,32.033424051022195]}},{"type":"Feature","properties":{"level":"60.281683917417816"},"geometry":{"type":"Point","coordinates":[118.02772982759632,31.97327918294889]}},{"type":"Feature","properties":{"level":"51.12555620814987"},"geometry":{"type":"Point","coordinates":[117.97417541167714,31.950228795390206]}},{"type":"Feature","properties":{"level":"73.8768995000113"},"geometry":{"type":"Point","coordinates":[117.98162890586282,31.95772837391979]}},{"type":"Feature","properties":{"level":"27.05094844290108"},"geometry":{"type":"Point","coordinates":[117.97985570556027,32.01370799142052]}},{"type":"Feature","properties":{"level":"17.626866809963417"},"geometry":{"type":"Point","coordinates":[118.02947165097477,31.958553873912177]}},{"type":"Feature","properties":{"level":"17.729246055422543"},"geometry":{"type":"Point","coordinates":[118.00584087029367,32.00425187542315]}},{"type":"Feature","properties":{"level":"13.686134251480087"},"geometry":{"type":"Point","coordinates":[117.98275814029472,32.029944726661356]}},{"type":"Feature","properties":{"level":"25.522504660135837"},"geometry":{"type":"Point","coordinates":[117.97177046212705,32.04905702525196]}},{"type":"Feature","properties":{"level":"81.6538108115761"},"geometry":{"type":"Point","coordinates":[117.9853796298639,31.958655758094782]}},{"type":"Feature","properties":{"level":"55.70281455939325"},"geometry":{"type":"Point","coordinates":[117.96965707144192,31.993181739107396]}},{"type":"Feature","properties":{"level":"76.25652104301801"},"geometry":{"type":"Point","coordinates":[118.04368727516456,31.974953092029462]}},{"type":"Feature","properties":{"level":"89.02299645448211"},"geometry":{"type":"Point","coordinates":[118.04873918447457,32.03239577774898]}}]}
+
+
+            let kriging_contours = freegis.kriging_contour(geojsondata2, 'level', {
                 model: 'exponential',
                 sigma2: 0,
                 alpha: 100
-            }, [23.2, 23.7, 24.2, 24.7, 25.2, 25.7, 26.2, 26.7, 27.2]);
+            }, [0,10,20,30,40,50,60,70,80,90,100]
+            // [5.2,5.3,5.4,5.5,5.6,5.7,5.8,5.9]
+            // [32.3, 32.4, 32.5, 32.6, 32.7, 32.8, 32.9, 33.0, 33.1, 33.2, 33.3]
+            // [23.2, 23.7, 24.2, 24.7, 25.2, 25.7, 26.2, 26.7, 27.2]
+            );
+
             console.log(kriging_contours);
 
             L.geoJSON(kriging_contours).addTo(map);
-
-
-
-
 
             // var polygons = L.featureGroup();
             // for (i = 0; i < kriging_contours.length; i++) {
