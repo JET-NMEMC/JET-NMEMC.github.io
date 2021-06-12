@@ -14,7 +14,7 @@ L.LatLngGraticule = L.Layer.extend({
         showLabel: true,
         opacity: 1,
         weight: 0.8,
-        color: '#aaa',
+        color: '#ffffff',
         // color: '#696969',
         font: '15px Verdana',
         lngLineCurved: 0,
@@ -196,6 +196,7 @@ L.LatLngGraticule = L.Layer.extend({
         if (this.options.latFormatTickLabel) {
             return this.options.latFormatTickLabel(lat);
         }
+        lat=lat.toFixed(1);
 
         // todo: format type of float
         if (lat < 0) {
@@ -211,6 +212,7 @@ L.LatLngGraticule = L.Layer.extend({
         if (this.options.lngFormatTickLabel) {
             return this.options.lngFormatTickLabel(lng);
         }
+        lng=lng.toFixed(1);
 
         // todo: format type of float
         if (lng > 180) {
