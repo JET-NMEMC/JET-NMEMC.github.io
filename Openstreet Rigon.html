@@ -70,7 +70,7 @@
         var baseLayers = {
             "Esri影像": Esri_WorldImagery,
             "OpenStreet": OpenStreetMap_HOT,
-            "Jawg_Sunny":Jawg_Sunny
+            "Jawg_Sunny": Jawg_Sunny
         };
         var map = L.map("map", {
             layers: [Esri_WorldImagery],
@@ -167,6 +167,43 @@
 
             }
         }
+
+
+
+        function run2() {
+            var regionname = $('#input').val();
+            console.log(regionname);
+            if (regionname.trim() != "") {
+                getrigon2(regionname)
+            }
+            else {
+                alert("请输入省/市/县的名称a");
+                return
+            }
+        }
+        function getrigon2(rigon_name) {
+            var rigon_osm_id;
+            $.ajax({
+                url: "https://apis.map.qq.com/ws/district/v1/search?&keyword=" + rigon_name + "&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77",
+                // data: { age: 20, sex: 'man' },
+                async: false,
+                dataType: 'json',
+                success: function (result) {
+                    console.log(result);
+                    // result = result.filter(function (i) {
+                    //     return i.osm_type.includes('relation');
+                    // });
+                    // console.log(result);
+                    // console.log("搜索结果：" + result[0].display_name);
+                    // rigon_osm_id = result[0].osm_id;
+                    // map.fitBounds(L.geoJSON(result[0].geojson).getBounds());
+                    // if (xiaji != "YES") {
+                    //     L.geoJSON(result[0].geojson).addTo(map);
+                    // }
+                }
+            });
+        }
+
 
     </script>
 
