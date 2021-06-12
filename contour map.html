@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script> -->
+    <!-- <script src="https://github.com/gavinr/csv-to-geojson/blob/master/js/libs/CsvToJson.js"></script> -->
+    <!-- <script src="countour/CsvToJson.js"></script> -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="countour/demo.css" />
+    <script src="https://npmcdn.com/csv2geojson@latest/csv2geojson.js"></script>
+    <script src="https://d3js.org/d3-contour.v1.min.js"></script>
+    <script src="countour/kriging-contour.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <input type="file" id="kmlFileInput" accept=".csv,.xlsx" onchange="geojsondata=readCSVFile(this)"
+        style="display: none" />
+    <input type="button" onclick="document.getElementById('kmlFileInput').click()" value="Import" />
+    <button onclick="clic()">123</button>
+    <style>
+        #csvFileInput {
+            position: absolute;
+            right: 0px;
+            opacity: 0;
+        }
+    </style>
+    <script src="countour/demo.js"></script>
+    <script>
+        var geojsondata;
+
+
+        function clic() {
+            console.log(JSON.stringify(geojsondata));
+            //计算克里金等值面
+            let kriging_contours = freegis.kriging_contour(geojsondata, '水温', {
+                model: 'exponential',
+                sigma2: 0,
+                alpha: 100
+            }, [23.2, 23.7, 24.2, 24.7, 25.2, 25.7, 26.2, 26.7, 27.2]);
+            console.log(kriging_contours);
+
+            L.geoJSON(kriging_contours).addTo(map);
+
+
+
+
+
+            // var polygons = L.featureGroup();
+            // for (i = 0; i < kriging_contours.length; i++) {
+            //     L.geoJSON(kriging_contours.features[i], {
+            //         style: function (features) {
+            //             return {
+            //                 color: '#004CFF',
+            //                 weight: 2,
+            //                 fillColor: '#3F78FD',
+            //                 fillOpacity: 0.5
+            //             };
+            //         }
+            //     }).addTo(map);
+            // };
+            // polygons.addTo(map);
+            // map.fitBounds(polygons.getBounds());
+
+        }
+
+        function readCSVFile(obj) {
+            var reader = new FileReader();
+            reader.readAsText(obj.files[0], "GB2312");
+            reader.onload = function () {
+                // console.log(this.result);
+                csv2geojson.csv2geojson(this.result, function (err, data) {
+                    geojsondata = data;
+                });
+                // var data1 = csvToObject(this.result);
+                // console.log(data1);
+            }
+        }
+
+        function csvToObject(csvString) {
+            var csvarry = csvString.split("\r\n");
+            var datas = [];
+            var headers = csvarry[0].split(",");
+            for (var i = 1; i < csvarry.length; i++) {
+                var data = {};
+                var temp = csvarry[i].split(",");
+                for (var j = 0; j < temp.length; j++) {
+                    data[headers[j]] = temp[j];
+                }
+                datas.push(data);
+            }
+            return datas;
+        }
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>
