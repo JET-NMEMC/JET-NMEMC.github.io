@@ -106,7 +106,7 @@ var Graticulelayer = L.latlngGraticule({
     { start: 5, end: 6, interval: 5 },
     { start: 7, end: 8, interval: 2 },
     { start: 9, end: 10, interval: 1 },
-    { start: 11, end: 12, interval: 0.5 },
+    { start: 11, end: 12, interval: 0.2 },
     { start: 13, end: 17, interval: 0.1 },
   ]
 })
@@ -184,7 +184,7 @@ map.on(('pm:create'), e => {
 // })
 
 
-if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
     position: 'topleft',
     locateOptions: {
