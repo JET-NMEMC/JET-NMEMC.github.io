@@ -159,7 +159,7 @@
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
     <!-- <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script> -->
-    <script src="contourmap/kriging2.js"></script>
+    <script src="contourmap/kriging0.js"></script>
     <script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>
     <script
         src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
@@ -431,8 +431,8 @@
             // console.log(variogram);
             //网格插值模式，对在区域内的格点进行插值，格点精度300个
             var grid = kriging.grid(gridArea, variogram, (xrange[1] - xrange[0]) / 500, (yrange[1] - yrange[0]) / 500);
-            // console.log(newxiangmu + "插值grid:");
-            // console.log(grid);
+            console.log(newxiangmu + "插值grid:");
+            console.log(grid);
 
             var Tvaluemin = grid.zlim[0], Tvaluemax = grid.zlim[1];
 
