@@ -472,6 +472,7 @@ kriging.grid = function (polygons, variogram, x_width, y_width) {
 	var y = Math.ceil((ylim[1] - ylim[0]) / y_width);
 
 	var A = [];
+	var B = [];
 	for (i = 0; i < n; i++) {
 		// Range for polygons[i]
 		lxlim[0] = polygons[i][0][0];
@@ -500,8 +501,9 @@ kriging.grid = function (polygons, variogram, x_width, y_width) {
 				xtarget = xlim[0] + j * x_width;
 				ytarget = ylim[0] + k * y_width;
 				if (polygons[i].pip(xtarget, ytarget)) {
-					A[j][k] = kriging.predict(xtarget,ytarget,variogram);
-					// A.push(kriging.predict(xtarget, ytarget, variogram));
+					var sdf = kriging.predict(xtarget,ytarget,variogram);
+					A[j][k] = sdf;
+					B.push(sdf);
 				}
 
 			}
@@ -509,6 +511,7 @@ kriging.grid = function (polygons, variogram, x_width, y_width) {
 	}
 	return {
 		grid: A,
+		grid2: B,
 		n: a[1],
 		m: b[1],
 		xlim: xlim,
@@ -520,7 +523,7 @@ kriging.grid = function (polygons, variogram, x_width, y_width) {
 };
 //克里金生成矢量等值面
 kriging.contour = function (grid_metedate, breaks) {
-	let grid = grid_metedate.grid;
+	let grid = grid_metedate.grid2;
 	var n = grid_metedate.n;
 	var m = grid_metedate.m;
 	//像素坐标系的等值面
