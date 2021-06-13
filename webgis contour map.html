@@ -2,95 +2,59 @@
 <html>
 <script>
     //通过window.screen.width获取屏幕的宽度
-    console.log(window.screen.width,window.screen.height);
-    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+    console.log("当前设备分辨率" + window.screen.width + 'px', window.screen.height + 'px');
+    if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
         machine = "mobile";
-        if (window.screen.width>window.screen.height){
-            machineStyle="hengping-mobile"
-            var offWidth = window.screen.height / 50; 
-            document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px'; 
-            console.log(offWidth + 'px');
+        if (window.screen.width > window.screen.height) {
+            machineStyle = "hengping-mobile"
+            var offWidth = window.screen.height / 50;
+            document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px';
+            // console.log(offWidth + 'px');
         }
-        else{
-            machineStyle="shuping-mobile" 
+        else {
+            machineStyle = "shuping-mobile"
             var offWidth = window.screen.height / 40;
             document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px';
-            console.log(offWidth + 'px');
+            // console.log(offWidth + 'px');
         }
     } else {
-            machine = "computer";
-            machineStyle="hengping-computer"
-            var offWidth = window.screen.height / 80;
-            document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px';
-            console.log(offWidth + 'px');
-        };
+        machine = "computer";
+        machineStyle = "hengping-computer"
+        var offWidth = window.screen.height / 80;
+        document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px';
+        console.log(offWidth + 'px');
+    };
     console.log(machineStyle);
 </script>
 
 <head>
     <title>webgis</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <!-- <link rel="stylesheet" href="contourmap/leaflet.css" /> -->
-    <link rel="stylesheet" href="contourmap/leaflet-geoman2.css" />
-    <!-- <link rel="stylesheet" href="contourmap/leaflet-velocity.css" /> -->
-    <link rel="stylesheet" href="contourmap/leaflet-measure.css">
-    <!-- <link rel="stylesheet" href="contourmap/Leaflet.StyleEditor.min.css" /> -->
     <link rel="stylesheet" href="contourmap/demo.css" />
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script>
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- <link rel="stylesheet" href="contourmap/leaflet-velocity.css" /> -->
     <!-- <script src="contourmap/leaflet-velocity.js"></script> -->
+    <script src="contourmap/leaflet.ChineseTmsProviders.js"></script>
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
-    <script src="contourmap/leaflet-geoman.min2.js"></script>
-    <script src="contourmap/leaflet-measure.js"></script>
-    <script src="contourmap/L.KML.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" /> -->
-    <link rel="stylesheet" href="contourmap/L.Control.Locate.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"
-        charset="utf-8"></script>
-    
 
-    <!-- <script src="contourmap/LabelTextCollision.js"></script> -->
+    <link rel="stylesheet" href="contourmap/leaflet-geoman2.css" />
+    <script src="contourmap/leaflet-geoman.min2.js"></script>
+
+    <link rel="stylesheet" href="contourmap/leaflet-measure.css">
+    <script src="contourmap/leaflet-measure.js"></script>
+
+    <script src="contourmap/L.KML.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="contourmap/L.Control.Locate.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
 
     <style>
-        .info {
-            padding: 5px 8px;
-            font: 14px/16px Arial, Helvetica, sans-serif;
-            background: white;
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-        }
-
-        .legend {
-            text-align: left;
-            line-height: 24px;
-            color: #555;
-        }
-
-        .legend i {
-            width: 30px;
-            height: 24px;
-            float: left;
-            margin-right: 8px;
-            opacity: 0.7;
-        }
-
-        .opt {
-            background: rgb(150, 150, 150);
-            /* text-align: center; */
-            text-align: center;
-            /* display: inline; */
-        }
-
-        .my-div-icon {
-            color: rgb(7, 253, 109);
-            font-size: 15px;
-        }
     </style>
 </head>
 
@@ -105,7 +69,6 @@
     <div id="showsetting" style="display: none;">
         <button onclick="showHide('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
         <p>等值线图 绘图设置</p>
-
         <p>
             <input type="file" id="selectdatafile" accept=".xlsx" onchange="impexcel(this)" style="display: none" />
             <input type="button" onclick="document.getElementById('selectdatafile').click()" value="选择散点数据"
@@ -152,9 +115,7 @@
     </div>
     <div id="ShowDiv" name="ShowDiv"></div>
 
-    <!-- <select id="select"></select> -->
     <select id="select" style="display: none;"></select>
-
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
@@ -165,10 +126,8 @@
         src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
     <script src="contourmap/demo.js"></script>
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet-styleeditor@latest/dist/javascript/Leaflet.StyleEditor.min.js"></script> -->
-
     <script>
-        //---------------------------------------------------------------------------------------------------------------主程序
+        //----------------------------------------------------------------------------------------------主程序
         var TargetN;//设置拟绘制色带个数
         var data;     //声明全局，存放json对象;
         var xiangmu;  //声明全局，存放项目名序列;
@@ -183,98 +142,7 @@
         var figurectrol = {};
         var legend;
         var countourmap;
-
-        function drawrigon() {
-            var address = $("#rigon").val();
-            // var linkurl="https://restapi.amap.com/v3/config/district?key=2b2bb467194aa9e72e495eafa99bb0c4&keywords="+address+"&subdistrict=0&extensions=base"
-            // $.getJSON(linkurl, function (json2) {
-            //     adcode=json2.districts[0].adcode;
-            //     console.log(json2);
-            //     console.log(address,adcode);
-            // });
-            var opts = {
-                subdistrict: 0,   //获取边界不需要返回下级行政区
-                extensions: 'all',  //返回行政区边界坐标组等具体信息
-                level: 'district'  //查询行政级别为 市
-            };
-            var district = new AMap.DistrictSearch(opts);
-            district.setLevel("district");
-            district.search(address, function (status, result) {
-                polygons = L.featureGroup();
-                // console.log("result=",result);
-                var bounds = result.districtList[0].boundaries;
-                // console.log("bounds=");
-                // console.log(bounds);
-                if (bounds) {
-                    for (var i = 0, l = bounds.length; i < l; i++) {
-                        var polygon = bounds[i];
-                        var coord = [];
-                        for (var j = 0; j < polygon.length; j++) {
-                            coord.push([polygon[j].lng, polygon[j].lat])
-                        }
-                        var coord2 = '[' + JSON.stringify(coord) + ']';
-                        // console.log(coord2);
-                        var states = {
-                            "type": "Feature",
-                            "properties": {},
-                            "geometry": {
-                                "type": "Polygon",
-                                "coordinates": JSON.parse(coord2)
-                            }
-                        };
-                        // console.log(states.geometry.coordinates);
-                        gcoord.transform(states, gcoord.GCJ02, gcoord.WGS84);//输入为geojson时，直接转变输入对象的坐标值
-                        // console.log(states.geometry.coordinates);
-                        L.geoJSON(states, {
-                            style: function (feature) {
-                                return {
-                                    color: '#004CFF',
-                                    weight: 2,
-                                    fillColor: '#3F78FD',
-                                    fillOpacity: 0.3
-                                };
-                            }
-                        }).addTo(polygons);
-                    }
-                }
-                polygons.addTo(map);
-                map.fitBounds(polygons.getBounds());
-            });
-            showHide('showsetting');
-        };
-
-        function test() {
-            var states = {
-                "type": "Feature",
-                "properties": { "party": "Republican" },
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [[
-                        [121.34124755859375, 39.98553841480974],
-                        [121.25885009765625, 39.93922484079194],
-                        [121.30828857421875, 39.82541310342478],
-                        [121.44561767578125, 39.88023492849342],
-                        [121.34124755859375, 39.98553841480974]
-                    ]]
-                }
-            };
-            console.log(states.geometry.coordinates);
-            L.geoJSON(states, {
-                style: function (feature) {
-                    color: "#0000ff";
-                }
-            }).addTo(map);
-
-            gcoord.transform(states, gcoord.GCJ02, gcoord.WGS84);
-            console.log(states.geometry.coordinates);
-
-            L.geoJSON(states, {
-                style: function (feature) {
-                    color: "#0000ff";
-                }
-            }).addTo(map);
-        }
-
+        //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
             var kmlFileInput = document.getElementById("kmlFileInput");
             var filename = kmlFileInput.files[0].name;
@@ -310,7 +178,7 @@
             showHide('showsetting');
             msg("导入json文件" + filename);
         }
-        //----------------------------------------------------------------------------------单击事件，开始新项目
+        //----------------------------------------------------------------------------------单击事件，开始绘制等值线
         $("#select").change(function () {
             var newxiangmu = $("#select").val();
             if (finishlist == "") {
@@ -340,7 +208,7 @@
                 var sites = L.featureGroup();
                 for (var i = 0; i < lats.length; i++) {
                     // L.marker([lats[i], lngs[i]])
-                    L.circle([lats[i], lngs[i]], { radius: 2, color: '#FF00FF', fillColor: '#FF00FF' })
+                    L.circleMarker([lats[i], lngs[i]], { radius: 5, fillColor: "#1296DB", fillOpacity: 1 })
                         .bindPopup(data[i].site.toString())
                         .addTo(sites)
                 };
@@ -364,7 +232,6 @@
             }
             else {
                 var beginTime = +new Date();
-                finishlist.push(newxiangmu);
                 console.log("开始绘制---------------" + newxiangmu);
                 TargetN = $('#TargetN').val(); //设置拟绘制色带个数
                 // let gridArea=china; 如果插值范围超过散点的范围，需重新设置x,y,range
@@ -380,6 +247,7 @@
 
                 var endTime = +new Date();
                 msg(newxiangmu + "绘制完成,用时" + ((endTime - beginTime) / 1000).toFixed(1) + "s");
+                finishlist.push(newxiangmu);
                 document.getElementById(newxiangmu).style.background = "green";
             }
             //如果有图层，删除
@@ -429,14 +297,13 @@
             var variogram = kriging.train(t, x, y, model, sigma2, alpha);
             // console.log(newxiangmu + "训练结果:");
             // console.log(variogram);
+
             //网格插值模式，对在区域内的格点进行插值，格点精度300个
             var grid = kriging.grid(gridArea, variogram, (xrange[1] - xrange[0]) / 500, (yrange[1] - yrange[0]) / 500);
-            console.log(newxiangmu + "插值grid:");
-            console.log(grid);
+            // console.log(newxiangmu + "插值grid:");
+            // console.log(grid);
 
-            var Tvaluemin = grid.zlim[0], Tvaluemax = grid.zlim[1];
-
-            var countourSet = autobreak(Tvaluemin, Tvaluemax, TargetN);
+            var countourSet = autobreak(grid.zlim[0], grid.zlim[1], TargetN);
             var breaks = countourSet.breaks;
             // console.log("自动生成的breaks段数", countourSet.levelnum);
             console.log("自动生成的breaks序列", breaks);
@@ -445,7 +312,7 @@
             //RGB颜色转换为16进制，存入colors
             var colors = [];
             for (var i = 0; i < interpcolor[0].length; i++) { colors.push(colorRGB2Hex(interpcolor[0][i], interpcolor[1][i], interpcolor[2][i])) };
-            console.log("映射颜色序列", colors);
+            // console.log("映射颜色序列", colors);
             colors.shift();
             // console.log("映射颜色序列", colors);
             //将得到的格网grid，按颜色带渲染至canvas上
@@ -507,6 +374,14 @@
             reader.readAsBinaryString(f);
             showHide('showsetting');
         }
+        //------------------提取json中的所有属性名称，进入数组,形成名称列表
+        function getkey(json) {
+            var s = [];
+            for (var keys in json[0]) {
+                s.push(keys);
+            }
+            return s
+        }
 
         //-------------------------------------------------绘制散点图
         function drawsite() {
@@ -567,7 +442,65 @@
             layerControl.addOverlay(polyline, sitename);
             map.fitBounds(polyline.getBounds());
         };
-
+        //--------------------------------------------------------------------绘制行政区域边界——来自高德
+        function drawrigon() {
+            var address = $("#rigon").val();
+            // var linkurl="https://restapi.amap.com/v3/config/district?key=2b2bb467194aa9e72e495eafa99bb0c4&keywords="+address+"&subdistrict=0&extensions=base"
+            // $.getJSON(linkurl, function (json2) {
+            //     adcode=json2.districts[0].adcode;
+            //     console.log(json2);
+            //     console.log(address,adcode);
+            // });
+            var opts = {
+                subdistrict: 0,   //获取边界不需要返回下级行政区
+                extensions: 'all',  //返回行政区边界坐标组等具体信息
+                level: 'district'  //查询行政级别为 市
+            };
+            var district = new AMap.DistrictSearch(opts);
+            district.setLevel("district");
+            district.search(address, function (status, result) {
+                polygons = L.featureGroup();
+                // console.log("result=",result);
+                var bounds = result.districtList[0].boundaries;
+                // console.log("bounds=");
+                // console.log(bounds);
+                if (bounds) {
+                    for (var i = 0, l = bounds.length; i < l; i++) {
+                        var polygon = bounds[i];
+                        var coord = [];
+                        for (var j = 0; j < polygon.length; j++) {
+                            coord.push([polygon[j].lng, polygon[j].lat])
+                        }
+                        var coord2 = '[' + JSON.stringify(coord) + ']';
+                        // console.log(coord2);
+                        var states = {
+                            "type": "Feature",
+                            "properties": {},
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": JSON.parse(coord2)
+                            }
+                        };
+                        // console.log(states.geometry.coordinates);
+                        gcoord.transform(states, gcoord.GCJ02, gcoord.WGS84);//输入为geojson时，直接转变输入对象的坐标值
+                        // console.log(states.geometry.coordinates);
+                        L.geoJSON(states, {
+                            style: function (feature) {
+                                return {
+                                    color: '#004CFF',
+                                    weight: 2,
+                                    fillColor: '#3F78FD',
+                                    fillOpacity: 0.3
+                                };
+                            }
+                        }).addTo(polygons);
+                    }
+                }
+                polygons.addTo(map);
+                map.fitBounds(polygons.getBounds());
+            });
+            showHide('showsetting');
+        };
         //---------------------------------------------------------------------生成左侧选项卡
         function draw_menu() {
             // var $selected = $("#select");
@@ -580,29 +513,15 @@
             $("#select").show();
         };
 
-        //显示设置窗口
+        //----------------------------------------------------------------------------显示设置窗口
         function showHide(idname) {
             var obj = document.getElementById(idname);
             if (obj.style.display == "none") { obj.style.display = "block" }
             else { obj.style.display = "none" }
         };
 
-        //提取json中的所有属性名称，进入数组
-        function getkey(json) {
-            var s = [];
-            for (var keys in json[0]) {
-                s.push(keys);
-            }
-            return s
-        }
-        //凸包检测输出点转为json字符串
-        function point2str(po) {
-            var arr = new Array();
-            for (var i = 0; i < po.length; i++) { arr[i] = '[' + po[i].x + "," + po[i].y + ']' };
-            arr[po.length] = '[' + po[0].x + "," + po[0].y + ']'
-            var arr2 = "[[" + arr.join() + "]]";
-            return arr2;
-        }
+
+
     </script>
 </body>
 
