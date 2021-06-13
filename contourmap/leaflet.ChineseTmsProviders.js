@@ -64,7 +64,8 @@ L.TileLayer.ChinaProvider.providers = {
             Map: '//webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}'
         },
         Satellite: {
-            Map: '//webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',
+            Map: 'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',
+            // https://webst03.is.autonavi.com/appmaptile?style=6&x=426&y=196&z=9
             Annotion: '//webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}'
         },
         Subdomains: ["1", "2", "3", "4"]
