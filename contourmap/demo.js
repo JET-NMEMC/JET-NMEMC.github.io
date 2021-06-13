@@ -37,16 +37,19 @@ function initDemoMap() {
   var gugedianzi = L.tileLayer("http://mt0.google.cn/vt/lyrs=m@160000000&hl=zh-CN&gl=CN&src=app&y={y}&x={x}&z={z}&s=Ga", {
   });
   var GoogleImage = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-			subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-		});
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+  });
+  var gaode=L.tileLayer.chinaProvider('GaoDe.Satellite.Map',{maxZoom:18});
+  var gaodeAnnotion=L.tileLayer.chinaProvider('GaoDe.Satellite.Annotion',{maxZoom:18});
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri影像": Esri_WorldImagery,
     "天地图影像": tianditu_img,
-    "谷歌影像":GoogleImage,
+    "高德影像":gaode,
+    "谷歌影像": GoogleImage,
     // "天地图地形": tianditu_ter,
     "OpenStreet": OpenStreetMap_Mapnik,
-    "JawgStreet":Jawg_Streets,
+    "JawgStreet": Jawg_Streets,
     "Geoq暖色火星": warm,
     "Geoq水系火星": HydroMap,
     // "谷歌地图":gugedianzi
@@ -63,7 +66,8 @@ function initDemoMap() {
   var overlayLayers = {
     "天地图矢量注记": tianditu_矢量注记,
     "天地图道路注记": tianditu_地形注记,
-    "天地图全球境界": tianditu_全球境界,
+    "高德影像注记":gaodeAnnotion,
+    // "天地图全球境界": tianditu_全球境界,
   }
 
   var map = L.map("map", {
@@ -427,27 +431,6 @@ function colorRGB2Hex(r, g, b) {
   return hex;
 }
 
-// //-----------------------------------------------------------------------------------------------------获取map范围
-// //地图级别改变时发生
-// map.on("zoomend", function (e) {
-//   var zoom_val = e.target.getZoom();
-//   map_drag();;
-// });
-// //拖动地图时发生
-// map.on("moveend", function (e) {
-//   map_drag();;
-// });
-// function map_drag() {
-//   //左下角坐标（西南方）
-//   var leftdown = map.getBounds().getSouthWest().lng + "," + map.getBounds().getSouthWest().lat; 
-//   //右上角坐标（东北方向）
-//   var rightup = map.getBounds().getNorthEast().lng + "," + map.getBounds().getNorthEast().lat;  
-//   //左上角：西北方
-//   var leftup = map.getBounds().getNorthWest().lng + "," + map.getBounds().getNorthWest().lat; 
-//   //右下角：东南方
-//   var rightdown = map.getBounds().getSouthEast().lng + "," + map.getBounds().getSouthEast().lat; 
-//   // console.log(leftdown,rightup);
-// }
 //----------------------------------------------------------------------------------------------------凸包检测
 function Graham_scan(pointSet, ch) {
   // 这里会修改pointSet
@@ -514,7 +497,16 @@ function distance_no_sqrt(p1, p2) {
   return ((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 }
 
-//---------------------------------------------------------------------------可拖动
+//凸包检测输出点转为json字符串
+function point2str(po) {
+  var arr = new Array();
+  for (var i = 0; i < po.length; i++) { arr[i] = '[' + po[i].x + "," + po[i].y + ']' };
+  arr[po.length] = '[' + po[0].x + "," + po[0].y + ']'
+  var arr2 = "[[" + arr.join() + "]]";
+  return arr2;
+}
+
+//---------------------------------------------------------------------------div可拖动
 function dragFunc(id) {
   var Drag = document.getElementById(id);
   Drag.onmousedown = function (event) {
@@ -537,3 +529,26 @@ function dragFunc(id) {
 dragFunc("showsetting");
 dragFunc("showtools");
 dragFunc("select");
+
+
+// //-----------------------------------------------------------------------------------------------------获取map范围
+// //地图级别改变时发生
+// map.on("zoomend", function (e) {
+//   var zoom_val = e.target.getZoom();
+//   map_drag();;
+// });
+// //拖动地图时发生
+// map.on("moveend", function (e) {
+//   map_drag();;
+// });
+// function map_drag() {
+//   //左下角坐标（西南方）
+//   var leftdown = map.getBounds().getSouthWest().lng + "," + map.getBounds().getSouthWest().lat; 
+//   //右上角坐标（东北方向）
+//   var rightup = map.getBounds().getNorthEast().lng + "," + map.getBounds().getNorthEast().lat;  
+//   //左上角：西北方
+//   var leftup = map.getBounds().getNorthWest().lng + "," + map.getBounds().getNorthWest().lat; 
+//   //右下角：东南方
+//   var rightdown = map.getBounds().getSouthEast().lng + "," + map.getBounds().getSouthEast().lat; 
+//   // console.log(leftdown,rightup);
+// }
