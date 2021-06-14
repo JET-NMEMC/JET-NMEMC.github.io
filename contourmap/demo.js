@@ -1,14 +1,12 @@
 function initDemoMap() {
   var Esri_WorldImagery = L.tileLayer(
-    "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    {
-      maxZoom: 17,
-      attribution:"&copy; Esri"
-      // attribution:
-      //   "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, " +
-      //   "AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
-    }
-  );
+    "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 17,
+    attribution: "&copy; Esri"
+    // attribution:
+    //   "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, " +
+    //   "AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+  });
   var Esri_OceanBasemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
   });
@@ -30,26 +28,30 @@ function initDemoMap() {
     accessToken: 'DGEPTrYpfvrfrjgNGAF1tziKZBqDBXP1ukNpvd7PEQ8tf6cvdMBI4Md4JetBfC7B'
   });
   var tianditu_img = L.tileLayer("http://t0.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+    attribution: "&copy; 天地图"
   });
   var tianditu_ter = L.tileLayer("http://t0.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+    attribution: "&copy; 天地图"
   });
-  var gugedianzi = L.tileLayer("http://mt0.google.cn/vt/lyrs=m@160000000&hl=zh-CN&gl=CN&src=app&y={y}&x={x}&z={z}&s=Ga", {
+  var GoogleMap = L.tileLayer("http://mt0.google.cn/vt/lyrs=m@160000000&hl=zh-CN&gl=CN&src=app&y={y}&x={x}&z={z}&s=Ga", {
+    attribution: "&copy; Google"
   });
   var GoogleImage = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
     subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+    attribution: "&copy; Google"
   });
-  var USGSImage = L.tileLayer('https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer', {
-    attribution:"&copy; USGS"
+  var gaode = L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {
+    maxZoom: 18,
+    attribution: "&copy; 高德地图"
   });
-  var gaode=L.tileLayer.chinaProvider('GaoDe.Satellite.Map',{maxZoom:18});
-  var gaodeAnnotion=L.tileLayer.chinaProvider('GaoDe.Satellite.Annotion',{maxZoom:18});
+  var gaodeAnnotion = L.tileLayer.chinaProvider('GaoDe.Satellite.Annotion', { maxZoom: 18 });
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri影像": Esri_WorldImagery,
     "天地图影像": tianditu_img,
-    "高德火星影像":gaode,
+    "高德火星影像": gaode,
     "谷歌影像": GoogleImage,
-    "USGS影像": USGSImage,
+    "谷歌地图": GoogleMap,
     "OpenStreet": OpenStreetMap_Mapnik,
     "JawgStreet": Jawg_Streets,
     "Geoq暖色火星": warm,
@@ -68,7 +70,7 @@ function initDemoMap() {
   var overlayLayers = {
     "天地图矢量注记": tianditu_矢量注记,
     "天地图道路注记": tianditu_地形注记,
-    "高德影像注记火星":gaodeAnnotion,
+    "高德影像注记火星": gaodeAnnotion,
     // "天地图全球境界": tianditu_全球境界,
   }
 
