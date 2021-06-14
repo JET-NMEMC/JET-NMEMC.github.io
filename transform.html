@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,14 +25,18 @@
     </p>
     <br>
     <p>
-        <input type="text"  id="input0" value="0" style="width: 25%; margin-right:4px; text-align: center; visibility: hidden;">
-        <input type="text"  id="input1" value="8" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')" placeholder="输入(度: ° )保留小数位数" style="width: 22%; margin-right:2px; text-align: center;">
-        <input type="text"  id="input2" value="5" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')" placeholder="输入(分: ′ )保留小数位数" style="width: 22%; margin-right:2px; text-align: center;">
-        <input type="text"  id="input3" value="3" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')" placeholder="输入(秒: ″ )保留小数位数" style="width: 22%; margin-right:2px; text-align: center;">
+        <input type="text" id="input0" value="0"
+            style="width: 25%; margin-right:4px; text-align: center; visibility: hidden;">
+        <input type="text" id="input1" value="8" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')"
+            placeholder="输入(度: ° )保留小数位数" style="width: 22%; margin-right:2px; text-align: center;">
+        <input type="text" id="input2" value="5" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')"
+            placeholder="输入(分: ′ )保留小数位数" style="width: 22%; margin-right:2px; text-align: center;">
+        <input type="text" id="input3" value="3" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')"
+            placeholder="输入(秒: ″ )保留小数位数" style="width: 22%; margin-right:2px; text-align: center;">
     </p>
     <p>
         <textarea id="yuanshuju" rows="30"
-            style="width: 25%; float: left; margin-right:6px; resize: none;">40.94194 121.81278&#10;40.90889 121.81028&#10;40.87583	121.81056&#10;40.84028	121.80944</textarea>
+            style="width: 25%; float: left; margin-right:6px; resize: none;">40.94194,121.81278&#10;40.90889 121.81028&#10;40.87583	121.81056&#10;40.84028	121.80944</textarea>
         <textarea id="xinshuju1" rows="30" style="width: 22%; float: left; margin-right:6px; resize: none;"></textarea>
         <textarea id="xinshuju2" rows="30" style="width: 22%; float: left; margin-right:6px; resize: none;"></textarea>
         <textarea id="xinshuju3" rows="30" style="width: 22%; float: left; margin-right:6px; resize: none;"></textarea>
@@ -47,76 +52,77 @@
     var outArea3 = document.getElementById("xinshuju3");
     //---------------------------------------------------------------------------------------<主程序>
     function main() {
-        outArea1.value='';
-        outArea2.value='';
-        outArea3.value='';
+        outArea1.value = '';
+        outArea2.value = '';
+        outArea3.value = '';
 
-        var xiaoshu_du=document.getElementById("input1").value;
-        var xiaoshu_fen=document.getElementById("input2").value;
-        var xiaoshu_miao=document.getElementById("input3").value;
+        var xiaoshu_du = document.getElementById("input1").value;
+        var xiaoshu_fen = document.getElementById("input2").value;
+        var xiaoshu_miao = document.getElementById("input3").value;
 
         var Utext = inArea.value;
-        Utext=Utext.trim();
+        Utext = Utext.trim();
+        Utext = Utext.replace(/'/g,"′");
         var yyy = Utext.split(/[\n]/); //按行分割
         var shuju = [] //行内分割，写入新数组
         for (var i = 0; i < yyy.length; i++) {
             shuju[i] = yyy[i].split(/,|，|\s+/);
         }
-        console.log("初始分割数据",shuju);
+        console.log("初始分割数据", shuju);
 
-        if(Utext.search(/′/)!=-1){
+        if (Utext.search(/′|'/) != -1) {
             console.log("度分或者度分秒格式");
             for (var i = 0; i < shuju.length; i++) {
-                shuju[i][0]=Number(DegreeConvertBack(shuju[i][0]));
-                shuju[i][1]=Number(DegreeConvertBack(shuju[i][1]));
+                shuju[i][0] = Number(DegreeConvertBack(shuju[i][0]));
+                shuju[i][1] = Number(DegreeConvertBack(shuju[i][1]));
             }
-            console.log("转换度结果",shuju);
+            console.log("转换度结果", shuju);
         }
-        else if(Utext.search(/°/)!=-1){
+        else if (Utext.search(/°/) != -1) {
             console.log("带°的度格式");
             for (var i = 0; i < shuju.length; i++) {
-                shuju[i][0]=Number(shuju[i][0].substr(0, shuju[i][0].length - 1));
-                shuju[i][1]=Number(shuju[i][1].substr(0, shuju[i][1].length - 1));
+                shuju[i][0] = Number(shuju[i][0].substr(0, shuju[i][0].length - 1));
+                shuju[i][1] = Number(shuju[i][1].substr(0, shuju[i][1].length - 1));
             }
-            console.log("转换度结果",shuju);
+            console.log("转换度结果", shuju);
         }
         else {
             console.log("不带°的度格式");
             for (var i = 0; i < shuju.length; i++) { //字符转数字
                 shuju[i][0] = Number(shuju[i][0]);
                 shuju[i][1] = Number(shuju[i][1]);
-            }            
-            console.log("转换度结果",shuju);
+            }
+            console.log("转换度结果", shuju);
         }
 
 
-        var shuju0=JSON.parse(JSON.stringify(shuju));
+        var shuju0 = JSON.parse(JSON.stringify(shuju));
         for (var i = 0; i < shuju0.length; i++) {
-            shuju0[i][0]=(shuju0[i][0]).toFixed(xiaoshu_du);
-            shuju0[i][1]=(shuju0[i][1]).toFixed(xiaoshu_du);
+            shuju0[i][0] = (shuju0[i][0]).toFixed(xiaoshu_du);
+            shuju0[i][1] = (shuju0[i][1]).toFixed(xiaoshu_du);
         }
-        console.log("shuju0",shuju0);
+        console.log("shuju0", shuju0);
         newtext1 = Doub_Arr_2_Str(shuju0); //调用<二维数组转为字符>
         outArea1.value = newtext1; //字符串写入输出框
 
 
-        var shuju2=JSON.parse(JSON.stringify(shuju));
+        var shuju2 = JSON.parse(JSON.stringify(shuju));
         for (var i = 0; i < shuju2.length; i++) {
-            shuju2[i][0]=du2dufen(shuju2[i][0],xiaoshu_fen);
-            shuju2[i][1]=du2dufen(shuju2[i][1],xiaoshu_fen);                
+            shuju2[i][0] = du2dufen(shuju2[i][0], xiaoshu_fen);
+            shuju2[i][1] = du2dufen(shuju2[i][1], xiaoshu_fen);
         }
-        console.log("shuju2",shuju2);
+        console.log("shuju2", shuju2);
         // console.log("duzu",duzu);
         newtext2 = Doub_Arr_2_Str(shuju2); //调用<二维数组转为字符>
         outArea2.value = newtext2; //字符串写入输出框
 
 
-        var shuju3=JSON.parse(JSON.stringify(shuju));
+        var shuju3 = JSON.parse(JSON.stringify(shuju));
         for (var i = 0; i < shuju3.length; i++) {
-            shuju3[i][0]=du2dufenmiao(shuju3[i][0],xiaoshu_miao);
-            shuju3[i][1]=du2dufenmiao(shuju3[i][1],xiaoshu_miao);
+            shuju3[i][0] = du2dufenmiao(shuju3[i][0], xiaoshu_miao);
+            shuju3[i][1] = du2dufenmiao(shuju3[i][1], xiaoshu_miao);
         }
-        console.log("shuju3",shuju3);
+        console.log("shuju3", shuju3);
         newtext3 = Doub_Arr_2_Str(shuju3); //调用<二维数组转为字符>
         outArea3.value = newtext3; //字符串写入输出框
 
