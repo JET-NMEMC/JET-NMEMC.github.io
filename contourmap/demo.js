@@ -3,8 +3,7 @@ function initDemoMap() {
     "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     {
       maxZoom: 17,
-      attribution:
-        "&copy; Esri"
+      attribution:"&copy; Esri"
       // attribution:
       //   "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, " +
       //   "AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
@@ -39,15 +38,18 @@ function initDemoMap() {
   var GoogleImage = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
     subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
   });
+  var USGSImage = L.tileLayer('https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer', {
+    attribution:"&copy; USGS"
+  });
   var gaode=L.tileLayer.chinaProvider('GaoDe.Satellite.Map',{maxZoom:18});
   var gaodeAnnotion=L.tileLayer.chinaProvider('GaoDe.Satellite.Annotion',{maxZoom:18});
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri影像": Esri_WorldImagery,
     "天地图影像": tianditu_img,
-    "高德影像":gaode,
+    "高德火星影像":gaode,
     "谷歌影像": GoogleImage,
-    // "天地图地形": tianditu_ter,
+    "USGS影像": USGSImage,
     "OpenStreet": OpenStreetMap_Mapnik,
     "JawgStreet": Jawg_Streets,
     "Geoq暖色火星": warm,
@@ -66,7 +68,7 @@ function initDemoMap() {
   var overlayLayers = {
     "天地图矢量注记": tianditu_矢量注记,
     "天地图道路注记": tianditu_地形注记,
-    "高德影像注记":gaodeAnnotion,
+    "高德影像注记火星":gaodeAnnotion,
     // "天地图全球境界": tianditu_全球境界,
   }
 
@@ -86,7 +88,7 @@ function initDemoMap() {
   };
 };
 
-// demo map
+// --------------------------------------------------------------demo map
 var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
@@ -116,22 +118,14 @@ var Graticulelayer = L.latlngGraticule({
 })
 layerControl.addOverlay(Graticulelayer, '经纬网');
 
-// -------------------------------------------------------------------添加绘图按钮
-// map.pm.setLang('zh');
-// var drawct = map.pm.addControls({
-//   position: 'bottomleft',
-//   drawCircle: false,
-//   drawCircleMarker: false,
-// });
-// map.pm.Toolbar.changeControlOrder(['drawMarker', 'drawPolygon', 'drawPolyline', 'drawRectangle']);
-// 添加测量按钮
+// ------------------------------------------------------------添加测量按钮
 var measureControl = new L.Control.Measure({
   position: 'topleft',
   primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
   primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
 });
 measureControl.addTo(map);
-
+// ------------------------------------------------------------添加绘图按钮
 map.pm.addControls({
   position: 'topleft',
   drawCircle: false,
