@@ -25,8 +25,8 @@ du2dufen=function(value,n) {
 
 DegreeConvertBack=function(value) { ///<summary>度分秒转换成为度</summary>
     var du = value.split("°")[0];
-    var fen = value.split("°")[1].split("′")[0];
-    var miao = value.split("°")[1].split("′")[1].split('″')[0];
+    var fen = value.split("°")[1].split(/′|'/)[0];
+    var miao = value.split("°")[1].split(/′|'/)[1].split(/″|"/)[0];
 
     return Math.abs(du) + Math.abs(fen) / 60 + Math.abs(miao) / 3600;
 };
