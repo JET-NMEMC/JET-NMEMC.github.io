@@ -260,7 +260,7 @@ if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
 function msg(text) {
   $("#ShowDiv").show();
   $("#ShowDiv").html(text);
-  $('#ShowDiv').delay(1500).slideUp();
+  $('#ShowDiv').delay(3000).slideUp();
 };
 
 //-------------------------------------------配色方案，可自定义添加新行
