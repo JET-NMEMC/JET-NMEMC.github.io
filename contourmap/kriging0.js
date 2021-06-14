@@ -496,12 +496,12 @@ kriging.grid = function (polygons, variogram, x_width, y_width) {
 		b[0] = Math.floor(((lylim[0] - ((lylim[0] - ylim[0]) % y_width)) - ylim[0]) / y_width);
 		b[1] = Math.ceil(((lylim[1] - ((lylim[1] - ylim[1]) % y_width)) - ylim[0]) / y_width);
 		for (j = a[0]; j < a[1]; j++) {
-			A[j]=[];
+			A[j] = [];
 			for (k = b[0]; k < b[1]; k++) {
 				xtarget = xlim[0] + j * x_width;
 				ytarget = ylim[0] + k * y_width;
 				if (polygons[i].pip(xtarget, ytarget)) {
-					var sdf = kriging.predict(xtarget,ytarget,variogram);
+					var sdf = kriging.predict(xtarget, ytarget, variogram);
 					A[j][k] = sdf;
 					B.push(sdf);
 				}
@@ -590,10 +590,10 @@ kriging.plot = function (canvas, grid, xlim, ylim, colors, valuelist) {
 		area_list[i] = 0
 	}
 	//涂色开始
-	for (i = 0; i < n; i++){
+	for (i = 0; i < n; i++) {
 		// if (grid[i].length == 0) continue;
 		for (j = 0; j < m; j++) {
-			if (grid.grid[i][j] == undefined) continue;			
+			if (grid.grid[i][j] == undefined) continue;
 			x = canvas.width * (i * grid.x_width + grid.xlim[0] - xlim[0]) / range[0];
 			y = canvas.height * (1 - (j * grid.y_width + grid.ylim[0] - ylim[0]) / range[1]);
 			z = (grid.grid[i][j] - grid.zlim[0]) / range[2];
@@ -634,14 +634,38 @@ kriging.plot = function (canvas, grid, xlim, ylim, colors, valuelist) {
 	}
 };
 
-kriging.pixel_Grid_drawImage = function (polygons, variogram, canvas, x_width, y_width) {
+kriging.pixel_Grid_drawImage = function (polygons, canvas, variogram, xrange, yrange, colors, valuelist) {
 	var ctx = canvas.getContext("2d");
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	console.log(1);
+	console.log(polygons[0]);
 
-	for (pix_x = 0; pix_x < canvas.width; pix_x++){
-		for (pix_y = 0; pix_y < canvas.height; pix_y++) {
-			ctx.fillStyle =getRndColor();
-			ctx.fillRect(pix_x, pix_y, canvas.width, canvas.height);
+	for (var pix_x = 0; pix_x < canvas.width; pix_x++) {
+		for (var pix_y = 0; pix_y < canvas.height; pix_y++) {
+			var pix_lng = xrange[0] + pix_x * ((xrange[1] - xrange[0]) / canvas.width);
+			var pix_lat = yrange[1] - pix_y * ((yrange[1] - yrange[0]) / canvas.height);
+			if (polygons[0].pip(pix_lng, pix_lat)) {
+				var pix_value = kriging.predict(pix_lng, pix_lat, variogram);
+				try {
+					for (var k = 0; k < valuelist.length; k++) {
+						if (pix_value >= valuelist[k] && pix_value < valuelist[k + 1]) {
+							ctx.fillStyle = colors[k];
+							break
+						}
+						else {
+							ctx.fillStyle = "#FFFFFF";
+						}
+					}
+				}
+				catch (err) {
+					ctx.fillStyle = "#000000"
+				}
+			}
+			else{
+				continue
+			}
+
+			ctx.fillRect(pix_x, pix_y, 2, 2);
 		}
 	}
 }
