@@ -634,4 +634,16 @@ kriging.plot = function (canvas, grid, xlim, ylim, colors, valuelist) {
 	}
 };
 
+kriging.pixel_Grid_drawImage = function (polygons, variogram, canvas, x_width, y_width) {
+	var ctx = canvas.getContext("2d");
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	for (pix_x = 0; pix_x < canvas.width; pix_x++){
+		for (pix_y = 0; pix_y < canvas.height; pix_y++) {
+			ctx.fillStyle =getRndColor();
+			ctx.fillRect(pix_x, pix_y, canvas.width, canvas.height);
+		}
+	}
+}
+
 // export { kriging };
