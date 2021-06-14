@@ -245,8 +245,9 @@
 
                 mapping(newxiangmu, data, TargetN, gridArea, colorSet);
 
-                var endTime = +new Date();
+                var endTime = +new Date();                
                 msg(newxiangmu + "绘制完成,用时" + ((endTime - beginTime) / 1000).toFixed(1) + "s");
+                console.log(newxiangmu + "绘制完成,用时" + ((endTime - beginTime) / 1000).toFixed(1) + "s");
                 finishlist.push(newxiangmu);
                 document.getElementById(newxiangmu).style.background = "green";
             }
@@ -285,7 +286,7 @@
             var sigma2 = 0;
             var alpha = 100;
             //对数据集训练
-            var x = [], y = [], t = [];
+            var x = [], y = [], t = [], zlim = [];
             for (var i = 0; i < data.length; i++) {
                 //选出坐标和数据均齐全的进入训练
                 if (data[i].lng != undefined && data[i].lat != undefined && data[i][newxiangmu] != undefined) {
@@ -294,16 +295,18 @@
                     t.push(data[i][newxiangmu])
                 }
             };
+            zlim[0] = Math.min.apply(null, t); zlim[1] = Math.max.apply(null, t);
+
             var variogram = kriging.train(t, x, y, model, sigma2, alpha);
-            // console.log(newxiangmu + "训练结果:");
-            // console.log(variogram);
+            console.log(newxiangmu + "训练结果:");
+            console.log(variogram);
 
             //网格插值模式，对在区域内的格点进行插值，格点精度300个
-            var grid = kriging.grid(gridArea, variogram, (xrange[1] - xrange[0]) / 500, (yrange[1] - yrange[0]) / 500);
+            // var grid = kriging.grid(gridArea, variogram, (xrange[1] - xrange[0]) / 500, (yrange[1] - yrange[0]) / 500);
             // console.log(newxiangmu + "插值grid:");
             // console.log(grid);
 
-            var countourSet = autobreak(grid.zlim[0], grid.zlim[1], TargetN);
+            var countourSet = autobreak(zlim[0], zlim[1], TargetN);
             var breaks = countourSet.breaks;
             // console.log("自动生成的breaks段数", countourSet.levelnum);
             console.log("自动生成的breaks序列", breaks);
@@ -317,7 +320,8 @@
             // console.log("映射颜色序列", colors);
             //将得到的格网grid，按颜色带渲染至canvas上
             mycanvas.width = 1000; mycanvas.height = 1000;
-            var colorcanvas = kriging.plot(mycanvas, grid, [xrange[0], xrange[1]], [yrange[0], yrange[1]], colors, breaks);
+            // var colorcanvas = kriging.plot(mycanvas, grid, [xrange[0], xrange[1]], [yrange[0], yrange[1]], colors, breaks);
+            var colorcanvas = kriging.pixel_Grid_drawImage(gridArea, mycanvas, variogram, xrange, yrange, colors, breaks);
             var Img = mycanvas.toDataURL("image/png");//将canvas转换成image的URL
             var imageBounds = [[yrange[0], xrange[0]], [yrange[1], xrange[1]]];
             var opacity1 = $('#opacity').val();
