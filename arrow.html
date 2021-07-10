@@ -7,15 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="countour/demo.css" />
+    <link rel="stylesheet" href="arrow/demo.css" />
     <script src="https://npmcdn.com/csv2geojson@latest/csv2geojson.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 </head>
 
 <body>
+    <!-- <canvas id="myCanvas" style="float: left; width: 800px; height: 600px; border-width: 1px; z-index: 100;"></canvas> -->
     <div id="map"></div>
-    <div style="float: left;  padding: 10px; background-color: cornsilk;">
+    <div style="position: absolute; padding: 10px; background-color: cornsilk;">
         <div>
             <input type="file" id="kmlFileInput" accept=".csv,.xlsx" onchange="geojsondata=readCSVFile(this)"
                 style="display: none" />
@@ -48,6 +49,9 @@
             比例纬度 <input style="width: 60px;" type="text" name="" id="比例纬度" value="40"><br>
 
         </div>
+        <!-- <div>
+            <button style="width: 100%;" onclick="drawcoord()">绘图</button><br>
+        </div> -->
     </div>
 
     <script src="countour/demo.js"></script>
@@ -57,6 +61,15 @@
         var geojsondata;
         var scalelatlng;
         var vectormap = L.layerGroup();
+
+        function drawcoord() {
+            document.getElementById("map").style.width = "800px";
+            document.getElementById("map").style.height = "600px";
+            document.getElementById("map").style.float = "left";
+            document.getElementById("map").style.left = "400px";
+            document.getElementById("map").style.top = "100px";
+        }
+
 
         function getcoord() {
             // 监听 mouseup 事件
@@ -113,7 +126,7 @@
 
                 var arrow = new L.Arrow(arrowData, arrowOptions);
                 arrow.addTo(vectormap);
-                
+
             }
 
             //-------------------------------------------绘制比例尺
@@ -179,7 +192,6 @@
             }
             return datas;
         }
-
 
 
     </script>
