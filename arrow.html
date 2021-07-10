@@ -15,35 +15,37 @@
 
 <body>
     <div id="map"></div>
-    <div style="width: 135px ; background-color: cornsilk;">
+    <div style="float: left;  padding: 10px; background-color: cornsilk;">
         <div>
             <input type="file" id="kmlFileInput" accept=".csv,.xlsx" onchange="geojsondata=readCSVFile(this)"
                 style="display: none" />
-            <input style="width: 132px;" type="button" onclick="document.getElementById('kmlFileInput').click()"
+            <input style="width: 100%;" type="button" onclick="document.getElementById('kmlFileInput').click()"
                 value="选择CSV" />
         </div>
+        <br>
         <div>
-            线型颜色<input style="width: 62px;" type="color" name="" id="线色" value="#ffffff">
+            线型颜色 <input style="width: 62px;" type="color" name="" id="线色" value="#ffffff">
         </div>
         <div>
-            线型宽度<input style="width: 60px;" type="text" name="" id="线宽" value="1">
+            线型宽度 <input style="width: 60px;" type="text" name="" id="线宽" value="1">
         </div>
         <div>
-            箭头大小<input style="width: 60px;" type="text" name="" id="箭头" value="1">
+            箭头大小 <input style="width: 60px;" type="text" name="" id="箭头" value="1">
         </div>
         <div>
-            缩放比例<input style="width: 60px;" type="text" name="" id="比例" value="1">
+            缩放比例 <input style="width: 60px;" type="text" name="" id="比例" value="1">
         </div>
         <div>
-            <button style="width: 132px;" onclick="clic()">开始绘制</button>
+            <br><button style="width: 100%;" onclick="clic()">开始绘制</button><br>
         </div>
         <br>
 
         <div>
-            比例长度<input style="width: 60px;" type="text" name="" id="比例长度" value="50">
-            <button style="width: 132px;" onclick="getcoord()">点击比例尺位置</button>
-            比例经度<input style="width: 60px;" type="text" name="" id="比例经度" value="120">
-            比例纬度<input style="width: 60px;" type="text" name="" id="比例纬度" value="40">
+            比例长度 <input style="width: 60px;" type="text" name="" id="比例长度" value="50"><br>
+            比例尺生成位置<br>
+            <button style="width: 100%;" onclick="getcoord()">地图点击选择</button><br>
+            比例经度 <input style="width: 60px;" type="text" name="" id="比例经度" value="120"><br>
+            比例纬度 <input style="width: 60px;" type="text" name="" id="比例纬度" value="40"><br>
 
         </div>
     </div>
