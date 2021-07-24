@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="天地图" />
+    <title>天地图－地图API－范例－逆地理编码</title>
+    <style type="text/css">
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            font-family: "Microsoft YaHei"
+        }
+
+        #mapDiv {
+            width: 100%;
+            height: 400px
+        }
+
+        input,
+        b,
+        p {
+            margin-left: 5px;
+            font-size: 14px
+        }
+    </style>
+    <script type="text/javascript"
+        src="http://api.tianditu.gov.cn/api?v=4.0&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51"></script>
+    <script>
+        var map;
+        var zoom = 12;
+        // var geocode;
+        function onLoad() {
+            //初始化地图对象
+            // map = new T.Map("mapDiv");
+            //设置显示地图的中心点和级别
+            // map.centerAndZoom(new T.LngLat(116.40969, 39.89945), zoom);
+
+            //创建对象
+            var geocode = new T.Geocoder();
+            geocode.getPoint("青岛市", function (result) {
+                console.log(result)
+            });
+
+            let xhr = new XMLHttpRequest();
+            var url = 'http://api.tianditu.gov.cn/administrative?postStr={"searchWord":"北京","searchType":"1","needSubInfo":"false","needAll":"false","needPolygon":"true","needPre":"true"}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51'
+            xhr.open('GET', url, true);
+            xhr.send();
+        }
+        // function coordResult(result){
+        //     console.log(result)
+        // }
+
+    </script>
+</head>
+
+<body onLoad="onLoad()">
+    <div id="mapDiv"></div>
+    <div>
+        <p>本示例演示如何使用逆地理编码接口获得详细信息，用鼠标点击地图获得详细信息。</p>
+        <div id="addressMsg" style="font-size:14px"></div>
+        <br />
+        <div id="detailedAddress" style="font-size:14px"></div>
+    </div>
+</body>
+
+</html>
