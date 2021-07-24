@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv='X-UA-Compatible' content='IE=Edge'>
+  <link href='lib/mapbox.js/latest/mapbox.css' rel='stylesheet' />
+  <link rel='stylesheet' href='css/font-awesome/css/font-awesome.min.css'>
+  <link rel='stylesheet' href='css/fonts/mplus.css'>
+  <title>地址转坐标</title>
+  <link href='lib/draw/leaflet.draw.css' rel='stylesheet' />
+  <link href='lib/codemirror/lib/codemirror.css' rel='stylesheet' />
+  <link href='css/base.css' rel='stylesheet' />
+  <link href='css/marker.css' rel='stylesheet' />
+  <link href='css/github_browse.css' rel='stylesheet' />
+  <link href='css/site.css' rel='stylesheet' />
+  <link href='css/my.css' rel='stylesheet' />
+  <link href='css/theme.css' rel='stylesheet' />
+  <link rel='icon' type='image/x-icon' href='/img/favicon.png' />
+  <meta name='author' content='MapBox' />
+  <meta name='description' content='simply edit geojson map data' />
+  <meta property='og:site_name' content='geojson.io' />
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1'>
+
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script src='lib/mapbox.js/latest/mapbox.js'></script>
+  <script src='lib/raven.min.js'></script>
+  <script type="text/javascript"
+    src="http://api.tianditu.gov.cn/api?v=4.0&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51"></script>
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src
+      'self'
+      ;
+    child-src
+      'self'
+      blob:
+      ;
+    connect-src
+      'self'
+      *
+      ;
+    font-src
+      'self'
+      ;
+    frame-src
+      'self'
+      ;
+    img-src
+      'self'
+      data:
+      *
+      ;
+    script-src
+      'self'
+      'unsafe-eval'
+      'unsafe-inline'
+      https://cdn.segment.com
+      https://assets.customer.io
+      https://secure.gaug.es
+      https://www.google-analytics.com
+      ;
+    style-src
+      'self'
+      'unsafe-inline'
+      ;
+  ">
+  <script>
+    if (/a\.tiles\.mapbox\.com/.test(L.mapbox.config.HTTP_URL)) {
+      Raven.config('https://c2d096c944dd4150ab7e44b0881b4a46@app.getsentry.com/11480', {
+        whitelistUrls: [/geojson\.io/],
+        ignoreErrors: [
+          'Uncaught Error: Error connecting to extension ckibcdccnfeookdmbahgiakhnjcddpki',
+          'Uncaught Error: Error connecting to extension pioclpoplcdbaefihamjohnefbikjilc'
+        ]
+      }).install();
+    }
+  </script>
+  <style>
+    body {
+      display: none;
+    }
+  </style>
+</head>
+
+<body id='geojsonio-body'>
+
+  <div class='geojsonio'></div>
+  <button id="ht1" class="ht1" onclick=getlocation()>get location</button>
+  <textarea id="textarea" class="textarea" cols="20" rows="40">青岛市&#10;大连市&#10;上海市</textarea>
+  <script>
+    if (self == top) {
+      document.getElementsByTagName("body")[0].style.display = 'block';
+    } else {
+      top.location = self.location;
+    }
+  </script>
+
+  <script src='dist/delegate.js'></script>
+  <script src='dist/lib.js'></script>
+  <script src='dist/site.js'></script>
+
+
+  <script type='text/javascript' charset="UTF-8">
+    var position;
+    var coord;
+    var coord0 = new Array;
+    var vectormap = L.featureGroup();
+
+    function getlocation() {
+      vectormap.clearLayers();
+      window.api.mapLayer.clearLayers()
+      var Utext = document.getElementById("textarea").value;
+      Utext = Utext.trim();
+      Utext = Utext.replace(/'/g, "′");
+      var yyy = Utext.split(/[\n]/); //按行分割
+      console.log(yyy);
+      console.log(window.api)
+
+      for (i = 0; i < yyy.length; i++) {
+        position = yyy[i];
+        getad(position);
+        // console.log(aaa)
+        // console.log(coord)
+        coord0[i] = coord;
+        var lng = coord.location.lon;
+        var lat = coord.location.lat;
+        console.log(lng, lat)
+        // L.marker([lat, lng])
+        L.marker([lat, lng])
+        // L.Draw.Marker([lat, lng])
+        // .bindPopup(position).openPopup()
+        .addTo(window.api.mapLayer);
+
+      
+        // vectormap.addTo(window.api.map);
+        // vectormap.addTo(window.api.mapLayer)
+      }
+      // window.api.map.update();
+
+    }
+    // var geocode = new T.Geocoder();
+    // geocode.getPoint("青岛市", function (result) {
+    //   console.log(result)
+    // });
+
+    // var geocode;
+    // geocode = new T.Geocoder();
+    // // geocode.getLocation(e.lnglat,searchResult);
+    // geocode.getPoint(location, function (result) {
+    //   console.log(result)
+    // })
+    // transAddress(location)
+    // $.get('https://restapi.amap.com/v3/geocode/geo?address=北京市人民英雄纪念碑&output=JSON&key=2b2bb467194aa9e72e495eafa99bb0c4',function(data00){
+    //   console.log(data00.geocodes[0].location)
+
+    // })
+
+    // var key1 = "0a5d3fb2ad894a60ff2d3abccc7a7c51";
+    // var key2 = "dc2e4dabf361647e9e05ec2b95758f0e";
+    // var requestString1 = 'http://api.tianditu.gov.cn/geocoder?ds={"keyWord":"' + location + '"}&tk=' + key1;
+    // console.log(requestString1);
+
+    // $.getJSON(requestString1, function (position) {
+    //   console.log(position)
+    //   // console.log(data00.geocodes[0].location)
+
+    // })
+    function getad(position) {
+
+      var url0 = 'http://api.tianditu.gov.cn/geocoder?ds={"keyWord":"' + position + '"}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51';
+      var url = 'http://api.tianditu.gov.cn/apiserver/ajaxproxy?proxyReqUrl=' + url0;
+      $.ajax({
+        url: url,
+        async: false,
+        // dataType: 'JSON',
+        type: "get",
+        success: function (result2) {
+          var str = result2.slice(19);
+          var str2 = str.slice(0, str.length - 1);
+          coord = JSON.parse(str2);
+          // console.log("coord");
+          // console.log(coord);
+        }
+      });
+      // console.log(json)
+    }
+
+  </script>
+</body>
+
+</html>
