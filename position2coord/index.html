@@ -167,8 +167,8 @@
     // })
     function getad(position) {
 
-      var url0 = 'http://api.tianditu.gov.cn/geocoder?ds={"keyWord":"' + position + '"}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51';
-      var url = 'http://api.tianditu.gov.cn/apiserver/ajaxproxy?proxyReqUrl=' + url0;
+      var url0 = 'https://api.tianditu.gov.cn/geocoder?ds={"keyWord":"' + position + '"}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51';
+      var url = 'https://api.tianditu.gov.cn/apiserver/ajaxproxy?proxyReqUrl=' + url0;
       $.ajax({
         url: url,
         async: false,
