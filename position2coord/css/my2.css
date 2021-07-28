@@ -1,0 +1,20 @@
+.ht1 {
+    position:fixed;
+    float: left;
+    top:250px; 
+    left:0;
+    width: 305px;
+    height: 30px;
+    background-color: bisque;
+    display: none;
+}
+.textarea {
+    position:fixed;
+    /* float: left; */
+    top:280px; 
+    left:0;
+    width: 800px;
+    height: 500px;
+    resize: none;
+    display: none;
+}
