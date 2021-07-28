@@ -104,17 +104,18 @@
     var position;
     var coord;
     var coord0 = new Array;
-    var vectormap = L.featureGroup();
+    // var vectormap = L.featureGroup();
+    var mymap=window.api.map;
 
     function getlocation() {
-      vectormap.clearLayers();
+      // vectormap.clearLayers();
       window.api.mapLayer.clearLayers()
       var Utext = document.getElementById("textarea").value;
       Utext = Utext.trim();
       Utext = Utext.replace(/'/g, "′");
       var yyy = Utext.split(/[\n]/); //按行分割
       console.log(yyy);
-      console.log(window.api)
+      // console.log(window.api)
 
       for (i = 0; i < yyy.length; i++) {
         position = yyy[i];
@@ -128,14 +129,19 @@
         // L.marker([lat, lng])
         L.marker([lat, lng])
         // L.Draw.Marker([lat, lng])
-        // .bindPopup(position).openPopup()
+        .bindPopup(position).openPopup()
         .addTo(window.api.mapLayer);
-
+        
       
         // vectormap.addTo(window.api.map);
         // vectormap.addTo(window.api.mapLayer)
       }
-      // window.api.map.update();
+      // console.log(mymap);
+      // mymap.setView([30,120],8);
+      console.log(window.api.mapLayer);
+      // mymap.fitBounds(vectormap.getBounds());
+      mymap.fitBounds(window.api.mapLayer.getBounds());
+
 
     }
     // var geocode = new T.Geocoder();
