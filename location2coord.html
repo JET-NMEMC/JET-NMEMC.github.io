@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='css/my2.css' rel='stylesheet' />
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript"
+        src="http://api.tianditu.gov.cn/api?v=4.0&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51"></script>
+</head>
+
+<body>
+
+    <button id="ht1" class="ht1" onclick=getlocation()>get location</button>
+    <br>
+    <textarea id="textarea" class="textarea" cols="50" rows="40">青岛市&#10;大连市&#10;上海市</textarea>
+    <textarea id="textarea2" class="textarea" cols="50" rows="40"></textarea>
+
+
+    <script>
+        var position;
+        var coord;
+        var coord0 = new Array;
+        // var vectormap = L.featureGroup();
+
+        function getlocation() {
+            //   vectormap.clearLayers();
+            // window.api.mapLayer.clearLayers()
+            var Utext = document.getElementById("textarea").value;
+            var Utext2 = ''
+            Utext = Utext.trim();
+            Utext = Utext.replace(/'/g, "′");
+            var yyy = Utext.split(/[\n]/); //按行分割
+            console.log(yyy);
+            //   console.log(window.api)
+
+            for (i = 0; i < yyy.length; i++) {
+                position = yyy[i];
+                getad(position);
+                // console.log(aaa)
+                // console.log(coord);                
+                var lng = coord.location.lon;
+                var lat = coord.location.lat;
+                coord0[i]=[lng,lat];
+                // Utext2 = Utext2 + lng + ' ' + lat +"\n"
+
+                // console.log(lng, lat)
+
+                // L.marker([lat, lng])
+                // .bindPopup(position).openPopup()
+                // .addTo(window.api.mapLayer);
+            }
+            Utext2=Doub_Arr_2_Str(coord0)
+
+            // console.log(Utext2);
+            document.getElementById("textarea2").innerHTML = Utext2;
+        }
+
+
+        function getad(position) {
+            var url0 = 'https://api.tianditu.gov.cn/geocoder?ds={"keyWord":"' + position + '"}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51';
+            var url = 'https://api.tianditu.gov.cn/apiserver/ajaxproxy?proxyReqUrl=' + url0;
+            $.ajax({
+                url: url,
+                async: false,
+                // dataType: 'JSON',
+                type: "get",
+                success: function (result2) {
+                    var str = result2.slice(19);
+                    var str2 = str.slice(0, str.length - 1);
+                    coord = JSON.parse(str2);
+                    console.log("coord");
+                    console.log(coord);
+                }
+            });
+        }
+
+        function Doub_Arr_2_Str(arr) {
+        str1 = []
+        str2 = ""
+        for (var i = 0; i < arr.length; i++) {
+            str1[i] = arr[i].join("	");
+            str2 = str1.join("\n");
+        }
+        return str2;
+    }
+    </script>
+</body>
+
+</html>
