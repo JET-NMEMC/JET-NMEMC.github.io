@@ -6,7 +6,7 @@
     width: 305px;
     height: 30px;
     background-color: bisque;
-    display: none;
+    /* display: none; */
 }
 .textarea {
     position:fixed;
@@ -16,5 +16,5 @@
     width: 300px;
     height: 500px;
     resize: none;
-    display: none;
+    /* display: none; */
 }
