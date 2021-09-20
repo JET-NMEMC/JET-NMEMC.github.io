@@ -85,8 +85,9 @@
 <body id='geojsonio-body'>
 
   <div class='geojsonio'></div>
-  <button id="ht1" class="ht1" onclick=getlocation()>get location</button>
-  <textarea id="textarea" class="textarea" cols="20" rows="40">青岛市&#10;大连市&#10;上海市</textarea>
+  <button id="ht1" class="ht1" onclick=getlocation2()>get location</button>
+  <textarea id="textarea" class="textarea" cols="20" rows="40">经度	纬度	name	省份&#10;121.561	38.875	大连市	辽宁省&#10;120.427	36.093	青岛市	山东省
+  </textarea>
   <script>
     if (self == top) {
       document.getElementsByTagName("body")[0].style.display = 'block';
@@ -105,7 +106,7 @@
     var coord;
     var coord0 = new Array;
     // var vectormap = L.featureGroup();
-    var mymap=window.api.map;
+    var mymap = window.api.map;
 
     function getlocation() {
       // vectormap.clearLayers();
@@ -128,11 +129,11 @@
         console.log(lng, lat)
         // L.marker([lat, lng])
         L.marker([lat, lng])
-        // L.Draw.Marker([lat, lng])
-        .bindPopup(position).openPopup()
-        .addTo(window.api.mapLayer);
-        
-      
+          // L.Draw.Marker([lat, lng])
+          .bindPopup(position).openPopup()
+          .addTo(window.api.mapLayer);
+
+
         // vectormap.addTo(window.api.map);
         // vectormap.addTo(window.api.mapLayer)
       }
@@ -144,33 +145,7 @@
 
 
     }
-    // var geocode = new T.Geocoder();
-    // geocode.getPoint("青岛市", function (result) {
-    //   console.log(result)
-    // });
 
-    // var geocode;
-    // geocode = new T.Geocoder();
-    // // geocode.getLocation(e.lnglat,searchResult);
-    // geocode.getPoint(location, function (result) {
-    //   console.log(result)
-    // })
-    // transAddress(location)
-    // $.get('https://restapi.amap.com/v3/geocode/geo?address=北京市人民英雄纪念碑&output=JSON&key=2b2bb467194aa9e72e495eafa99bb0c4',function(data00){
-    //   console.log(data00.geocodes[0].location)
-
-    // })
-
-    // var key1 = "0a5d3fb2ad894a60ff2d3abccc7a7c51";
-    // var key2 = "dc2e4dabf361647e9e05ec2b95758f0e";
-    // var requestString1 = 'http://api.tianditu.gov.cn/geocoder?ds={"keyWord":"' + location + '"}&tk=' + key1;
-    // console.log(requestString1);
-
-    // $.getJSON(requestString1, function (position) {
-    //   console.log(position)
-    //   // console.log(data00.geocodes[0].location)
-
-    // })
     function getad(position) {
 
       var url0 = 'https://api.tianditu.gov.cn/geocoder?ds={"keyWord":"' + position + '"}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51';
@@ -189,6 +164,67 @@
         }
       });
       // console.log(json)
+    }
+
+    function getlocation2() {
+      var Utext = document.getElementById("textarea").value;
+      Utext = Utext.trim();
+      Utext = Utext.replace(/'/g, "′");
+      var yyy = Utext.split(/[\n]/); //按行分割
+      console.log("行数", yyy.length);
+      var liename = yyy[0].split(/,|，|\s+/);
+      console.log("列名", liename);
+
+      var featuresAll = [];
+
+      for (var j = 1; j < yyy.length; j++) {
+        var point1 = yyy[j].split(/,|，|\s+/);
+        var coord = [Number(point1[0]), Number(point1[1])];
+        console.log(coord);
+
+        //重组属性prop，赋给properties
+        var prop = {};
+        for (var i = 2; i < liename.length; i++) {
+          eval("prop." + liename[i] + "='" + point1[i] + "'")
+        }
+
+        //生成单个形状的json
+        var featurej = lineString(coord, prop);
+        console.log(featurej);
+        console.log(JSON.stringify(featurej))
+        featuresAll.push(featurej);
+      }
+
+      var featuresFinal = featureCollection(featuresAll);
+      console.log(featuresFinal);
+      console.log(JSON.stringify(featuresFinal))
+      alert(JSON.stringify(featuresFinal))
+
+    }
+
+
+    function featureCollection(features, option) {
+      var fc = { type: "FeatureCollection" };
+      fc.features = features;
+      return fc;
+    }
+
+    function lineString(coordinates, properties, options) {
+      return feature(
+        {
+          type: "Point",
+          coordinates: coordinates
+        },
+        properties,
+        options
+      )
+    }
+
+    function feature(geometry, properties, options) {
+      var feat = { type: "Feature" };
+      feat.properties = properties || {};
+      feat.geometry = geometry;
+      return feat;
     }
 
   </script>
