@@ -1,9 +1,9 @@
 .ht1 {
     position:fixed;
     float: left;
-    top:250px; 
+    bottom:230px; 
     left:0;
-    width: 305px;
+    width: 405px;
     height: 30px;
     background-color: bisque;
     /* display: none; */
@@ -11,10 +11,22 @@
 .textarea {
     position:fixed;
     /* float: left; */
-    top:280px; 
+    bottom:30px; 
     left:0;
-    width: 300px;
-    height: 500px;
-    resize: none;
+    width: 400px;
+    height: 200px;
+    /* resize: none; */
     /* display: none; */
+}
+.textarea2 {
+    position:fixed;
+    /* float: left; */
+    bottom:10px; 
+    right:10px;
+    width: 400px;
+    height: 10px;
+    /* resize: none; */
+    /* display: none; */
+    /* visibility: hidden; */
+    z-index: -1;
 }
