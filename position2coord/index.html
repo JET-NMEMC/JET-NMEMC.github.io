@@ -86,8 +86,9 @@
 
   <div class='geojsonio'></div>
   <button id="ht1" class="ht1" onclick=getlocation2()>get location</button>
-  <textarea id="textarea" class="textarea" cols="20" rows="40">经度	纬度	name	省份&#10;121.561	38.875	大连市	辽宁省&#10;120.427	36.093	青岛市	山东省
+  <textarea id="textarea" class="textarea" cols="40" rows="20">经度	纬度	name	省份&#10;121.561	38.875	大连市	辽宁省&#10;120.427	36.093	青岛市	山东省
   </textarea>
+  <textarea id="textarea2" class="textarea2" cols="10" rows="10"></textarea>
   <script>
     if (self == top) {
       document.getElementsByTagName("body")[0].style.display = 'block';
@@ -142,8 +143,6 @@
       console.log(window.api.mapLayer);
       // mymap.fitBounds(vectormap.getBounds());
       mymap.fitBounds(window.api.mapLayer.getBounds());
-
-
     }
 
     function getad(position) {
@@ -199,6 +198,10 @@
       console.log(featuresFinal);
       var expJson = JSON.stringify(featuresFinal)
       console.log(expJson);
+      document.getElementById("textarea2").value = expJson;
+      document.querySelector("#textarea2").select();
+      document.execCommand('copy');
+
       // copyToClipboard(expJson);
       // var expJson2 = copyText(expJson);
 
@@ -231,20 +234,19 @@
       // }
       // abd[1].innerHTML = expJson
 
-
-
     }
-    function copyToClipboard(val){
-    var dummy = document.createElement("input");
-    dummy.style.display = 'none';
-    document.body.appendChild(dummy);
 
-    dummy.setAttribute("id", "dummy_id");
-    document.getElementById("dummy_id").value=val;
-    dummy.select();
-    document.execCommand("copy");
-    document.body.removeChild(dummy);
-}
+    function copyToClipboard(val) {
+      var dummy = document.createElement("input");
+      dummy.style.display = 'none';
+      document.body.appendChild(dummy);
+
+      dummy.setAttribute("id", "dummy_id");
+      document.getElementById("dummy_id").value = val;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+    }
 
 
     function featureCollection(features, option) {
