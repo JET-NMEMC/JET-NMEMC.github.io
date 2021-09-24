@@ -197,8 +197,17 @@
 
       var featuresFinal = featureCollection(featuresAll);
       console.log(featuresFinal);
-      console.log(JSON.stringify(featuresFinal))
-      alert(JSON.stringify(featuresFinal))
+      var expJson = JSON.stringify(featuresFinal)
+      console.log(expJson);
+
+
+      // var abc = document.getElementsByTagName("div")
+      // for (var i = 0; i < abc.length; i++) {
+      //   if (abc[i].className = "CodeMirror-code") {
+      //     // abc[i].innerhtml = JSON.stringify(featuresFinal) 
+      //     abc[i].innerHTML = '<div style="position:relative;"> <div style="position:absolute;left:-29px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt"style="left:0px;width:20px;">1</div></div><pre>' + expJson + '</pre></div>'
+      //   }
+      // }
 
     }
 
