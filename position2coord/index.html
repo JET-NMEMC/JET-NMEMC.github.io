@@ -199,17 +199,52 @@
       console.log(featuresFinal);
       var expJson = JSON.stringify(featuresFinal)
       console.log(expJson);
+      // copyToClipboard(expJson);
+      // var expJson2 = copyText(expJson);
 
 
       // var abc = document.getElementsByTagName("div")
       // for (var i = 0; i < abc.length; i++) {
       //   if (abc[i].className = "CodeMirror-code") {
-      //     // abc[i].innerhtml = JSON.stringify(featuresFinal) 
-      //     abc[i].innerHTML = '<div style="position:relative;"> <div style="position:absolute;left:-29px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt"style="left:0px;width:20px;">1</div></div><pre>' + expJson + '</pre></div>'
+      //     console.log(abc[i]);
+      //   // abc[i].innerHTML =""
       //   }
       // }
 
+
+      //     alert("YES");
+      //     // abc[i].innerhtml = JSON.stringify(featuresFinal) 
+      //     abc[i].innerHTML = 'QQQQQQQQQQQQQQQQQQQQ'
+      //     // abc[i].innerHTML = '<div style="position:relative;"> <div style="position:absolute;left:-29px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt"style="left:0px;width:20px;">1</div></div><pre>' + expJson + '</pre></div>'
+      //   }
+      // }
+
+
+      // var abd = document.getElementsByTagName("pre");
+      // console.log(abd);
+      // for (var i = abd.length - 1; i > 0; i--) {
+      //   // abd[i].innerText = ""
+      //   // console.log(abd[i].)
+      //   console.log(abd[i].parentElement)
+
+      //   // abd[i].innerText = ""
+      // }
+      // abd[1].innerHTML = expJson
+
+
+
     }
+    function copyToClipboard(val){
+    var dummy = document.createElement("input");
+    dummy.style.display = 'none';
+    document.body.appendChild(dummy);
+
+    dummy.setAttribute("id", "dummy_id");
+    document.getElementById("dummy_id").value=val;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+}
 
 
     function featureCollection(features, option) {
