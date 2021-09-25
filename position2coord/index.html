@@ -101,6 +101,8 @@
   <script src='dist/lib.js'></script>
   <script src='dist/site.js'></script>
   <script src='dist/shpwrite.js'></script>
+  <!-- <script src="dist/GeoShape.js"></script> -->
+  <!-- <script src="dist/jszip.min.js"></script> -->
 
 
   <script type='text/javascript' charset="UTF-8">
@@ -214,6 +216,7 @@
       }
       // a GeoJSON bridge for features
       shpwrite.download(featuresFinal, options);
+      // GeoShape.transformAndDownload(featuresFinal);
 
       // copyToClipboard(expJson);
       // var expJson2 = copyText(expJson);
