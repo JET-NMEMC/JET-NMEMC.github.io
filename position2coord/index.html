@@ -100,6 +100,7 @@
   <script src='dist/delegate.js'></script>
   <script src='dist/lib.js'></script>
   <script src='dist/site.js'></script>
+  <script src='dist/shpwrite.js'></script>
 
 
   <script type='text/javascript' charset="UTF-8">
@@ -201,6 +202,18 @@
       document.getElementById("textarea2").value = expJson;
       document.querySelector("#textarea2").select();
       document.execCommand('copy');
+
+
+      var options = {
+        folder: 'myshapes',
+        types: {
+          point: 'mypoints',
+          polygon: 'mypolygons',
+          line: 'mylines'
+        }
+      }
+      // a GeoJSON bridge for features
+      shpwrite.download(featuresFinal, options);
 
       // copyToClipboard(expJson);
       // var expJson2 = copyText(expJson);
