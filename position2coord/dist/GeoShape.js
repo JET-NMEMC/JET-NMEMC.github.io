@@ -47,20 +47,22 @@ var GeoShape = {
                 f.writeDbf();
                 zip.file(f.getDbfName(), f.dbf);
                 zip.file(f.getCpgName(), "UTF-8");
+                zip.file(f.getPrjName(), 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]');
+
                 if (f.useCSV) {
                     f.writeCsv();
                     zip.file(f.getCsvName(), f.csv);
                 }
-                jsonObject.crs={
-                    "type":"name",
-                    "properties":{
-                    "name":"EPSG:4326"
-                    }
-                    }
+                // jsonObject.crs={
+                //     "type":"name",
+                //     "properties":{
+                //     "name":"EPSG:4326"
+                //     }
+                //     }
 
-                if (jsonObject.crs && jsonObject.crs.properties && jsonObject.crs.properties.name){
-                    zip.file(f.getPrjName(), jsonObject.crs.properties.name)
-                } 
+                // if (jsonObject.crs && jsonObject.crs.properties && jsonObject.crs.properties.name){
+                //     zip.file(f.getPrjName(), jsonObject.crs.properties.name)
+                // } 
                 // else{
                 //     zip.file(f.getPrjName(), 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]')
                 // };
@@ -199,10 +201,10 @@ class ShapeRecord {
         this.partIndices = [];
         this.partCount = 0;
 
-        this.X1 = 9999;
-        this.X2 = -9999;
-        this.Y1 = -9999;
-        this.Y2 = 9999;
+        this.X1 = 180;
+        this.X2 = -180;
+        this.Y1 = -90;
+        this.Y2 = 90;
 
         fileGen.useCSV = false;
         fileGen.records.push(this);
@@ -369,10 +371,10 @@ class ESRIFileGen {
         this.shape = shape;
         this.records = [];
 
-        this.X1 = 9999;
-        this.X2 = -9999;
-        this.Y1 = -9999;
-        this.Y2 = 9999;
+        this.X1 = 180;
+        this.X2 = -180;
+        this.Y1 = -90;
+        this.Y2 = 90;
 
         this.propertyNames = [];
         this.propertyLengths = [];
