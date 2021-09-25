@@ -5023,7 +5023,7 @@ var out = {
               streamFiles: false,
               compression: "STORE",
               compressionOptions : null,
-              type: "",
+              type: "base64",
               platform: "DOS",
               comment: null,
               mimeType: 'application/zip',
@@ -16555,6 +16555,7 @@ var StringDecoder = exports.StringDecoder = function(encoding) {
   assertEncoding(encoding);
   switch (this.encoding) {
     case 'utf8':
+    case 'utf-8':
       // CESU-8 represents each of Surrogate Pair by 3-bytes
       this.surrogateSize = 3;
       break;
