@@ -100,9 +100,10 @@
   <script src='dist/delegate.js'></script>
   <script src='dist/lib.js'></script>
   <script src='dist/site.js'></script>
-  <script src='dist/shpwrite.js'></script>
-  <!-- <script src="dist/GeoShape.js"></script> -->
-  <!-- <script src="dist/jszip.min.js"></script> -->
+  <!-- <script src='dist/shpwrite.js'></script> -->
+  <!-- <script src='dist/mapshaper.js'></script> -->
+  <script src="dist/GeoShape.js"></script>
+  <script src="dist/jszip.min.js"></script>
 
 
   <script type='text/javascript' charset="UTF-8">
@@ -214,12 +215,15 @@
           line: 'mylines'
         }
       }
-      // a GeoJSON bridge for features
-      shpwrite.download(featuresFinal, options);
-      // GeoShape.transformAndDownload(featuresFinal);
 
-      // copyToClipboard(expJson);
-      // var expJson2 = copyText(expJson);
+      // var sdf = importGeoJSON(featuresFinal);
+      // consolelog(sdf)
+      // a GeoJSON bridge for features
+      // shpwrite.download(featuresFinal, options);
+
+
+
+      GeoShape.transformAndDownload(featuresFinal);
 
 
       // var abc = document.getElementsByTagName("div")
@@ -250,18 +254,6 @@
       // }
       // abd[1].innerHTML = expJson
 
-    }
-
-    function copyToClipboard(val) {
-      var dummy = document.createElement("input");
-      dummy.style.display = 'none';
-      document.body.appendChild(dummy);
-
-      dummy.setAttribute("id", "dummy_id");
-      document.getElementById("dummy_id").value = val;
-      dummy.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummy);
     }
 
 
