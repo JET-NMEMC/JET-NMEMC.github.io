@@ -86,6 +86,7 @@
 
   <div class='geojsonio'></div>
   <button id="ht1" class="ht1" onclick=getlocation2()>get location</button>
+  <button id="ht2" class="ht2" onclick=exportshp()>export</button>
   <textarea id="textarea" class="textarea" cols="40" rows="20">经度	纬度	name	省份&#10;121.561	38.875	大连市	辽宁省&#10;120.427	36.093	青岛市	山东省
   </textarea>
   <textarea id="textarea2" class="textarea2" cols="10" rows="10"></textarea>
@@ -179,7 +180,7 @@
       console.log("列名", liename);
 
       var featuresAll = [];
-      var range=[];
+      var range = [];
       range[0] = -180;
       range[1] = 180;
       range[2] = -90;
@@ -189,7 +190,7 @@
         var point1 = yyy[j].split(/,|，|\s+/);
         var coord = [Number(point1[0]), Number(point1[1])];
         console.log(coord);
-        
+
         if (point1[0] > range[0]) { range[0] = point1[0] };
         if (point1[0] < range[1]) { range[1] = point1[0] };
         if (point1[1] > range[2]) { range[2] = point1[1] };
@@ -218,14 +219,14 @@
       document.execCommand('copy');
 
 
-      var options = {
-        folder: 'myshapes',
-        types: {
-          point: 'mypoints',
-          polygon: 'mypolygons',
-          line: 'mylines'
-        }
-      }
+      // var options = {
+      //   folder: 'myshapes',
+      //   types: {
+      //     point: 'mypoints',
+      //     polygon: 'mypolygons',
+      //     line: 'mylines'
+      //   }
+      // }
 
       // var sdf = importGeoJSON(featuresFinal);
       // consolelog(sdf)
@@ -234,7 +235,8 @@
 
 
 
-      GeoShape.transformAndDownload(featuresFinal);
+      // GeoShape.transformAndDownload(JSON.parse(expJson));
+      // GeoShape.transformAndDownload(featuresFinal);
 
 
       // var abc = document.getElementsByTagName("div")
@@ -265,6 +267,35 @@
       // }
       // abd[1].innerHTML = expJson
 
+    }
+    // function selectAll(theField) {
+    //   var tempval = "document." + theField  //这里主要是要得到dom  document.test.select1
+    //   tempval.select()    // 选取文本域的内容
+    //   this.copy(tempval)
+    // }
+
+
+    function exportshp() {
+      var abd = document.getElementsByTagName("pre");
+      // var ade=document.getElementsByClassName("CodeMirror-code");
+      // console.log(ade);
+      // ade.id="code";
+      // $("#code").select();
+      // document.execCommand("copy");
+      // adr.execCommand("selectAll");
+      // document.execCommand("selectAll");
+      // document.execCommand("copy");
+      // console.log(abe);
+      // selectAll("CodeMirror-code");
+
+      var jsonstr = "";
+      for (var i = 0; i < abd.length; i++) {
+        // console.log(abd[i].innerText)
+        jsonstr += abd[i].innerText
+      }
+      console.log(jsonstr);
+      console.log(JSON.parse(jsonstr));
+      GeoShape.transformAndDownload(JSON.parse(jsonstr));
     }
 
 
