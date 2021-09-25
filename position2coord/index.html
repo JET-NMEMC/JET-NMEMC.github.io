@@ -101,7 +101,7 @@
   <script src='dist/lib.js'></script>
   <script src='dist/site.js'></script>
   <!-- <script src='dist/shpwrite.js'></script> -->
-  <!-- <script src='dist/mapshaper.js'></script> -->
+  <script src='dist/mapshaper.js'></script>
   <script src="dist/GeoShape.js"></script>
   <script src="dist/jszip.min.js"></script>
 
@@ -179,11 +179,21 @@
       console.log("列名", liename);
 
       var featuresAll = [];
+      var range=[];
+      range[0] = -180;
+      range[1] = 180;
+      range[2] = -90;
+      range[3] = 90;
 
       for (var j = 1; j < yyy.length; j++) {
         var point1 = yyy[j].split(/,|，|\s+/);
         var coord = [Number(point1[0]), Number(point1[1])];
         console.log(coord);
+        
+        if (point1[0] > range[0]) { range[0] = point1[0] };
+        if (point1[0] < range[1]) { range[1] = point1[0] };
+        if (point1[1] > range[2]) { range[2] = point1[1] };
+        if (point1[1] < range[3]) { range[3] = point1[1] };
 
         //重组属性prop，赋给properties
         var prop = {};
@@ -193,10 +203,11 @@
 
         //生成单个形状的json
         var featurej = lineString(coord, prop);
-        console.log(featurej);
-        console.log(JSON.stringify(featurej))
+        // console.log(featurej);
+        // console.log(JSON.stringify(featurej))
         featuresAll.push(featurej);
       }
+      console.log(range);
 
       var featuresFinal = featureCollection(featuresAll);
       console.log(featuresFinal);
