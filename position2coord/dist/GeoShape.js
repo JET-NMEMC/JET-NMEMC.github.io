@@ -13,6 +13,7 @@ var GeoShape = {
      * 
      * @param {any} jsonObject - input GeoJSON object
      * @param {any} resultZipFile - desired filename of output zip file
+     * @param {any} range - desired filename of output zip file
      */
     transformAndDownload: function (jsonObject, resultZipFile) {
         this.files = [];
@@ -206,6 +207,11 @@ class ShapeRecord {
         this.Y1 = -90;
         this.Y2 = 90;
 
+        // this.X1 = range[1];
+        // this.X2 = range[0];
+        // this.Y1 = range[3];
+        // this.Y2 = range[2];
+
         fileGen.useCSV = false;
         fileGen.records.push(this);
 
@@ -372,8 +378,8 @@ class ESRIFileGen {
         this.records = [];
 
         this.X1 = 180;
-        this.X2 = -180;
-        this.Y1 = -90;
+        this.X2 = 0;
+        this.Y1 = 0;
         this.Y2 = 90;
 
         this.propertyNames = [];
@@ -568,7 +574,7 @@ class PointFileGen extends ESRIFileGen {
 
         this.checkBounds(item[0], item[1]);
         var rec = new ShapeRecord(this, item);
-        rec.checkBounds(item[0], item[1]);
+        rec.checkBounds(g[0], g[1]);
         rec.points.push(g[0], g[1]);
     }
 }
