@@ -3,11 +3,22 @@
     float: left;
     bottom:230px; 
     left:0;
-    width: 405px;
+    width: 305px;
     height: 30px;
     background-color: bisque;
     /* display: none; */
 }
+.ht2 {
+    position:fixed;
+    float: left;
+    bottom:230px; 
+    left:306px;
+    width: 99px;
+    height: 30px;
+    background-color: bisque;
+    /* display: none; */
+}
+
 .textarea {
     position:fixed;
     /* float: left; */
