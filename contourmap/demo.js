@@ -40,6 +40,13 @@ function initDemoMap() {
     subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
     attribution: "&copy; Google"
   });
+  var GoogleMap2 = L.tileLayer("http://gdtc.shipxy.com/tile.g?z={z}&x={x}&y={y}", {
+    attribution: "&copy; Google"
+  });  
+  var GoogleImage2 = L.tileLayer("http://gwxc.shipxy.com/tile.g?z={z}&x={x}&y={y}", {
+  });
+  var haitu = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
+  });
   var gaode = L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {
     maxZoom: 18,
     attribution: "&copy; 高德地图"
@@ -48,14 +55,17 @@ function initDemoMap() {
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri影像": Esri_WorldImagery,
-    "天地图影像": tianditu_img,
-    "高德火星影像": gaode,
+    "天地图影像": tianditu_img,    
     "谷歌影像": GoogleImage,
     "谷歌地图": GoogleMap,
+    "海图在线": haitu,
+    "谷歌影像 火星": GoogleImage2,
+    "高德影像 火星": gaode,    
+    "谷歌地图 火星": GoogleMap2,
     "OpenStreet": OpenStreetMap_Mapnik,
     "JawgStreet": Jawg_Streets,
-    "Geoq暖色火星": warm,
-    "Geoq水系火星": HydroMap,
+    "Geoq暖色 火星": warm,
+    "Geoq水系 火星": HydroMap,
     // "谷歌地图":gugedianzi
     // "Jawg地形": Jawg_Terrain,
   };
