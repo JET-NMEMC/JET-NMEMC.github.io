@@ -39,6 +39,8 @@ function initDemoMap() {
   var GoogleImage = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
     subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
   });
+  var GoogleImage2 = L.tileLayer("https://mt1-cdn.mapsvc.com/maps/vt?lyrs=h&gl=cn&x={x}&y={y}&z={z}", {
+  });
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri影像": Esri_WorldImagery,
