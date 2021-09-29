@@ -47,6 +47,8 @@ function initDemoMap() {
   });
   var haitu = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
   });
+  var haitu2 = L.tileLayer("http://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}", {
+  });
   var gaode = L.tileLayer.chinaProvider('GaoDe.Satellite.Map', {
     maxZoom: 18,
     attribution: "&copy; 高德地图"
@@ -58,7 +60,8 @@ function initDemoMap() {
     "天地图影像": tianditu_img,    
     "谷歌影像": GoogleImage,
     "谷歌地图": GoogleMap,
-    "海图在线": haitu,
+    // "海图船讯": haitu,
+    "海图在线": haitu2,
     "谷歌影像 火星": GoogleImage2,
     "高德影像 火星": gaode,    
     "谷歌地图 火星": GoogleMap2,
