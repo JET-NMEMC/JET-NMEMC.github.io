@@ -85,11 +85,19 @@
 <body id='geojsonio-body'>
 
   <div class='geojsonio'></div>
-  <button id="ht1" class="ht1" onclick=getlocation2()>get location</button>
-  <button id="ht2" class="ht2" onclick=exportshp()>export</button>
-  <textarea id="textarea" class="textarea" cols="40" rows="20">经度	纬度	name	省份&#10;121.561	38.875	大连市	辽宁省&#10;120.427	36.093	青岛市	山东省
-  </textarea>
+
+  <div id="clickbuts">
+    <button id="markers" onclick="drawmarkers()" class="buts">markers</button>
+    <button id="polline" onclick="drawPoline()" class="buts">polline</button>
+    <button id="polygon" onclick="drawPolygon()" class="buts">polygon</button>
+    <textarea id="textarea" class="textarea0" >经度	纬度	name	province&#10;121.561	38.875	大连市	辽宁省&#10;120.427	36.093	青岛市	山东省&#10;122.112	37.422	烟台市	山东省
+    </textarea> 
+  </div>
+  
+ 
   <textarea id="textarea2" class="textarea2" cols="10" rows="10"></textarea>
+  <button id="download" class="download" onclick=exportshp2()>下载</button>
+
   <script>
     if (self == top) {
       document.getElementsByTagName("body")[0].style.display = 'block';
@@ -102,9 +110,15 @@
   <script src='dist/lib.js'></script>
   <script src='dist/site.js'></script>
   <!-- <script src='dist/shpwrite.js'></script> -->
-  <script src='dist/mapshaper.js'></script>
+  <!-- <script src='dist/mapshaper.js'></script> -->
   <script src="dist/GeoShape.js"></script>
   <script src="dist/jszip.min.js"></script>
+  <script src="dist/L.drawfeature.js"></script>
+  <script>
+    $("#leaflet-control-clegend").click(function(){
+      showHide("clickbuts")
+ }); 
+  </script>
 
 
   <script type='text/javascript' charset="UTF-8">
@@ -114,44 +128,84 @@
     // var vectormap = L.featureGroup();
     var mymap = window.api.map;
 
-    function getlocation() {
-      // vectormap.clearLayers();
-      window.api.mapLayer.clearLayers()
-      var Utext = document.getElementById("textarea").value;
-      Utext = Utext.trim();
-      Utext = Utext.replace(/'/g, "′");
-      var yyy = Utext.split(/[\n]/); //按行分割
+    function getlocation5() {
+      var yyy = Text2Arr("textarea");
+      console.log("获取数组为:");
       console.log(yyy);
-      // console.log(window.api)
+    }
 
-      for (i = 0; i < yyy.length; i++) {
-        position = yyy[i];
-        getad(position);
-        // console.log(aaa)
-        // console.log(coord);
-        coord0[i] = coord;
-        var lng = coord.location.lon;
-        var lat = coord.location.lat;
-        console.log(lng, lat)
-        // L.marker([lat, lng])
-        L.marker([lat, lng])
-          // L.Draw.Marker([lat, lng])
-          .bindPopup(position).openPopup()
-          .addTo(window.api.mapLayer);
+    function drawPoline() {
+      var yyy = Text2Arr("textarea");
+      console.log("获取数组为:");
+      console.log(yyy);
 
-
-        // vectormap.addTo(window.api.map);
-        // vectormap.addTo(window.api.mapLayer)
-      }
-      // console.log(mymap);
-      // mymap.setView([30,120],8);
+      var latlngs = [];
       console.log(window.api.mapLayer);
-      // mymap.fitBounds(vectormap.getBounds());
+      for (var i = 1; i < yyy.length; i++) { latlngs.push([Number(yyy[i][1]), Number(yyy[i][0])]) };
+      console.log(window.api.mapLayer);
+      console.log(latlngs);
+      L.polyline(latlngs, { color: 'blue', weight: 2 })
+        .addTo(window.api.mapLayer);
       mymap.fitBounds(window.api.mapLayer.getBounds());
     }
 
-    function getad(position) {
+    function drawPolygon() {
+      var yyy = Text2Arr("textarea");
+      console.log("获取数组为:");
+      console.log(yyy);
 
+      var latlngs = [];
+      console.log(window.api.mapLayer);
+      for (var i = 1; i < yyy.length; i++) { latlngs.push([Number(yyy[i][1]), Number(yyy[i][0])]) };
+      console.log(window.api.mapLayer);
+      console.log(latlngs);
+      L.polygon(latlngs, { color: 'yellow', weight: 1 })
+        .addTo(window.api.mapLayer);
+      mymap.fitBounds(window.api.mapLayer.getBounds());
+    }
+
+    // vectormap.clearLayers();
+    // window.api.mapLayer.clearLayers()
+    // console.log(window.api)
+
+    // for (i = 0; i < yyy.length; i++) {
+    //   position = yyy[i];
+    //   getad(position);
+    //   coord0[i] = coord;
+    //   var lng = coord.location.lon;
+    //   var lat = coord.location.lat;
+    //   console.log(lng, lat)
+
+    //   L.marker([lat, lng])
+    //     .bindPopup(position).openPopup()
+    //     .addTo(window.api.mapLayer);
+    // console.log(window.api.mapLayer);
+    // mymap.fitBounds(window.api.mapLayer.getBounds());
+
+
+    // vectormap.addTo(window.api.map);
+    // vectormap.addTo(window.api.mapLayer)
+
+    // console.log(mymap);
+    // mymap.setView([30,120],8);
+    // mymap.fitBounds(vectormap.getBounds());
+
+
+
+
+    function Text2Arr(idname) {
+      var Utext = document.getElementById(idname).value;
+      Utext = Utext.trim();
+      Utext = Utext.replace(/'/g, "′");
+      var yyy = Utext.split(/[\n]/); //按行分割
+      var shuju = [] //行内分割，写入新数组
+      for (var i = 0; i < yyy.length; i++) {
+        shuju[i] = yyy[i].split(/,|，|\s+/);
+      }
+      return shuju
+    }
+
+    function getad(position, callback) {
       var url0 = 'https://api.tianditu.gov.cn/geocoder?ds={"keyWord":"' + position + '"}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51';
       var url = 'https://api.tianditu.gov.cn/apiserver/ajaxproxy?proxyReqUrl=' + url0;
       $.ajax({
@@ -162,110 +216,61 @@
         success: function (result2) {
           var str = result2.slice(19);
           var str2 = str.slice(0, str.length - 1);
-          coord = JSON.parse(str2);
-          console.log("coord");
-          console.log(coord);
+          var coord2 = JSON.parse(str2);
+          console.log("coord2");
+          console.log(coord2);
+          callback(coord2)
         }
       });
       // console.log(json)
     }
 
-    function getlocation2() {
-      var Utext = document.getElementById("textarea").value;
-      Utext = Utext.trim();
-      Utext = Utext.replace(/'/g, "′");
-      var yyy = Utext.split(/[\n]/); //按行分割
-      console.log("行数", yyy.length);
-      var liename = yyy[0].split(/,|，|\s+/);
-      console.log("列名", liename);
+    function drawmarkers() {
+      var point1 = Text2Arr("textarea");
+      var liename = point1[0];
 
       var featuresAll = [];
-      var range = [];
-      range[0] = -180;
-      range[1] = 180;
-      range[2] = -90;
-      range[3] = 90;
 
-      for (var j = 1; j < yyy.length; j++) {
-        var point1 = yyy[j].split(/,|，|\s+/);
-        var coord = [Number(point1[0]), Number(point1[1])];
+      for (var j = 1; j < point1.length; j++) {
+        // var point1 = yyy[j].split(/,|，|\s+/);
+        var coord = [Number(point1[j][0]), Number(point1[j][1])];
         console.log(coord);
-
-        if (point1[0] > range[0]) { range[0] = point1[0] };
-        if (point1[0] < range[1]) { range[1] = point1[0] };
-        if (point1[1] > range[2]) { range[2] = point1[1] };
-        if (point1[1] < range[3]) { range[3] = point1[1] };
-
         //重组属性prop，赋给properties
         var prop = {};
         for (var i = 2; i < liename.length; i++) {
-          eval("prop." + liename[i] + "='" + point1[i] + "'")
+          eval("prop." + liename[i] + "='" + point1[j][i] + "'")
         }
-
         //生成单个形状的json
         var featurej = lineString(coord, prop);
-        // console.log(featurej);
-        // console.log(JSON.stringify(featurej))
         featuresAll.push(featurej);
       }
-      console.log(range);
-
       var featuresFinal = featureCollection(featuresAll);
       console.log(featuresFinal);
       var expJson = JSON.stringify(featuresFinal)
-      console.log(expJson);
+      // console.log(expJson);
       document.getElementById("textarea2").value = expJson;
       document.querySelector("#textarea2").select();
       document.execCommand('copy');
-
-
-      // var options = {
-      //   folder: 'myshapes',
-      //   types: {
-      //     point: 'mypoints',
-      //     polygon: 'mypolygons',
-      //     line: 'mylines'
-      //   }
-      // }
-
-      // var sdf = importGeoJSON(featuresFinal);
-      // consolelog(sdf)
-      // a GeoJSON bridge for features
-      // shpwrite.download(featuresFinal, options);
-
-
-
-      // GeoShape.transformAndDownload(JSON.parse(expJson));
-      // GeoShape.transformAndDownload(featuresFinal);
-
-
-      // var abc = document.getElementsByTagName("div")
-      // for (var i = 0; i < abc.length; i++) {
-      //   if (abc[i].className = "CodeMirror-code") {
-      //     console.log(abc[i]);
-      //   // abc[i].innerHTML =""
-      //   }
-      // }
-
-
-
-      // var abd = document.getElementsByTagName("pre");
-      // console.log(abd);
-      // for (var i = abd.length - 1; i > 0; i--) {
-      //   // abd[i].innerText = ""
-      //   // console.log(abd[i].)
-      //   console.log(abd[i].parentElement)
-
-      //   // abd[i].innerText = ""
-      // }
-      // abd[1].innerHTML = expJson
-
+      alert("点位JSON已复制到剪贴板，替换右侧内容即可")
     }
-    // function selectAll(theField) {
-    //   var tempval = "document." + theField  //这里主要是要得到dom  document.test.select1
-    //   tempval.select()    // 选取文本域的内容
-    //   this.copy(tempval)
+
+
+    // var options = {
+    //   folder: 'myshapes',
+    //   types: {
+    //     point: 'mypoints',
+    //     polygon: 'mypolygons',
+    //     line: 'mylines'
+    //   }
     // }
+
+    // var sdf = importGeoJSON(featuresFinal);
+    // consolelog(sdf)
+    // a GeoJSON bridge for features
+    // shpwrite.download(featuresFinal, options);
+
+    // GeoShape.transformAndDownload(JSON.parse(expJson));
+    // GeoShape.transformAndDownload(featuresFinal);    
 
 
     function exportshp() {
@@ -279,10 +284,16 @@
       console.log(JSON.parse(jsonstr));
       GeoShape.transformAndDownload(JSON.parse(jsonstr));
     }
+
     function exportshp2() {
-      var ade=document.getElementsByClassName("CodeMirror-code");
+      var jsonstr = document.getElementById("textarea2").value;
+      GeoShape.transformAndDownload(JSON.parse(jsonstr));
+    }
+
+    function exportshp3() {
+      var ade = document.getElementsByClassName("CodeMirror-code");
       console.log(ade[0].innerText);
-      ade.id="code";
+      ade.id = "code";
       $("#code").select();
       document.execCommand("selectAll");
       document.execCommand("copy");
@@ -292,10 +303,6 @@
       // console.log(abe);
       // selectAll("CodeMirror-code");
     }
-
-
-
-    
 
 
     function featureCollection(features, option) {
@@ -320,12 +327,13 @@
       return feat;
     }
 
-//     //  发起粘贴操作时触发
-// document.addEventListener('paste', (ev) => {
-//   ev.clipboardData.items[0].getAsString(text => {
-//     console.log("粘贴内容",text);  //  在控制台输出剪贴板中的文本
-//   });
-// });
+    //  发起粘贴操作时触发
+    document.addEventListener('paste', (ev) => {
+      ev.clipboardData.items[0].getAsString(text => {
+        console.log("粘贴内容", text);  //  在控制台输出剪贴板中的文本
+        document.getElementById("textarea2").value = text;
+      });
+    });
 
   </script>
 </body>
