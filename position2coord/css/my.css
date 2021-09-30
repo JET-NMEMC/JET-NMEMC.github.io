@@ -1,24 +1,31 @@
-.ht1 {
-    position:fixed;
-    float: left;
-    bottom:230px; 
-    left:0;
-    width: 305px;
-    height: 30px;
-    background-color: bisque;
-    /* display: none; */
+#clickbuts {
+    position: fixed;
+    top: 50%;
+    left: 3px;
+    width: 440px;
+    z-index: 999;
+    /* display: block; */
+    display: none;
+    /* visibility:visible; */
+    /* visibility: hidden; */
 }
-.ht2 {
-    position:fixed;
-    float: left;
-    bottom:230px; 
-    left:306px;
-    width: 99px;
+.buts {
+    position: relative;
+    width: 30%;
     height: 30px;
     background-color: bisque;
-    /* display: none; */
 }
 
+.textarea0 {
+    position:relative;
+    /* float: left; */
+    /* bottom:30px;  */
+    /* left:0; */
+    width: 400px;
+    height: 200px;
+    /* resize: none; */
+    /* display: none; */
+}
 .textarea {
     position:fixed;
     /* float: left; */
@@ -29,15 +36,27 @@
     /* resize: none; */
     /* display: none; */
 }
+
+.download {
+    position:fixed;
+    /* float: right; */
+    bottom:87px; 
+    right:10px;
+    width: 60px;
+    height: 30px;
+    background-color: bisque;
+    z-index: 999;
+    /* display: none; */
+}
 .textarea2 {
     position:fixed;
     /* float: left; */
     bottom:10px; 
     right:10px;
-    width: 400px;
-    height: 10px;
+    width: 150px;
+    height: 100px;
     /* resize: none; */
     /* display: none; */
     /* visibility: hidden; */
-    z-index: -1;
+    /* z-index: -1; */
 }
