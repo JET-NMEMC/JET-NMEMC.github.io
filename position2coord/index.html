@@ -248,13 +248,6 @@
       // }
 
 
-      //     alert("YES");
-      //     // abc[i].innerhtml = JSON.stringify(featuresFinal) 
-      //     abc[i].innerHTML = 'QQQQQQQQQQQQQQQQQQQQ'
-      //     // abc[i].innerHTML = '<div style="position:relative;"> <div style="position:absolute;left:-29px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt"style="left:0px;width:20px;">1</div></div><pre>' + expJson + '</pre></div>'
-      //   }
-      // }
-
 
       // var abd = document.getElementsByTagName("pre");
       // console.log(abd);
@@ -277,17 +270,6 @@
 
     function exportshp() {
       var abd = document.getElementsByTagName("pre");
-      // var ade=document.getElementsByClassName("CodeMirror-code");
-      // console.log(ade);
-      // ade.id="code";
-      // $("#code").select();
-      // document.execCommand("copy");
-      // adr.execCommand("selectAll");
-      // document.execCommand("selectAll");
-      // document.execCommand("copy");
-      // console.log(abe);
-      // selectAll("CodeMirror-code");
-
       var jsonstr = "";
       for (var i = 0; i < abd.length; i++) {
         // console.log(abd[i].innerText)
@@ -297,6 +279,23 @@
       console.log(JSON.parse(jsonstr));
       GeoShape.transformAndDownload(JSON.parse(jsonstr));
     }
+    function exportshp2() {
+      var ade=document.getElementsByClassName("CodeMirror-code");
+      console.log(ade[0].innerText);
+      ade.id="code";
+      $("#code").select();
+      document.execCommand("selectAll");
+      document.execCommand("copy");
+      // adr.execCommand("selectAll");
+      // document.execCommand("selectAll");
+      // document.execCommand("copy");
+      // console.log(abe);
+      // selectAll("CodeMirror-code");
+    }
+
+
+
+    
 
 
     function featureCollection(features, option) {
@@ -304,7 +303,6 @@
       fc.features = features;
       return fc;
     }
-
     function lineString(coordinates, properties, options) {
       return feature(
         {
@@ -315,13 +313,19 @@
         options
       )
     }
-
     function feature(geometry, properties, options) {
       var feat = { type: "Feature" };
       feat.properties = properties || {};
       feat.geometry = geometry;
       return feat;
     }
+
+//     //  发起粘贴操作时触发
+// document.addEventListener('paste', (ev) => {
+//   ev.clipboardData.items[0].getAsString(text => {
+//     console.log("粘贴内容",text);  //  在控制台输出剪贴板中的文本
+//   });
+// });
 
   </script>
 </body>
