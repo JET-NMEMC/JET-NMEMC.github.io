@@ -42,7 +42,7 @@ function initDemoMap() {
   });
   var GoogleMap2 = L.tileLayer("http://gdtc.shipxy.com/tile.g?z={z}&x={x}&y={y}", {
     attribution: "&copy; Google"
-  });  
+  });
   var GoogleImage2 = L.tileLayer("http://gwxc.shipxy.com/tile.g?z={z}&x={x}&y={y}", {
   });
   var haitu = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
@@ -57,13 +57,13 @@ function initDemoMap() {
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
     "Esri影像": Esri_WorldImagery,
-    "天地图影像": tianditu_img,    
+    "天地图影像": tianditu_img,
     "谷歌影像": GoogleImage,
     "谷歌地图": GoogleMap,
     // "海图船讯": haitu,
     "海图在线": haitu2,
     "谷歌影像 火星": GoogleImage2,
-    "高德影像 火星": gaode,    
+    "高德影像 火星": gaode,
     "谷歌地图 火星": GoogleMap2,
     "OpenStreet": OpenStreetMap_Mapnik,
     "JawgStreet": Jawg_Streets,
@@ -89,7 +89,8 @@ function initDemoMap() {
 
   var map = L.map("map", {
     layers: [Esri_WorldImagery],
-    zoomControl: false
+    zoomControl: false,
+    attributionControl: false
   });
 
   var layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
@@ -540,24 +541,197 @@ dragFunc("showtools");
 dragFunc("select");
 
 
-// //-----------------------------------------------------------------------------------------------------获取map范围
-// //地图级别改变时发生
-// map.on("zoomend", function (e) {
-//   var zoom_val = e.target.getZoom();
-//   map_drag();;
-// });
-// //拖动地图时发生
-// map.on("moveend", function (e) {
-//   map_drag();;
-// });
-// function map_drag() {
-//   //左下角坐标（西南方）
-//   var leftdown = map.getBounds().getSouthWest().lng + "," + map.getBounds().getSouthWest().lat; 
-//   //右上角坐标（东北方向）
-//   var rightup = map.getBounds().getNorthEast().lng + "," + map.getBounds().getNorthEast().lat;  
-//   //左上角：西北方
-//   var leftup = map.getBounds().getNorthWest().lng + "," + map.getBounds().getNorthWest().lat; 
-//   //右下角：东南方
-//   var rightdown = map.getBounds().getSouthEast().lng + "," + map.getBounds().getSouthEast().lat; 
-//   // console.log(leftdown,rightup);
-// }
+// //-----------------------------------------------------------------------------------------------生成坐标边框
+// 调整窗口
+var switchmode = false;
+function changemap() {
+  var coordmap = document.getElementById("coordmap");
+  var coordmap2 = document.getElementById("map");
+  // console.log(coordmap2);
+  if (switchmode == true) {
+    switchmode = false;
+    coordmap.innerHTML = "";
+    coordmap2.style.width = "100%"; coordmap2.style.height = "100%"; coordmap2.style.left = "0%"; coordmap2.style.top = "0%";
+    map.invalidateSize(true);
+    document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility="visible";
+    document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility="visible";
+  }
+  else {
+    switchmode = true;
+    coordmap2.style.width = "60%"; coordmap2.style.height = "85%"; coordmap2.style.left = "20%"; coordmap2.style.top = "5%";
+    map.invalidateSize(true);
+    document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility="hidden";
+    document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility="hidden";
+
+    // console.log(String(coordmap.style.width));
+    // if (String(coordmap.style.width) === '60%') {
+    //   console.log("yes,=60%");
+    // }
+    // else {
+    //   coordmap.style.width = "60%"; coordmap.style.height = "80%"; coordmap.style.left = "20%"; coordmap.style.top = "5%";
+    //   switchmode = true;
+    // }
+  }
+  console.log(coordmap2);
+}
+
+// 地图级别改变时发生
+map.on("zoomend", function (e) {
+  if (switchmode == true) {
+    drawcoordrange();;
+  }
+});
+//拖动地图时发生
+map.on("moveend", function (e) {
+  if (switchmode == true) {
+    drawcoordrange();;
+  }
+});
+function drawcoordrange() {
+  var coordmap2 = document.getElementById("map");
+  var lngmin, lngmax, latmin, latmax, zoomlevel;
+  lngmin = map.getBounds().getSouthWest().lng;
+  latmin = map.getBounds().getSouthWest().lat;
+  lngmax = map.getBounds().getNorthEast().lng;
+  latmax = map.getBounds().getNorthEast().lat;
+  // zoomlevel = map.getZoom()
+  console.log(lngmin, lngmax, latmin, latmax);
+  // console.log("缩放级别：", zoomlevel);
+  // L.CRS.project.EPSG3857(L.latLng(39,120));
+  var lngbreak = getCoordBreaks(lngmin, lngmax, 2).breaks;
+  var latbreak = getCoordBreaks(latmin, latmax, 2).breaks;
+  var lngstep = getCoordBreaks(lngmin, lngmax, 2).step;
+  var latstep = getCoordBreaks(latmin, latmax, 2).step;
+  console.log("lngbreak", lngbreak);
+  console.log("lngstep", lngstep);
+  console.log("latbreak", latbreak);
+  console.log("latsetp", latstep);
+  //读取map的像素坐标
+  divbottom = coordmap2.getBoundingClientRect().bottom;
+  divtop = coordmap2.getBoundingClientRect().top;
+  divleft = coordmap2.getBoundingClientRect().left;
+  divright = coordmap2.getBoundingClientRect().right;
+  console.log(divtop, divbottom, divleft, divright);
+  //循环叠加，形成经度的图形
+  var coordmap = document.getElementById("coordmap");
+  coordmap.innerHTML = "";
+  for (var i = 0; i < lngbreak.length; i++) {
+    var Xpix = divleft + (lngbreak[i] - lngmin) * (divright - divleft) / (lngmax - lngmin)
+    console.log("Xpix:", Xpix);
+    var divtext0 = coordmap.innerHTML;
+    var divtext;
+    if (lngstep >= 1) {
+      divtext = '<div><font style="position:absolute; left:' + Xpix + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + lngbreak[i] + '°</font></div>'
+    };
+    if (lngstep < 1 && lngstep >= 0.016666667) {
+      divtext = '<div><font style="position:absolute; left:' + Xpix + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + du2dufen(lngbreak[i], 0) + '</font></div>'
+    };
+    if (lngstep < 0.016666667) {
+      divtext = '<div><font style="position:absolute; left:' + Xpix + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + du2dufenmiao(lngbreak[i], 0) + '</font></div>'
+    };
+    var divtext2 = divtext0 + divtext;
+    coordmap.innerHTML = divtext2;
+  }
+  //循环叠加，形成纬度的图形
+  for (var i = 0; i < latbreak.length; i++) {
+    var Ypix = divbottom - ((latbreak[i] - latmin) * (divbottom - divtop) / (latmax - latmin));
+    console.log("Ypix:",Ypix);
+    var divtext0 = coordmap.innerHTML;
+    var divtext;
+    if (latstep >= 1) {
+      divtext = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + Ypix + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + latbreak[i] + '°</font></div>'
+    };
+    if (latstep < 1 && latstep >= 0.016666667) {
+      divtext = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + Ypix + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufen(latbreak[i], 0) + '</font></div>'
+    };
+    if (latstep < 0.016666667) {
+      divtext = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + Ypix + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufenmiao(latbreak[i], 0) + '</font></div>'
+    };
+    var divtext2 = divtext0 + divtext;
+    coordmap.innerHTML = divtext2;
+  };
+}
+
+
+function getCoordBreaks(Tvaluemin, Tvaluemax, TargetN) {
+  // if (Tvaluemin > Tvaluemax) { alert("wrong position") };
+  var DX;
+  var a = [30, 20, 10, 5, 3, 2, 1, 0.5, 0.33333333, 0.16666667, 0.08333333, 0.03333333, 0.01666667, 0.00833333, 0.00555556, 0.00277778, 0.00138889, 0.00055556, 0.00027778];
+
+
+  var TDelta = Tvaluemax - Tvaluemin;
+  // var Length = TDelta / TargetN;
+
+  for (var kk = 0; kk < a.length; kk++) {
+    if ((TDelta / a[kk]) >= TargetN) {
+      DX = a[kk];
+      break
+    }
+    // var c = a[kk];
+    // if (Length <= a[kk]) {
+    //   if (Math.abs(TDelta / a[kk] - TargetN) < Math.abs(TDelta / a[kk - 1] - TargetN)) {
+    //     DX = a[kk];
+    //   }
+    //   else {
+    //     DX = a[kk - 1];
+    //   }
+    //   break
+    // }
+  }
+
+
+  var tttmax = Math.floor(Tvaluemax / DX);
+  var tttmin = Math.floor(Tvaluemin / DX);
+  // console.log("step=:"+DX);
+  nnn = getvaluenumber(DX);
+  var levelMax = tttmax * DX;
+  levelMax = Number(levelMax.toFixed(nnn));
+  var levelMin = tttmin * DX + DX;
+  levelMin = Number(levelMin.toFixed(nnn));
+  var levelnum = (levelMax - levelMin) / DX + 1;
+  levelnum = Math.round(levelnum);
+  // var percentage = (100 * (Tvaluemax - Tvaluemin) / (levelMax - levelMin)).toFixed(1);
+  var breaks = [];
+  for (var jj = 0; jj < levelnum; jj++) {
+    breaks.push(Number(levelMin + jj * DX).toFixed(nnn));
+  }
+  return {
+    // "Tvaluemin":Tvaluemin,
+    // "Tvaluemax":Tvaluemax,
+    "levelMin": levelMin,
+    "levelMax": levelMax,
+    "step": DX,
+    "levelnum": levelnum,
+    // "percentage": percentage + "%",
+    "breaks": breaks,
+  }
+}
+function getvaluenumber(x) {
+  for (var i = 0; i < 10; i++) {
+    while (Math.abs(Number(x.toFixed(i)) - x) / x < 0.00000001) {
+      return i;
+    };
+  };
+}
+
+du2dufenmiao = function (value, n) {
+  ///<summary>将度转换成为度分秒</summary>
+  value = Math.abs(value);
+  var v1 = Math.floor(value);//度
+  var v2 = Math.floor((value - v1) * 60);//分  
+  var v3 = ((value - v1) * 3600 % 60).toFixed(n);//秒
+  if (v3 == 60) { v3 = 0; v2 = v2 + 1 };
+  if (v2 == 60) { v2 = 0; v1 = v1 + 1 };
+  var v31 = v3 < 10 ? "0" + String(v3) : v3;
+  var v21 = v2 < 10 ? "0" + String(v2) : v2;
+  return v1 + '°' + v21 + '\′' + v31 + '″';
+};
+du2dufen = function (value, n) {
+  ///<summary>将度转换成为度分</summary>
+  value = Math.abs(value);
+  var v1 = Math.floor(value);//度
+  var v2 = ((value - v1) * 60).toFixed(n);//分
+  if (v2 == 60) { v2 = 0; v1 = v1 + 1 };
+  var v21 = v2 < 10 ? "0" + String(v2) : v2;
+  return v1 + '°' + v21 + '\′';
+};
