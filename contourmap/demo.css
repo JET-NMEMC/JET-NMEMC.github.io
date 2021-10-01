@@ -83,14 +83,19 @@ a {
     background: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%);
     z-index: 1;
 }
+
 #map {
     position:absolute;
     height: 100%;
     width: 100%;
-    background-color: #333;
-    border-color: brown;
-    z-index: -1;
+    left: 0%;
+    top: 0%;
+    /* background-color: #333; */
+    border-color: rgb(0, 0, 0);
+    /* border:1px solid #000; */
+    z-index: -999;
 }
+
 .leaflet-canvas-layer {
     opacity: 1;
 }
