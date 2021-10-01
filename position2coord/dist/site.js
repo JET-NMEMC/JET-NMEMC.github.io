@@ -30640,7 +30640,7 @@ require = (function () { function r(e, n, t) { function o(i, f) { if (!n[i]) { i
           },
           {
             title: 'Jawg地图',
-            layer: L.tileLayer('https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
+            layer: L.tileLayer('https://{s}.tile.jawg.io/jawg-terrain/{z}/{x}/{y}@2x.png?access-token={accessToken}', {
               attribution: '<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
               maxZoom: 22,
               subdomains: 'abcd',
