@@ -61,10 +61,18 @@
 <body>
     <div><canvas id="mycanvas" style="display: none;"></canvas></div>
     <div id="map"></div>
+    <!-- <div id="coordmap" style="position:absolute;left:10%; top:10%;width:80%;height:80%;border:1px solid #000000;">        -->
+    <!-- <div id="coordmap" style="position:absolute;left:10%; top:10%;"> -->
+    <div id="coordmap">
+    </div>
+     <!-- <font style="position:absolute; left:100px; top:-20px; font-size: 15px;font-family: sans-serif;" color="#ffffff">120</font> -->
+        <!-- <font style="position:absolute; left:-20px; top:100px; font-size: 15px;font-family: sans-serif; transform: rotate(270deg);" color="#ffffff">39</font> -->
     <!-- <div><input type="button" id="act1" value="WELCOME" onclick="test()" /></div> -->
+    <img src="contourmap/icon2/网格地球 2.png" width="50px" onclick="changemap()"
+    style="position: fixed; left:10px; bottom:10px;">
 
     <img src="contourmap/icon2/设置2.png" width="50px" onclick="showHide('showsetting')"
-        style="position: fixed; left:90px; bottom:10px;">
+        style="position: fixed; left:70px; bottom:10px;">
 
     <div id="showsetting" style="display: none;">
         <button onclick="showHide('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
@@ -96,7 +104,7 @@
     </div>
 
     <img src="contourmap/icon2/绘制3.png" width="50px" onclick="showHide('showtools')"
-        style="position: fixed; left:150px; bottom:10px;">
+        style="position: fixed; left:130px; bottom:10px;">
 
     <div id="showtools" style="display: none;">
         <p><button onclick="showHide('showtools')" style="position: absolute; top: 1px; right: 1px;">X</button></p>
@@ -142,6 +150,8 @@
         var figurectrol = {};
         var legend;
         var countourmap;
+
+
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
             var kmlFileInput = document.getElementById("kmlFileInput");
