@@ -267,11 +267,6 @@ if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
 //   // layerControl2.addOverlay(velocityLayer, "china");
 // });
 
-function msg(text) {
-  $("#ShowDiv").show();
-  $("#ShowDiv").html(text);
-  $('#ShowDiv').delay(3000).slideUp();
-};
 
 //-------------------------------------------配色方案，可自定义添加新行
 const colordatabase = new Object();
@@ -544,153 +539,155 @@ dragFunc("select");
 // //-----------------------------------------------------------------------------------------------生成坐标边框
 // 调整窗口
 var switchmode = false;
+var drawNE = true;
+// var coordmap = document.createElement("div");coordmap.id = "coordmap";
+var coordmap = document.createElement("div"); coordmap.id = "coordmap";
+document.body.appendChild(coordmap);
 function changemap() {
-  var coordmap = document.getElementById("coordmap");
-  var coordmap2 = document.getElementById("map");
-  // console.log(coordmap2);
+  var mapdiv = document.getElementById("map");
   if (switchmode == true) {
+    //关闭绘图模式开关，清空已绘坐标字体
     switchmode = false;
-    coordmap.innerHTML = "";
-    coordmap2.style.width = "100%"; coordmap2.style.height = "100%"; coordmap2.style.left = "0%"; coordmap2.style.top = "0%";
+    document.getElementById("coordmap").innerHTML = "";
+    //恢复全屏样式，刷新地图
+    mapdiv.style.width = "100%"; mapdiv.style.height = "100%"; mapdiv.style.left = "0%"; mapdiv.style.top = "0%";
     map.invalidateSize(true);
-    document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility="visible";
-    document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility="visible";
+    //恢复工具栏
+    document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility = "visible";
+    document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility = "visible";
+    var coordmap = document.getElementById("coordmap")
+    coordmap.parentNode.removeChild()
   }
-  else {
+  if (switchmode == false) {
     switchmode = true;
-    coordmap2.style.width = "60%"; coordmap2.style.height = "85%"; coordmap2.style.left = "20%"; coordmap2.style.top = "5%";
-    map.invalidateSize(true);
-    document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility="hidden";
-    document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility="hidden";
 
-    // console.log(String(coordmap.style.width));
-    // if (String(coordmap.style.width) === '60%') {
-    //   console.log("yes,=60%");
-    // }
-    // else {
-    //   coordmap.style.width = "60%"; coordmap.style.height = "80%"; coordmap.style.left = "20%"; coordmap.style.top = "5%";
-    //   switchmode = true;
-    // }
+    //更改小图样式，刷新地图
+    mapdiv.style.width = "60%"; mapdiv.style.height = "85%"; mapdiv.style.left = "20%"; mapdiv.style.top = "5%";
+    map.invalidateSize(true);
+    //隐藏工具栏
+    document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility = "hidden";
+    document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility = "hidden";
   }
-  console.log(coordmap2);
 }
 
-// 地图级别改变时发生
+// 地图级别改变、拖动地图时，重绘。若模式已关闭，注销事件
 map.on("zoomend", function (e) {
+  console.log("switchmode", switchmode);
   if (switchmode == true) {
     drawcoordrange();;
   }
 });
-//拖动地图时发生
+
 map.on("moveend", function (e) {
+  console.log("switchmode", switchmode);
   if (switchmode == true) {
     drawcoordrange();;
   }
 });
+
 function drawcoordrange() {
-  var coordmap2 = document.getElementById("map");
+  var mapdiv = document.getElementById("map");
   var lngmin, lngmax, latmin, latmax, zoomlevel;
   lngmin = map.getBounds().getSouthWest().lng;
   latmin = map.getBounds().getSouthWest().lat;
   lngmax = map.getBounds().getNorthEast().lng;
   latmax = map.getBounds().getNorthEast().lat;
   // zoomlevel = map.getZoom()
-  console.log(lngmin, lngmax, latmin, latmax);
+  console.log("经度:", lngmin.toFixed(3), lngmax.toFixed(3), "纬度:", latmin.toFixed(3), latmax.toFixed(3));
   // console.log("缩放级别：", zoomlevel);
   // L.CRS.project.EPSG3857(L.latLng(39,120));
   var lngbreak = getCoordBreaks(lngmin, lngmax, 2).breaks;
   var latbreak = getCoordBreaks(latmin, latmax, 2).breaks;
   var lngstep = getCoordBreaks(lngmin, lngmax, 2).step;
   var latstep = getCoordBreaks(latmin, latmax, 2).step;
-  console.log("lngbreak", lngbreak);
-  console.log("lngstep", lngstep);
-  console.log("latbreak", latbreak);
-  console.log("latsetp", latstep);
+  console.log("lngbreak", lngbreak); console.log("lngstep", lngstep);
+  console.log("latbreak", latbreak); console.log("latsetp", latstep);
   //读取map的像素坐标
-  divbottom = coordmap2.getBoundingClientRect().bottom;
-  divtop = coordmap2.getBoundingClientRect().top;
-  divleft = coordmap2.getBoundingClientRect().left;
-  divright = coordmap2.getBoundingClientRect().right;
-  console.log(divtop, divbottom, divleft, divright);
+  divbottom = mapdiv.getBoundingClientRect().bottom;
+  divtop = mapdiv.getBoundingClientRect().top;
+  divleft = mapdiv.getBoundingClientRect().left;
+  divright = mapdiv.getBoundingClientRect().right;
+  // console.log(divtop, divbottom, divleft, divright);
+
   //循环叠加，形成经度的图形
   var coordmap = document.getElementById("coordmap");
   coordmap.innerHTML = "";
+
   for (var i = 0; i < lngbreak.length; i++) {
     var Xpix = divleft + (lngbreak[i] - lngmin) * (divright - divleft) / (lngmax - lngmin)
-    console.log("Xpix:", Xpix);
+    // console.log("Xpix:", Xpix);
     var divtext0 = coordmap.innerHTML;
-    var divtext;
+    var divtextA0;
+    if (drawNE == true) {
+      if (Number(lngbreak[i]) > 0) { divtextA0 = ' E' }; if (Number(lngbreak[i]) < 0) { divtextA0 = ' W' }; if (Number(lngbreak[i]) == 0) { divtextA0 = '' };
+    } else {
+      divtextA0 = ''
+    }
+    var divtextA;
     if (lngstep >= 1) {
-      divtext = '<div><font style="position:absolute; left:' + Xpix + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + lngbreak[i] + '°</font></div>'
+      divtextA = '<div><font style="position:absolute; left:' + (Xpix - 13) + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + Math.abs(lngbreak[i]) + '°' + divtextA0 + '</font></div>'
     };
     if (lngstep < 1 && lngstep >= 0.016666667) {
-      divtext = '<div><font style="position:absolute; left:' + Xpix + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + du2dufen(lngbreak[i], 0) + '</font></div>'
+      divtextA = '<div><font style="position:absolute; left:' + (Xpix - 26) + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + du2dufen(lngbreak[i], 0) + divtextA0 + '</font></div>'
     };
     if (lngstep < 0.016666667) {
-      divtext = '<div><font style="position:absolute; left:' + Xpix + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + du2dufenmiao(lngbreak[i], 0) + '</font></div>'
+      divtextA = '<div><font style="position:absolute; left:' + (Xpix - 39) + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + du2dufenmiao(lngbreak[i], 0) + divtextA0 + '</font></div>'
     };
-    var divtext2 = divtext0 + divtext;
-    coordmap.innerHTML = divtext2;
+    var divtextB = '<div><font style="position:absolute; left:' + Xpix + 'px; top:' + (divtop - 2) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">|</font></div>';
+    coordmap.innerHTML = divtext0 + divtextA + divtextB;
   }
   //循环叠加，形成纬度的图形
   for (var i = 0; i < latbreak.length; i++) {
     var Ypix = divbottom - ((latbreak[i] - latmin) * (divbottom - divtop) / (latmax - latmin));
-    console.log("Ypix:",Ypix);
+    // console.log("Ypix:", Ypix);
     var divtext0 = coordmap.innerHTML;
-    var divtext;
+    var divtextA0;
+    if (drawNE == true) {
+      if (Number(latbreak[i]) > 0) { divtextA0 = ' N' }; if (Number(latbreak[i]) < 0) { divtextA0 = ' S' }; if (Number(latbreak[i]) == 0) { divtextA0 = '' };
+    } else {
+      divtextA0 = ''
+    }
+    var divtextA;
     if (latstep >= 1) {
-      divtext = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + Ypix + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + latbreak[i] + '°</font></div>'
+      divtextA = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix - 5) + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + Math.abs(latbreak[i]) + '°' + divtextA0 + '</font></div>'
     };
     if (latstep < 1 && latstep >= 0.016666667) {
-      divtext = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + Ypix + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufen(latbreak[i], 0) + '</font></div>'
+      divtextA = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix + 5) + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufen(latbreak[i], 0) + divtextA0 + '</font></div>'
     };
     if (latstep < 0.016666667) {
-      divtext = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + Ypix + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufenmiao(latbreak[i], 0) + '</font></div>'
+      divtextA = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix + 15) + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufenmiao(latbreak[i], 0) + divtextA0 + '</font></div>'
     };
-    var divtext2 = divtext0 + divtext;
-    coordmap.innerHTML = divtext2;
+    var divtextB = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix - 5) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">—</font></div>'
+    coordmap.innerHTML = divtext0 + divtextA + divtextB;
   };
+  console.log("-----------draw end------------")
 }
 
 
 function getCoordBreaks(Tvaluemin, Tvaluemax, TargetN) {
-  // if (Tvaluemin > Tvaluemax) { alert("wrong position") };
+  // var TargetN = 2;//设置坐标轴显示坐标的个数
+  if (Tvaluemin > Tvaluemax) { alert("wrong position for Tvaluemin, Tvaluemax") };
   var DX;
   var a = [30, 20, 10, 5, 3, 2, 1, 0.5, 0.33333333, 0.16666667, 0.08333333, 0.03333333, 0.01666667, 0.00833333, 0.00555556, 0.00277778, 0.00138889, 0.00055556, 0.00027778];
 
-
   var TDelta = Tvaluemax - Tvaluemin;
-  // var Length = TDelta / TargetN;
-
   for (var kk = 0; kk < a.length; kk++) {
     if ((TDelta / a[kk]) >= TargetN) {
       DX = a[kk];
       break
     }
-    // var c = a[kk];
-    // if (Length <= a[kk]) {
-    //   if (Math.abs(TDelta / a[kk] - TargetN) < Math.abs(TDelta / a[kk - 1] - TargetN)) {
-    //     DX = a[kk];
-    //   }
-    //   else {
-    //     DX = a[kk - 1];
-    //   }
-    //   break
-    // }
   }
-
 
   var tttmax = Math.floor(Tvaluemax / DX);
   var tttmin = Math.floor(Tvaluemin / DX);
   // console.log("step=:"+DX);
-  nnn = getvaluenumber(DX);
+  var nnn = getvaluenumber(DX);
   var levelMax = tttmax * DX;
   levelMax = Number(levelMax.toFixed(nnn));
   var levelMin = tttmin * DX + DX;
   levelMin = Number(levelMin.toFixed(nnn));
   var levelnum = (levelMax - levelMin) / DX + 1;
   levelnum = Math.round(levelnum);
-  // var percentage = (100 * (Tvaluemax - Tvaluemin) / (levelMax - levelMin)).toFixed(1);
   var breaks = [];
   for (var jj = 0; jj < levelnum; jj++) {
     breaks.push(Number(levelMin + jj * DX).toFixed(nnn));
@@ -702,7 +699,6 @@ function getCoordBreaks(Tvaluemin, Tvaluemax, TargetN) {
     "levelMax": levelMax,
     "step": DX,
     "levelnum": levelnum,
-    // "percentage": percentage + "%",
     "breaks": breaks,
   }
 }
@@ -714,24 +710,25 @@ function getvaluenumber(x) {
   };
 }
 
+//度 转换 度分秒
 du2dufenmiao = function (value, n) {
-  ///<summary>将度转换成为度分秒</summary>
-  value = Math.abs(value);
-  var v1 = Math.floor(value);//度
-  var v2 = Math.floor((value - v1) * 60);//分  
-  var v3 = ((value - v1) * 3600 % 60).toFixed(n);//秒
-  if (v3 == 60) { v3 = 0; v2 = v2 + 1 };
-  if (v2 == 60) { v2 = 0; v1 = v1 + 1 };
-  var v31 = v3 < 10 ? "0" + String(v3) : v3;
-  var v21 = v2 < 10 ? "0" + String(v2) : v2;
+  var value2 = Math.abs(value);
+  var v1 = Math.floor(value2);//度
+  var v2 = Math.floor((value2 - v1) * 60);//分  
+  var v3 = ((value2 - v1) * 3600 % 60).toFixed(n);//秒
+  if (v3 == 60) { v3 = 0; v2 = v2 + 1 };//若秒为60，分补1
+  if (v2 == 60) { v2 = 0; v1 = v1 + 1 };//若分为60，度补1
+  var v31 = v3 < 10 ? "0" + String(v3) : v3;//小于10，前面补零
+  var v21 = v2 < 10 ? "0" + String(v2) : v2;//小于10，前面补零
   return v1 + '°' + v21 + '\′' + v31 + '″';
 };
+
+//度 转换 度分
 du2dufen = function (value, n) {
-  ///<summary>将度转换成为度分</summary>
-  value = Math.abs(value);
-  var v1 = Math.floor(value);//度
-  var v2 = ((value - v1) * 60).toFixed(n);//分
-  if (v2 == 60) { v2 = 0; v1 = v1 + 1 };
-  var v21 = v2 < 10 ? "0" + String(v2) : v2;
+  var value2 = Math.abs(value);
+  var v1 = Math.floor(value2);//度
+  var v2 = ((value2 - v1) * 60).toFixed(n);//分
+  if (v2 == 60) { v2 = 0; v1 = v1 + 1 };//若分为60，度补1
+  var v21 = v2 < 10 ? "0" + String(v2) : v2;//小于10，前面补零
   return v1 + '°' + v21 + '\′';
 };
