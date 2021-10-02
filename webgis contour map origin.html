@@ -28,22 +28,20 @@
 </script>
 
 <head>
-    <title>webgis</title>
+    <title>Web Gis</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="contourmap/demo.css" />
+    <link rel="stylesheet" href="contourmap/index.css" />
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <!-- <link rel="stylesheet" href="contourmap/leaflet-velocity.css" /> -->
-    <!-- <script src="contourmap/leaflet-velocity.js"></script> -->
-    <script src="contourmap/leaflet.ChineseTmsProviders.js"></script>
+
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
 
-    <link rel="stylesheet" href="contourmap/leaflet-geoman2.css" />
-    <script src="contourmap/leaflet-geoman.min2.js"></script>
+    <link rel="stylesheet" href="contourmap/leaflet-geoman.css" />
+    <script src="contourmap/leaflet-geoman.min.js"></script>
 
     <link rel="stylesheet" href="contourmap/leaflet-measure.css">
     <script src="contourmap/leaflet-measure.js"></script>
@@ -117,20 +115,20 @@
     </div>
     <div id="ShowDiv" name="ShowDiv"></div>
 
-    <select id="select" style="display: none;"></select>
-    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
-    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
-    <!-- <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script> -->
+    <select id="select" style="display: none;"></select> 
+
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
     <script src="contourmap/kriging0.js"></script>
-    <script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>
-    <script
-        src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
-    <script src="contourmap/demo.js"></script>
+
+    <script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>    
+    <script src="contourmap/leaflet.mapCorrection.js"></script>
+
+    <script src="contourmap/CreateMap.js"></script>
+    <script src="contourmap/Contourmap.js"></script>
+    <script src="contourmap/CreateCoordMap.js"></script>
 
     <script>
         //----------------------------------------------------------------------------------------------主程序
-        //设置拟绘制色带个数
         var data;     //声明全局，存放json对象;
         var xiangmu;  //声明全局，存放项目名序列;
 
@@ -338,7 +336,7 @@
             // console.log("图层", layerControl._layers);
             // console.log("maplayer",map._layers);
         }
-        //=-----------------------------------------------------------------------------------------结束
+        //-----------------------------------------------------------------------------------------读取excel
         function impexcel(obj) {
             if (!obj.files) { return; }
             var f = obj.files[0];
@@ -389,7 +387,7 @@
             $("#select").show();
         };
 
-        //------------------------------------------------------------------------绘制散点图
+        //-------------------------------------------------------------------------绘制散点图
         function drawsite() {
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val() + "-点";
@@ -421,7 +419,7 @@
             // map.setView([siteData[0][2], siteData[0][1]],10);
         };
 
-        //------------------------------------------------------------------------绘制多边形
+        //-------------------------------------------------------------------------绘制多边形
         function drawpolygon() {
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val() + "-面";
@@ -437,7 +435,7 @@
             layerControl.addOverlay(polygon, sitename);
             map.fitBounds(polygon.getBounds());
         };
-        //------------------------------------------------------------------------绘制多段线        
+        //-------------------------------------------------------------------------绘制多段线        
         function drawpolyline() {
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val() + "-线";
@@ -449,7 +447,7 @@
             layerControl.addOverlay(polyline, sitename);
             map.fitBounds(polyline.getBounds());
         };
-        //--------------------------------------------------------------------绘制行政区域边界——来自高德
+        //-------------------------------------------------------------绘制行政区域边界来自高德
         function drawrigon() {
             var address = $("#rigon").val();
             var opts = {
@@ -502,8 +500,7 @@
             });
             showHide('showsetting');
         };
-
-        //---------------------------------------------------------------------------显示设置
+        //---------------------------------------------------------------------------显示开关
         function showHide(idname) {
             var obj = document.getElementById(idname);
             if (obj.style.display == "none") { obj.style.display = "block" }
@@ -523,8 +520,6 @@
             $("#ShowDiv").html(text);
             $('#ShowDiv').delay(3000).slideUp();
         };
-
-
 
     </script>
 </body>
