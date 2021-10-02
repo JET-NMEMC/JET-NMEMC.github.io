@@ -10,21 +10,6 @@ body {
 a {
     color: #3388ff;
 }
-#act1 {
-    position:absolute;    
-    top: 20%;
-    left:1%;
-    display: inline-block;
-    padding: 12px 36px;
-    margin: 10px 0;
-    color: #fff;
-    text-decoration: none;
-    font-size: 18px;
-    letter-spacing: 2px;
-    border-radius: 40px;
-    background:linear-gradient(90deg,#0162c8,#55e7fc);
-    z-index: 1;
-}
 #ShowDiv {
     position: fixed;
     top:1%;
@@ -65,7 +50,7 @@ a {
     /* border-radius: 10px; */
 }
 #select {
-    position:fixed;    
+    position:absolute;
     top: 10px;
     left: 80%;
     /* display: inline-block; */
@@ -95,11 +80,12 @@ a {
     position:absolute;
     height: 100%;
     width: 100%;
-    left: 0%;
-    top: 0%;
-    /* background-color: #333; */
-    border-color: rgb(0, 0, 0);
-    /* border:1px solid #000; */
+    left: 0px;
+    top: 0px;
+    /* background-color: rgb(8, 38, 49); */
+    background-color: #333;
+    /* border-color: rgb(0, 0, 0); */
+    border:0px;
     z-index: -999;
 }
 
