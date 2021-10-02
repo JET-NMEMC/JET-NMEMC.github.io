@@ -535,7 +535,7 @@ dragFunc("showsetting");
 dragFunc("showtools");
 dragFunc("select");
 
-
+// //-----------------------------------------------------------------------------------------------生成坐标边框
 // //-----------------------------------------------------------------------------------------------生成坐标边框
 // 调整窗口
 var switchmode = false;
@@ -551,18 +551,22 @@ function changemap() {
     document.getElementById("coordmap").innerHTML = "";
     //恢复全屏样式，刷新地图
     mapdiv.style.width = "100%"; mapdiv.style.height = "100%"; mapdiv.style.left = "0%"; mapdiv.style.top = "0%";
+    mapdiv.style.border="#000";
     map.invalidateSize(true);
     //恢复工具栏
     document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility = "visible";
     document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility = "visible";
-    var coordmap = document.getElementById("coordmap")
-    coordmap.parentNode.removeChild()
+    var coordmap = document.getElementById("coordmap");
+    // console.log(coordmap.parentNode);
+    // coordmap.parentNode.removeChild();
+    coordmap.removeChild();
   }
   if (switchmode == false) {
     switchmode = true;
 
     //更改小图样式，刷新地图
-    mapdiv.style.width = "60%"; mapdiv.style.height = "85%"; mapdiv.style.left = "20%"; mapdiv.style.top = "5%";
+    mapdiv.style.width = "65%"; mapdiv.style.height = "90%"; mapdiv.style.left = "17.5%"; mapdiv.style.top = "5%";
+    mapdiv.style.border="0.5px solid #000";
     map.invalidateSize(true);
     //隐藏工具栏
     document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility = "hidden";
@@ -570,7 +574,7 @@ function changemap() {
   }
 }
 
-// 地图级别改变、拖动地图时，重绘。若模式已关闭，注销事件
+// -------------------------------------------------地图级别改变、拖动地图时，重绘。若模式已关闭，注销事件
 map.on("zoomend", function (e) {
   console.log("switchmode", switchmode);
   if (switchmode == true) {
@@ -584,7 +588,7 @@ map.on("moveend", function (e) {
     drawcoordrange();;
   }
 });
-
+//--------------------------------------------------------------------------------------------绘制坐标
 function drawcoordrange() {
   var mapdiv = document.getElementById("map");
   var lngmin, lngmax, latmin, latmax, zoomlevel;
@@ -663,7 +667,7 @@ function drawcoordrange() {
   console.log("-----------draw end------------")
 }
 
-
+//---------------------------------------------------------------------------------自动生成坐标刻度
 function getCoordBreaks(Tvaluemin, Tvaluemax, TargetN) {
   // var TargetN = 2;//设置坐标轴显示坐标的个数
   if (Tvaluemin > Tvaluemax) { alert("wrong position for Tvaluemin, Tvaluemax") };
@@ -709,7 +713,7 @@ function getvaluenumber(x) {
     };
   };
 }
-
+//------------------------------------------------------------------------------------------度分秒转换
 //度 转换 度分秒
 du2dufenmiao = function (value, n) {
   var value2 = Math.abs(value);
