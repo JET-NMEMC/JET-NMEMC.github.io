@@ -12,7 +12,9 @@
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
-    
+    <script src="Openstreet Rigon/leaflet.ChineseTmsProviders.js"></script>
+    <script src="Openstreet Rigon/leaflet.mapCorrection.js"></script>
+
     <style>
         .searchbox {
             position: fixed;
@@ -67,11 +69,16 @@
             subdomains: 'abcd',
             accessToken: 'DGEPTrYpfvrfrjgNGAF1tziKZBqDBXP1ukNpvd7PEQ8tf6cvdMBI4Md4JetBfC7B'
         });
+        var warm = L.tileLayer("https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetWarm/MapServer/tile/{z}/{y}/{x}", {
+            corrdType:"gcj02",
+            attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
+        });
 
         var baseLayers = {
             "Esri影像": Esri_WorldImagery,
             "OpenStreet": OpenStreetMap_HOT,
-            "Jawg_Sunny": Jawg_Sunny
+            "Jawg_Sunny": Jawg_Sunny,
+            "Geoq暖色":warm,
         };
         var map = L.map("map", {
             layers: [Esri_WorldImagery],
@@ -79,12 +86,17 @@
         });
 
         var layerControl = L.control.layers(baseLayers).addTo(map);
+        // L.tileLayer.chinaProvider('Geoq.Theme.warm').addTo(map);
+        // L.tileLayer.chinaProvider('esri.Satellite.wordimage',{maxZoom:18,minZoom:5}).addTo(map);
+        // L.tileLayer.chinaProvider('Google.Normal.Norm',{maxZoom:18,minZoom:5}).addTo(map);
         layerControl.setPosition("topleft");
         // console.log(layerControl);
+        L.marker([39.905530,116.391305]).addTo(map).bindPopup('<p>我是WGS84坐标下，天安门广场国旗所在位置</p>').openPopup();
         map.setView([38, 120.5], 7);
 
     </script>
     <script src="Openstreet Rigon/openstreetrigon.js"></script>
+    <!-- <script src="Openstreet Rigon/leaflet.mapCorrection.js"></script> -->
     <script>
 
         function run() {
