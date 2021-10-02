@@ -74,14 +74,21 @@ a {
     /* margin: 10px 0; */
     color: rgb(0, 0, 0);
     /* text-decoration: none; */
-    font-size: 18px;
+    font-size: 16px;
     text-align: center;
     text-align-last:center;
     letter-spacing: 2px;
-    border-radius: 20px;
-    background-color: #85FFBD;
-    background: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%);
+    border-radius: 0px;
+    background-color: #e2e2e2;
+    /* background: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%); */
     z-index: 1;
+}
+.opt {
+    background: rgb(150, 150, 150);
+    /* text-align: center; */
+    text-align: center;
+    font-size: 16px;
+    /* display: inline; */
 }
 
 #map {
@@ -147,7 +154,7 @@ a {
     padding: 5px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
     background: white;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.7);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
 }
@@ -161,14 +168,9 @@ a {
     height: 24px;
     float: left;
     margin-right: 8px;
-    opacity: 0.7;
+    opacity: 1;
 }
-.opt {
-    background: rgb(150, 150, 150);
-    /* text-align: center; */
-    text-align: center;
-    /* display: inline; */
-}
+
 .my-div-icon {
     color: rgb(7, 253, 109);
     font-size: 15px;
