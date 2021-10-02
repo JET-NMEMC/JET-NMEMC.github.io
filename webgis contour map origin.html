@@ -61,15 +61,9 @@
 <body>
     <div><canvas id="mycanvas" style="display: none;"></canvas></div>
     <div id="map"></div>
-    <!-- <div id="coordmap" style="position:absolute;left:10%; top:10%;width:80%;height:80%;border:1px solid #000000;">        -->
-    <!-- <div id="coordmap" style="position:absolute;left:10%; top:10%;"> -->
-    <div id="coordmap">
-    </div>
-     <!-- <font style="position:absolute; left:100px; top:-20px; font-size: 15px;font-family: sans-serif;" color="#ffffff">120</font> -->
-        <!-- <font style="position:absolute; left:-20px; top:100px; font-size: 15px;font-family: sans-serif; transform: rotate(270deg);" color="#ffffff">39</font> -->
-    <!-- <div><input type="button" id="act1" value="WELCOME" onclick="test()" /></div> -->
+
     <img src="contourmap/icon2/网格地球 2.png" width="50px" onclick="changemap()"
-    style="position: fixed; left:10px; bottom:10px;">
+        style="position: fixed; left:10px; bottom:10px;">
 
     <img src="contourmap/icon2/设置2.png" width="50px" onclick="showHide('showsetting')"
         style="position: fixed; left:70px; bottom:10px;">
@@ -83,7 +77,7 @@
                 class="navbar-button" />
         </p>
         <p>计划带数: <input type="text" id="TargetN" value="10" style="height: 25px; width: 82px;"></p>
-        <p>图层透明: <input type="text" id="opacity" value="0.5" style="height: 25px; width: 82px;"></p>
+        <p>图层透明: <input type="text" id="opacity" value="1" style="height: 25px; width: 82px;"></p>
         配色方案: <select id="colorpattern" style="height: 30px; width: 90px;">
             <option value="rainbow">rainbow</option>
             <option value="bgyr" selected=selected>bgyr</option>
@@ -136,7 +130,7 @@
 
     <script>
         //----------------------------------------------------------------------------------------------主程序
-        var TargetN;//设置拟绘制色带个数
+        //设置拟绘制色带个数
         var data;     //声明全局，存放json对象;
         var xiangmu;  //声明全局，存放项目名序列;
 
@@ -150,8 +144,6 @@
         var figurectrol = {};
         var legend;
         var countourmap;
-
-
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
             var kmlFileInput = document.getElementById("kmlFileInput");
@@ -243,7 +235,7 @@
             else {
                 var beginTime = +new Date();
                 console.log("开始绘制---------------" + newxiangmu);
-                TargetN = $('#TargetN').val(); //设置拟绘制色带个数
+                var TargetN = $('#TargetN').val(); //设置拟绘制色带个数
                 // let gridArea=china; 如果插值范围超过散点的范围，需重新设置x,y,range
                 // let gridArea=data_range;
                 let gridArea = area_clip;
@@ -286,6 +278,7 @@
 
             legend.addTo(map);
             countourmap.addTo(map);
+            map.fitBounds(countourmap.getBounds());
         }
         );
 
@@ -312,7 +305,6 @@
             var grid = kriging.grid(gridArea, variogram, (xrange[1] - xrange[0]) / 500, (yrange[1] - yrange[0]) / 500);
             // console.log(newxiangmu + "插值grid:");
             // console.log(grid);
-
             var countourSet = autobreak(grid.zlim[0], grid.zlim[1], TargetN);
             var breaks = countourSet.breaks;
             // console.log("自动生成的breaks段数", countourSet.levelnum);
@@ -385,16 +377,19 @@
             reader.readAsBinaryString(f);
             showHide('showsetting');
         }
-        //------------------提取json中的所有属性名称，进入数组,形成名称列表
-        function getkey(json) {
-            var s = [];
-            for (var keys in json[0]) {
-                s.push(keys);
+        //---------------------------------------------------------------------生成左侧选项卡
+        function draw_menu() {
+            // var $selected = $("#select");
+            var obj = '';
+            // $selected.empty();//清空内容
+            for (var i = 3; i < xiangmu.length; i++) {//此处3是指排除site、lng、lat3个
+                obj += "<option class=\"opt\" id= '" + xiangmu[i] + "' value='" + xiangmu[i] + "'>" + xiangmu[i] + "</option>";
             }
-            return s
-        }
+            $("#select").append(obj) //option字符串写入select标签中
+            $("#select").show();
+        };
 
-        //-------------------------------------------------绘制散点图
+        //------------------------------------------------------------------------绘制散点图
         function drawsite() {
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val() + "-点";
@@ -426,7 +421,7 @@
             // map.setView([siteData[0][2], siteData[0][1]],10);
         };
 
-        //-------------------------------------------------绘制多边形
+        //------------------------------------------------------------------------绘制多边形
         function drawpolygon() {
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val() + "-面";
@@ -442,6 +437,7 @@
             layerControl.addOverlay(polygon, sitename);
             map.fitBounds(polygon.getBounds());
         };
+        //------------------------------------------------------------------------绘制多段线        
         function drawpolyline() {
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val() + "-线";
@@ -456,12 +452,6 @@
         //--------------------------------------------------------------------绘制行政区域边界——来自高德
         function drawrigon() {
             var address = $("#rigon").val();
-            // var linkurl="https://restapi.amap.com/v3/config/district?key=2b2bb467194aa9e72e495eafa99bb0c4&keywords="+address+"&subdistrict=0&extensions=base"
-            // $.getJSON(linkurl, function (json2) {
-            //     adcode=json2.districts[0].adcode;
-            //     console.log(json2);
-            //     console.log(address,adcode);
-            // });
             var opts = {
                 subdistrict: 0,   //获取边界不需要返回下级行政区
                 extensions: 'all',  //返回行政区边界坐标组等具体信息
@@ -512,23 +502,26 @@
             });
             showHide('showsetting');
         };
-        //---------------------------------------------------------------------生成左侧选项卡
-        function draw_menu() {
-            // var $selected = $("#select");
-            var obj = '';
-            // $selected.empty();//清空内容
-            for (var i = 3; i < xiangmu.length; i++) {//此处3是指排除site、lng、lat3个
-                obj += "<option class=\"opt\" id= '" + xiangmu[i] + "' value='" + xiangmu[i] + "'>" + xiangmu[i] + "</option>";
-            }
-            $("#select").append(obj) //option字符串写入select标签中
-            $("#select").show();
-        };
 
-        //----------------------------------------------------------------------------显示设置窗口
+        //---------------------------------------------------------------------------显示设置
         function showHide(idname) {
             var obj = document.getElementById(idname);
             if (obj.style.display == "none") { obj.style.display = "block" }
             else { obj.style.display = "none" }
+        };
+        //---------------------------------------提取json中的所有属性名称，进入数组,形成名称列表
+        function getkey(json) {
+            var s = [];
+            for (var keys in json[0]) {
+                s.push(keys);
+            }
+            return s
+        }
+        //---------------------------------------------------------------------------消息弹窗
+        function msg(text) {
+            $("#ShowDiv").show();
+            $("#ShowDiv").html(text);
+            $('#ShowDiv').delay(3000).slideUp();
         };
 
 
