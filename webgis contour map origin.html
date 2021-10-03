@@ -41,11 +41,13 @@
 
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
 
-    <link rel="stylesheet" href="contourmap/leaflet-geoman.css" />
-    <script src="contourmap/leaflet-geoman.min.js"></script>
+    <link rel="stylesheet" href="contourmap/leaflet-geoman2.css" />
+    <script src="contourmap/leaflet-geoman.min2.js"></script>
 
     <link rel="stylesheet" href="contourmap/leaflet-measure.css">
     <script src="contourmap/leaflet-measure.js"></script>
+    <!-- <link rel="stylesheet" href="contourmap/leaflet-measure-origin.css">
+    <script src="contourmap/leaflet-measure-origin.js"></script> -->
 
     <script src="contourmap/L.KML.js"></script>
 
@@ -447,6 +449,7 @@
             // polygon.bindPopup(sitename+'<br><img src="contourmap/icon/详情.png" onclick=msg("详情")  style="height:20px;display: inline-block;"/>详情');
             layerControl2.addOverlay(polygon, sitename);
             map.fitBounds(polygon.getBounds());
+            console.log(polygon._latlngs)
         };
         //-------------------绘制多段线-----------------------------        
         function draw_Polyline_in_Map() {
