@@ -37,14 +37,9 @@ map.pm.addControls({
   position: 'topleft',
   drawCircle: false,
   drawCircleMarker: false,
+  drawLine:false
 });
-var layerControl2 = L.control.layers().addTo(map);
-var basedata = new L.featureGroup();
-layerControl2.addOverlay(basedata, "临时绘图");
-map.on(('pm:create'), e => {
-  // ||'pm:update'
-  e.layer.addTo(basedata);
-});
+
 // ------------------------------------------------------------添加 编辑工具
 var styleEditor = L.control.styleEditor({
   position: "topleft",
@@ -56,6 +51,13 @@ var styleEditor = L.control.styleEditor({
 });
 map.addControl(styleEditor);
 
+var layerControl2 = L.control.layers().addTo(map);
+var basedata = new L.layerGroup();
+layerControl2.addOverlay(basedata, "临时绘图");
+map.on(('pm:create'), e => {
+  // ||'pm:update'
+  e.layer.addTo(basedata);
+});
 // ------------------------------------------------------------添加 定位工具
 if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
