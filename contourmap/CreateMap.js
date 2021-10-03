@@ -122,20 +122,21 @@ function initDemoMap() {
         // "天地图全球境界": tianditu_全球境界,
     }
     //--------------------------------------------------------------------------地图设置
+    var labelTextCollision = new L.LabelTextCollision({
+        collisionFlg: false
+    });
     var map = L.map("map", {
         layers: [Esri_WorldImagery],
         zoomControl: false,
-        attributionControl: false
+        attributionControl: false,
+        renderer: labelTextCollision
     });
 
     var layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
     map.setView([37, 117], 4);
-    // var layerControl2 = L.control.layers(baseLayers);
-    // layerControl2.addTo(map);
     return {
         map: map,
         layerControl: layerControl,
-        // layerControl2: layerControl2
     };
 };
 
