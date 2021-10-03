@@ -161,3 +161,10 @@ a {
     color: rgb(7, 253, 109);
     font-size: 15px;
 }
+.text-stroke{
+    font-size:15px;
+	font-family:"Sans-serif";
+	color:#000000;
+	text-shadow:1px 1px 1px #ffffff,-1px 1px 1px #ffffff,-1px -1px 1px #ffffff,1px -1px 1px #ffffff;
+
+}
