@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,6 @@
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
-    <script src="Openstreet Rigon/leaflet.ChineseTmsProviders.js"></script>
     <script src="Openstreet Rigon/leaflet.mapCorrection.js"></script>
 
     <style>
@@ -86,12 +85,9 @@
         });
 
         var layerControl = L.control.layers(baseLayers).addTo(map);
-        // L.tileLayer.chinaProvider('Geoq.Theme.warm').addTo(map);
-        // L.tileLayer.chinaProvider('esri.Satellite.wordimage',{maxZoom:18,minZoom:5}).addTo(map);
-        // L.tileLayer.chinaProvider('Google.Normal.Norm',{maxZoom:18,minZoom:5}).addTo(map);
         layerControl.setPosition("topleft");
         // console.log(layerControl);
-        L.marker([39.905530,116.391305]).addTo(map).bindPopup('<p>我是WGS84坐标下，天安门广场国旗所在位置</p>').openPopup();
+        // L.marker([39.905530,116.391305]).addTo(map).bindPopup('<p>我是WGS84坐标下，天安门广场国旗所在位置</p>').openPopup();
         map.setView([38, 120.5], 7);
 
     </script>
