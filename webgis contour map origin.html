@@ -401,10 +401,9 @@
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val() + "-点";
             let icon = L.icon({
-                iconUrl: 'https://a.tiles.mapbox.com/v4/marker/pin-m+7e7e7e@2x.png' +
-                    '?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A',
+                iconUrl: 'contourmap/icon2/pin-m+7e7e7e@2x.png',
                 iconSize: [30,],//marker宽高
-                iconAnchor: [25, 50],//marker中心点位置
+                iconAnchor: [15, 35],//marker中心点位置
                 popupAnchor: [0, -50]
             });
             var sites = L.featureGroup();
@@ -425,7 +424,7 @@
                     html: siteData[i][0],//marker标注内容
                     className: 'text-stroke',
                     iconSize: [15 * (siteData[i][0].length), 15],//marker宽高
-                    iconAnchor: [7.5 * (siteData[i][0].length), 7.5]//文字标注相对位置
+                    iconAnchor: [7.5 * (siteData[i][0].length), 0]//文字标注相对位置
                 });
                 L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon }).addTo(sitesLabel);
             };
@@ -491,7 +490,7 @@
         //-------------------绘制多段线及标注-----------------------------
         function draw_Polyline_in_Canvas() {
             var siteData = coord2shuzu('textarea');
-            var name = $("#NewlayerName").val() + "-Canvas线";
+            var name = $("#NewlayerName").val();
             var latlngs = [];
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
             var polyline = L.polyline(
@@ -505,13 +504,13 @@
                     font: "16px 'Microsoft Yahei'",
                 }
             }).bindPopup(name).addTo(map);
-            layerControl2.addOverlay(polyline, name);
+            layerControl2.addOverlay(polyline, name + "-Canvas线");
             map.fitBounds(polyline.getBounds());
         };
         //-------------------绘制多边形及标注-----------------------------
         function draw_Polygon_in_Canvas() {
             var siteData = coord2shuzu('textarea');
-            var name = $("#NewlayerName").val() + "-Canvas面";
+            var name = $("#NewlayerName").val();
             var latlngs = [];
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
             var polygon = L.polygon(
@@ -525,7 +524,7 @@
                     font: "16px 'Microsoft Yahei'",
                 }
             }).bindPopup(name).addTo(map);
-            layerControl2.addOverlay(polygon, name);
+            layerControl2.addOverlay(polygon, name + "-Canvas面");
             map.fitBounds(polygon.getBounds());
         };
         //-------------------------------------------------------------绘制行政区域边界来自高德
