@@ -148,8 +148,8 @@ L.LabelTextCollision = L.Canvas
                     }
 
                     // label bounds offset
-                    var offsetX = 0;
-                    var offsetY = 0;
+                    var offsetX = 10;
+                    var offsetY = 10;
 
                     /**
                      * TODO setting for custom font
