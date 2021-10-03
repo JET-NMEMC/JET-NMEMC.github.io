@@ -38,9 +38,9 @@ map.pm.addControls({
   drawCircle: false,
   drawCircleMarker: false,
 });
-//监听：创建图形时，添加到临时绘图图层
-var basedata = new L.layerGroup();
-layerControl.addOverlay(basedata, "临时绘图");
+var layerControl2 = L.control.layers().addTo(map);
+var basedata = new L.featureGroup();
+layerControl2.addOverlay(basedata, "临时绘图");
 map.on(('pm:create'), e => {
   // ||'pm:update'
   e.layer.addTo(basedata);
