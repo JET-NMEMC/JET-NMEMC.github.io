@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <script>
     //通过window.screen.width获取屏幕的宽度
@@ -20,9 +20,6 @@
     } else {
         machine = "computer";
         machineStyle = "hengping-computer"
-        var offWidth = window.screen.height / 80;
-        document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px';
-        console.log(offWidth + 'px');
     };
     console.log(machineStyle);
 </script>
@@ -30,6 +27,7 @@
 <head>
     <title>Web Gis</title>
     <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <link rel="stylesheet" href="contourmap/index.css" />
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
@@ -37,6 +35,7 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
     <script src="contourmap/L.LabelTextCollision.js"></script>
 
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
@@ -53,7 +52,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="contourmap/L.Control.Locate.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+    <script src="contourmap/L.Control.Locate.min.js"></script>
 
     <style>
     </style>
@@ -443,8 +442,9 @@
             var latlngs = [];
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
             var polygon = L.polygon(latlngs, { color: edgecolor, weight: 1, fillOpacity: 0.2 })
-                .bindPopup(sitename)
+                // .bindPopup(sitename)
                 .addTo(map);
+                MyPopup(polygon, 'Polygon', sitename);
             // polygon.bindPopup(sitename+'<button>Details</button>');
             // polygon.bindPopup(sitename+'<br><img src="contourmap/icon/详情.png" onclick=msg("详情")  style="height:20px;display: inline-block;"/>详情');
             layerControl2.addOverlay(polygon, sitename);
