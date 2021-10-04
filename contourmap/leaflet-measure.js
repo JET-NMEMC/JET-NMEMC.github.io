@@ -700,6 +700,7 @@ var setcolor = "#E22CCD";
     i.default)(m.linePopupTemplate, y)
       , j = (0,
     i.default)(m.areaPopupTemplate, y);
+    //------------------------------------------------------
     L.Control.Measure = L.Control.extend({
         _className: "leaflet-control-measure",
         options: {
@@ -932,6 +933,7 @@ var setcolor = "#E22CCD";
                 }));
                 var o = L.DomUtil.create("div", "");
                 o.innerHTML = r;
+
                 var i = (0,
                 c.selectOne)(".js-zoomto", o);
                 i && (L.DomEvent.on(i, "click", L.DomEvent.stop),
@@ -939,8 +941,17 @@ var setcolor = "#E22CCD";
                     t.getBounds ? this._map.fitBounds(t.getBounds(), {
                         padding: [20, 20],
                         maxZoom: 17
-                    })&&console.log(t._latlngs[0]) : t.getLatLng && this._map.panTo(t.getLatLng())
+                    }) : t.getLatLng && this._map.panTo(t.getLatLng())
                 }, this));
+
+                //新加的
+
+                var q = (0,c.selectOne)(".js-run", o);
+                q && (L.DomEvent.on(q, "click", L.DomEvent.stop),
+                L.DomEvent.on(q, "click", function() {
+                    t.getBounds ? console.log("边界:",t.getBounds()) & console.log("坐标:",t._latlngs[0]) : t.getLatLng & console.log("无边界",t.getLatLng())
+                }, this));
+
                 var s = (0,
                 c.selectOne)(".js-deletemarkup", o);
                 s && (L.DomEvent.on(s, "click", L.DomEvent.stop),
@@ -2050,6 +2061,7 @@ var setcolor = "#E22CCD";
     e.exports = '<h3>线测量</h3> <p>长度：{{ (model.length/1000).toFixed(3) }} km</p> <ul class=tasks> <li><a href=# class="js-zoomto zoomto">居中显示</a></li> <li><a href=# class="js-deletemarkup deletemarkup">删除</a></li> </ul> '
 }
 , function(e, t, r) {
-    e.exports = '<h3>面积测量</h3> <p>面积：{{ (model.area/10000).toFixed(4) }} 公顷</p> <p>周长：{{ (model.length/1000).toFixed(3)}} km</p> <ul class=tasks> <li><a href=# class="js-zoomto zoomto">居中显示</a></li> <li><a href=# class="js-deletemarkup deletemarkup">删除</a></li> </ul> '
+    // console.log(r);
+    e.exports = '<h3>面积测量</h3><p>面积：{{ (model.area/10000).toFixed(4) }} 公顷</p> <p>周长：{{ (model.length/1000).toFixed(3)}} km</p> <ul class=tasks> <li><a href=# class="js-run print">打印坐标</a></li> <li><a href=# class="js-zoomto zoomto">居中显示</a></li> <li><a href=# class="js-deletemarkup deletemarkup">删除</a></li> </ul> '
 }
 ]);
