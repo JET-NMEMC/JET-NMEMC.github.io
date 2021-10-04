@@ -3710,7 +3710,7 @@
             setNewMarker: function() {
                 var t = this._createMarkerIcon()
                   , e = this.options.styleEditorOptions.currentElement.target;
-                console.log(t),
+                // console.log(t),
                 e.setIcon(t),
                 e instanceof L.LayerGroup ? e.eachLayer((function(t) {
                     L.DomUtil.addClass(t.getElement(), "leaflet-styleeditor-marker-selected")
@@ -3718,7 +3718,7 @@
                 )) : L.DomUtil.addClass(e.getElement(), "leaflet-styleeditor-marker-selected")
             },
             setStyle: function(t, e) {
-                console.log("setStyle"),
+                // console.log("setStyle"),
                 "icon" !== t && (t = "icon" + t.charAt(0).toUpperCase() + t.slice(1)),
                 this.setIconOptions(t, e),
                 this.setNewMarker()
@@ -3995,8 +3995,8 @@
                 ), this),
                 this.options.map.on("pm:create", (function(t) {
                     this.enable(t.layer),
-                    this.removeIndicators(),
-                    console.log("4")
+                    this.removeIndicators()
+                    // console.log("4")
                 }
                 ), this))
             },
