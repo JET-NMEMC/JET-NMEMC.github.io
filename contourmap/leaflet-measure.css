@@ -183,13 +183,40 @@
 	color:#5e66cc;
 	text-decoration:none
 }
+.leaflet-measure-resultpopup a.print {
+	display:inline;
+	width:auto;
+	height:auto;
+	padding-left:20px;
+	margin-right:4px;
+	line-height:1em;
+	border:0;
+	text-align:left;
+	background-image:url("assets/coordinate-conversion.png");
+	background-repeat:no-repeat;
+	background-position:0 50%;
+	background-size:12px 12px;
+	color:#5e66cc;
+	text-decoration:none
+}
+
 .leaflet-measure-resultpopup a.zoomto,.leaflet-measure-resultpopup a.zoomto:hover {
+	background-color:transparent
+}
+.leaflet-measure-resultpopup a.zoomto,.leaflet-measure-resultpopup a.print:hover {
 	background-color:transparent
 }
 .leaflet-retina .leaflet-measure-resultpopup a.zoomto {
 	background-image:url("assets/focus_@2X.png")
 }
+.leaflet-retina .leaflet-measure-resultpopup a.print {
+	background-image:url("assets/coordinate-conversion.png")
+}
 .leaflet-measure-resultpopup a.zoomto:hover {
+	opacity:.5;
+	text-decoration:none
+}
+.leaflet-measure-resultpopup a.print:hover {
 	opacity:.5;
 	text-decoration:none
 }
