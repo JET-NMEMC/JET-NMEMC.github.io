@@ -9,6 +9,27 @@ function coord2shuzu(id) {
   };
   return shuju;
 }
+/* calc measurements for an array of points */
+function calc(latlngs) {
+  const last = latlngs[latlngs.length - 1];
+  const path = latlngs.map(latlng => [latlng.lat, latlng.lng]);
+
+  const polyline = L.polyline(path),
+    polygon = L.polygon(path);
+  const meters = turf.length(polyline.toGeoJSON(), { units: 'kilometers' }) * 1000;
+  const sqMeters = turf.area(polygon.toGeoJSON());
+
+  return {
+    lastCoord: {
+      dd: {
+        x: last.lng,
+        y: last.lat
+      }
+    },
+    length: meters,
+    area: sqMeters
+  };
+}
 
 //-------------------------------------------------------------添加 经纬网格
 var Graticulelayer = L.latlngGraticule({
@@ -37,8 +58,93 @@ map.pm.addControls({
   position: 'topleft',
   drawCircle: false,
   drawCircleMarker: false,
-  drawLine:false
+  drawLine: false
 });
+
+var layerControl2 = L.control.layers().addTo(map);
+var basedata = new L.layerGroup();
+layerControl2.addOverlay(basedata, "临时绘图");
+
+// map.on(('pm:create'), e => {
+//   // ||'pm:update'
+//   e.layer.addTo(basedata);
+// });
+
+map.on('pm:create', ({ layer }) => {
+  console.log("-----------start------------");
+  console.log("事件触发：图形创建，对象为", layer);
+  layer.addTo(basedata);
+  MyPopup(layer,)
+
+  layer.on('pm:edit', e => {
+    var feature_edited = e.target;
+    console.log("事件触发：图形编辑，对象为", feature_edited);
+    MyPopup(feature_edited,)
+
+  });
+});
+
+// // Don't add the popup directly to marker, create a popup "layer" and open it, when clicked on the marker:
+// // a global variable
+// var popup = L.popup({closeOnClick: false, autoClose: false, closeButton: true});
+
+// //your function from above
+// const newMarker = new L.marker(e.latlng,{draggable:true}).addTo(lmap);
+// newMarker.on('click',(e)=>{
+//     popup.options.offset = e.target.options.icon.options.popupAnchor;
+//     popup.setContent('TEST').setLatLng(e.target.getLatLng()).addTo(map)
+// })
+
+function MyPopup(layer, featuretype, layername) {
+  if (layer.styleEditor.type) {
+    featuretype = layer.styleEditor.type;
+    console.log("输入图层具有自带类型，默认更改");
+  }
+  if (layername) { var nametext = '<h3>名称： ' + layername + '</h3>'; } else { var nametext = '' };
+  switch (featuretype) {
+    case 'Polygon':
+    case 'Rectangle':
+    case 'Polyline':
+      {
+        // console.log("坐标");
+        // console.log(layer.getLatLngs());
+        // console.log("范围");
+        // console.log(layer.getBounds());
+
+        var SW = layer._bounds._southWest.lat.toFixed(9) + "&emsp;" + layer._bounds._southWest.lng.toFixed(9);
+        var NE = layer._bounds._northEast.lat.toFixed(9) + "&emsp;" + layer._bounds._northEast.lng.toFixed(9);
+        var typetext = '<h4>类型： ' + featuretype + '</h4>';
+        var rangetext = '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">范围：<h4/>纬度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;经度<br>' + SW + '<br>' + NE + '<br>';
+
+        if (featuretype == 'Polyline') {
+          var coord = layer.getLatLngs();
+          var Lengthtext = '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">长度： ' + (calc(coord).length / 1000).toFixed(3) + ' km<h4/>';
+          var Areatext = '';
+        } else {
+          var coord = layer.getLatLngs()[0];
+          var Lengthtext = '';
+          var Areatext = '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">面积： ' + (calc(coord).area / 10000).toFixed(4) + ' 公顷<h4/>';
+        }
+        var coordtext = '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">坐标:<h4/><p>' +
+          '纬度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;经度<br>';
+        for (i = 0; i < coord.length; i++) { coordtext = coordtext + coord[i].lat.toFixed(9) + "&emsp;" + coord[i].lng.toFixed(9) + "<br>" };
+        if (coord.length > 10) { console.log(coord); coordtext = '数据量超过20个，已打印至控制台，按F12'; }
+        var popHtml = nametext + typetext + Lengthtext + Areatext + rangetext + coordtext + '</p>'
+        layer.bindPopup(popHtml, { maxWidth: 500, minWidth: 100, maxHeight: 600 })
+        // .openPopup();
+      }
+      break;
+    case 'Marker':
+      var coord = layer.getLatLng();
+      var coordtext = coord.lat.toFixed(9) + "  " + coord.lng.toFixed(8);
+      var popHtml = '<h3>类型: ' + featuretype + '</h3> <h4>坐标:<h4/><p>' + coordtext + '</p>'
+      layer.bindPopup(popHtml).openPopup();
+      break;
+    default:
+      console.log("wrong featuretype");
+  }
+}
+
 
 // ------------------------------------------------------------添加 编辑工具
 var styleEditor = L.control.styleEditor({
@@ -50,14 +156,6 @@ var styleEditor = L.control.styleEditor({
   // ignoreLayerTypes :["Marker"],
 });
 map.addControl(styleEditor);
-
-var layerControl2 = L.control.layers().addTo(map);
-var basedata = new L.layerGroup();
-layerControl2.addOverlay(basedata, "临时绘图");
-map.on(('pm:create'), e => {
-  // ||'pm:update'
-  e.layer.addTo(basedata);
-});
 // ------------------------------------------------------------添加 定位工具
 if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
@@ -69,7 +167,7 @@ if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
     follow: true,
     icon: 'fa fa-location-arrow',
     cacheLocation: true,
-    onLocationError: function (err) { alert(err.message) }, 
+    onLocationError: function (err) { alert(err.message) },
     onLocationFound: function (e) { console.log('定位成功=====>', e) },
   }).addTo(map);
 };
