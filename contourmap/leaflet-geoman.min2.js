@@ -4881,9 +4881,9 @@
             };
             this._addButton("drawMarker", new L.Control.PMButton(e)),
             // this._addButton("drawSingleline", new L.Control.PMButton(r)),
-            this._addButton("drawPolyline", new L.Control.PMButton(n)),
-            this._addButton("drawRectangle", new L.Control.PMButton(s)),
+            this._addButton("drawPolyline", new L.Control.PMButton(n)),            
             this._addButton("drawPolygon", new L.Control.PMButton(i)),
+            this._addButton("drawRectangle", new L.Control.PMButton(s)),
             this._addButton("drawCircle", new L.Control.PMButton(o)),
             this._addButton("drawCircleMarker", new L.Control.PMButton(a)),
             this._addButton("editMode", new L.Control.PMButton(l)),
