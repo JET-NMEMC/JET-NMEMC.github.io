@@ -79,13 +79,17 @@ function initDemoMap() {
     });
 
     // 船讯网海图
-    var haitu = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
+    var haitu_chuanxun = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
         attribution: "&copy; 船讯网",
         corrdType: "gcj02",
     });
     // 中国港海图
-    var haitu2 = L.tileLayer("http://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}", {
+    var haitu_chinaport = L.tileLayer("http://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}", {
         attribution: "&copy; 中国港口网",
+    });
+    // YE海图
+    var haitu_YE = L.tileLayer("http://118.25.187.132:8071/{z}/{y}/{x}.png", {
+        attribution: "&copy; YE海图",
     });
     //--------------------------设置主图层--------------------------------
     var baseLayers = {
@@ -96,7 +100,8 @@ function initDemoMap() {
         "JawgStreet": Jawg_Streets,
         // "谷歌地图": GoogleMap,
         // "海图船讯": haitu,
-        "海图在线": haitu2,
+        "海图在线": haitu_chinaport,
+        "海图YE":haitu_YE,
         "谷歌影像 火星": GoogleImage2,
         "高德影像 火星": gaode,
         "谷歌地图 火星": GoogleMap2,
