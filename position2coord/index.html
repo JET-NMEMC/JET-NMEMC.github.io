@@ -90,13 +90,33 @@
     <button id="markers" onclick="drawmarkers()" class="buts">markers</button>
     <button id="polline" onclick="drawPoline()" class="buts">polline</button>
     <button id="polygon" onclick="drawPolygon()" class="buts">polygon</button>
-    <textarea id="textarea" class="textarea0" >经度	纬度	name	province&#10;121.561	38.875	大连市	辽宁省&#10;120.427	36.093	青岛市	山东省&#10;122.112	37.422	烟台市	山东省
-    </textarea> 
+    <textarea id="textarea" class="textarea0">经度	纬度	name	province&#10;121.561	38.875	大连市	辽宁省&#10;120.427	36.093	青岛市	山东省&#10;122.112	37.422	烟台市	山东省
+    </textarea>
   </div>
-  
- 
+
+
   <textarea id="textarea2" class="textarea2" cols="10" rows="10"></textarea>
   <button id="download" class="download" onclick=exportshp2()>下载</button>
+
+  <div class="pad1 tabs-ui clearfix col12"></div>
+    <div class="tab col12">
+      <input class="hide" type="radio" id="properties" name="tab-group" checked="true">
+      <label class="keyline-top keyline-right tab-toggle pad0 pin-bottomleft z10 center col6"
+        for="properties">Properties</label>
+      <div class="space-bottom1 col12 content">
+        <table class="space-bottom0 marker-properties">table<br><br></table>
+      </div>
+    </div>
+    <div class="space-bottom2 tab col12">
+      <input class="hide" type="radio" id="info" name="tab-group">
+      <label class="keyline-top tab-toggle pad0 pin-bottomright z10 center col6" for="info">Info</label>
+      <div class="space-bottom1 col12 content">
+        <div class="marker-info">info </div>
+      </div>
+    </div>
+  </div>
+
+
 
   <script>
     if (self == top) {
@@ -115,9 +135,9 @@
   <script src="dist/jszip.min.js"></script>
   <script src="dist/L.drawfeature.js"></script>
   <script>
-    $("#leaflet-control-clegend").click(function(){
+    $("#leaflet-control-clegend").click(function () {
       showHide("clickbuts")
- }); 
+    });
   </script>
 
 
