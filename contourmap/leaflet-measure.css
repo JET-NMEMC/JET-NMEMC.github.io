@@ -39,7 +39,7 @@
 }
 .leaflet-control-measure .leaflet-control-measure-toggle,.leaflet-control-measure .leaflet-control-measure-toggle:hover {
 	background-size:30px 30px;
-	background-image:url(icon2/工程绘图.png);
+	background-image:url(icon2/measure.png);
 	/* background-image:url(assets/rulers_@2X.png); */
 	border:0;
 	border-radius:4px;
@@ -56,7 +56,7 @@
 	/* width:30px;
 	height:30px; */
 	/* background-image:url(assets/rulers_@2X.png) */
-	background-image:url(icon2/工程绘图.png);
+	background-image:url(icon2/measure.png);
 }
 /* 设置icon图片大小 */
 .leaflet-touch .leaflet-control-measure .leaflet-control-measure-toggle,.leaflet-touch .leaflet-control-measure .leaflet-control-measure-toggle:hover {
