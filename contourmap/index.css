@@ -166,5 +166,23 @@ a {
 	font-family:"Sans-serif";
 	color:#000000;
 	text-shadow:1px 1px 1px #ffffff,-1px 1px 1px #ffffff,-1px -1px 1px #ffffff,1px -1px 1px #ffffff;
+}
 
+.popup-label {
+    width: 48%;
+    height: 30px;
+    margin: 0;
+    /* padding: 10px; */
+    background-color: rgb(120, 120, 120);
+    color: white;
+    border: solid 1px white;
+    border-radius: 4px;
+    /* display: block; */
+    text-align: center;
+    vertical-align:middle;
+    /* text-align-last:center; */
+    display:inline-block;
+}
+.popup-label:hover {
+    background-color: rgb(75, 75, 75);
 }
