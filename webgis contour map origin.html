@@ -27,7 +27,7 @@
 <head>
     <title>Web Gis</title>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
     <link rel="stylesheet" href="contourmap/index.css" />
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
@@ -49,6 +49,8 @@
     <script src="contourmap/leaflet-measure-origin.js"></script> -->
 
     <script src="contourmap/L.KML.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet-kmz@1.0.6/dist/leaflet-kmz-src.js"></script> -->
+    <!-- <script src="https://www.windy.com/v/33.0.3.ind.47e4/plugins/upload.js"></script> -->
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="contourmap/L.Control.Locate.min.css" />
@@ -62,7 +64,7 @@
     <div><canvas id="mycanvas" style="display: none;"></canvas></div>
     <div id="map"></div>
 
-    <img src="contourmap/icon2/网格地球 2.png" width="50px" onclick="changemap()"
+    <img src="contourmap/icon2/earthnet.png" width="50px" onclick="changemap()"
         style="position: fixed; left:10px; bottom:10px;">
 
     <img src="contourmap/icon2/设置2.png" width="50px" onclick="showHide('showsetting')"
@@ -96,8 +98,9 @@
             <button class="navbar-button" onclick="drawrigon()">生成行政区边界</button>
         </div>
     </div>
+    
 
-    <img src="contourmap/icon2/绘制3.png" width="50px" onclick="showHide('showtools')"
+    <img id="drowtool" src="contourmap/icon2/绘制3.png" width="50px" onclick="showHide('showtools')"
         style="position: fixed; left:130px; bottom:10px;">
 
     <div id="showtools" style="display: none;">
@@ -139,6 +142,15 @@
 
     <script>
         //----------------------------------------------------------------------------------------------主程序
+        // // Instantiate KMZ layer (async)
+        // var kmz = L.kmzLayer().addTo(map);
+        // kmz.on('load', function (e) {
+        //     layerControl2.addOverlay(e.layer, e.name);
+        //     // e.layer.addTo(map);
+        // });
+        // // Add remote KMZ files as layers (NB if they are 3rd-party servers, they MUST have CORS enabled)
+        // kmz.load("http://raruto.github.io/leaflet-kmz/examples/capitals.kmz");
+
         var data;     //声明全局，存放json对象;
         var xiangmu;  //声明全局，存放项目名序列;
 
@@ -165,9 +177,9 @@
                     const parser = new DOMParser();
                     const kml = parser.parseFromString(kmltext, 'text/xml');
                     const track = new L.KML(kml);
+                    console.log(track);
                     map.addLayer(track);
                     layerControl2.addOverlay(track, filename);
-                    // Adjust map to show the kml
                     map.fitBounds(track.getBounds());
                 }
                 );
@@ -409,7 +421,8 @@
             });
             var sites = L.featureGroup();
             for (var i = 0; i < siteData.length; i++) {
-                L.marker([siteData[i][2], siteData[i][1]], { icon: icon }).bindPopup(siteData[i][0]).addTo(sites);
+                var marker0 = L.marker([siteData[i][2], siteData[i][1]], { icon: icon, name: siteData[i][0] }).addTo(sites);
+                marker0.on('click', (e) => {popupA(e)});
             };
             sites.addTo(map);
             layerControl2.addOverlay(sites, sitename);
@@ -441,15 +454,13 @@
 
             var latlngs = [];
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
-            var polygon = L.polygon(latlngs, { color: edgecolor, weight: 1, fillOpacity: 0.2 })
-                // .bindPopup(sitename)
-                .addTo(map);
-                MyPopup(polygon, 'Polygon', sitename);
-            // polygon.bindPopup(sitename+'<button>Details</button>');
-            // polygon.bindPopup(sitename+'<br><img src="contourmap/icon/详情.png" onclick=msg("详情")  style="height:20px;display: inline-block;"/>详情');
+            var polygon = L.polygon(latlngs, {
+                color: edgecolor, weight: 1, fillOpacity: 0.2,
+                name: sitename
+            }).addTo(map);
+            polygon.on('click', (e) => {popupA(e)});
             layerControl2.addOverlay(polygon, sitename);
             map.fitBounds(polygon.getBounds());
-            console.log(polygon._latlngs)
         };
         //-------------------绘制多段线-----------------------------        
         function draw_Polyline_in_Map() {
@@ -459,22 +470,22 @@
 
             var latlngs = [];
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
-            var polyline = L.polyline(latlngs, { color: "#FF1493", weight: 1 }).addTo(map);
-            polyline.bindPopup(sitename);
+            var polyline = L.polyline(latlngs, { color: "#FF1493", weight: 1, name: sitename }).addTo(map);
+            polyline.on('click', (e) => {popupA(e)});
             layerControl2.addOverlay(polyline, sitename);
             map.fitBounds(polyline.getBounds());
         };
         //--------------------------------------------------------------------------------Map绘制
 
         //-----------------------------------------------------------------------------Canvas绘制
-        //-------------------绘制点位及标注-----------------------------
+        //-------------------Canvas绘制 点位 及标注-----------------------------
         function drawsite_in_Canvas() {
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val() + "-Canvas点";
             var sites = L.featureGroup();
             for (var i = 0; i < siteData.length; i++) {
                 var c = L.circleMarker([siteData[i][2], siteData[i][1]], {
-                    radius: 1,
+                    radius: 3,
                     text: siteData[i][0],
                     textStyle: {
                         stroke: true,
@@ -483,14 +494,14 @@
                         offsetX: 100,
                         offsetY: 100,
                     }
-                }).addTo(sites);
+                }).bindPopup(siteData[i][0]).addTo(sites);
             };
             sites.addTo(map);
             layerControl2.addOverlay(sites, sitename);
             map.fitBounds(sites.getBounds());
         };
 
-        //-------------------绘制多段线及标注-----------------------------
+        //-------------------Canvas绘制 多段线 及标注-----------------------------
         function draw_Polyline_in_Canvas() {
             var siteData = coord2shuzu('textarea');
             var name = $("#NewlayerName").val();
@@ -498,19 +509,19 @@
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
             var polyline = L.polyline(
                 latlngs, {
-                weight: 1,
-                color: '#fe57a1',
-                text: name,
+                weight: 2, color: '#fe57a1', name: name, text: name,
                 textStyle: {
                     stroke: true,
                     color: '#ff0000',
                     font: "16px 'Microsoft Yahei'",
                 }
-            }).bindPopup(name).addTo(map);
+            }).bindPopup(name)
+                .addTo(map);
+            // polyline.on('click', (e) => { popup.setContent(MyPopup(e.target,)).setLatLng(e.latlng).addTo(map) });
             layerControl2.addOverlay(polyline, name + "-Canvas线");
             map.fitBounds(polyline.getBounds());
         };
-        //-------------------绘制多边形及标注-----------------------------
+        //-------------------Canvas绘制 多边形 及标注-----------------------------
         function draw_Polygon_in_Canvas() {
             var siteData = coord2shuzu('textarea');
             var name = $("#NewlayerName").val();
@@ -518,15 +529,15 @@
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
             var polygon = L.polygon(
                 latlngs, {
-                weight: 1,
-                color: 'green',
-                text: name,
+                weight: 1, color: 'green', name: name, text: name,
                 textStyle: {
                     stroke: true,
                     color: '#ff0000',
                     font: "16px 'Microsoft Yahei'",
                 }
-            }).bindPopup(name).addTo(map);
+            }).bindPopup(name)
+                .addTo(map);
+            // polygon.on('click', (e) => { popup.setContent(MyPopup(e.target,)).setLatLng(e.latlng).addTo(map) });
             layerControl2.addOverlay(polygon, name + "-Canvas面");
             map.fitBounds(polygon.getBounds());
         };
