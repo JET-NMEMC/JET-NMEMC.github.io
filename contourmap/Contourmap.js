@@ -38,28 +38,7 @@ function getType(targetLayer) {
     return 'unknown'
   }
 }
-//-------------------------------------------------------------添加 经纬网格
-var Graticulelayer = L.latlngGraticule({
-  showLabel: true,
-  zoomInterval: [
-    { start: 2, end: 3, interval: 30 },
-    { start: 4, end: 4, interval: 10 },
-    { start: 5, end: 6, interval: 5 },
-    { start: 7, end: 8, interval: 2 },
-    { start: 9, end: 10, interval: 1 },
-    { start: 11, end: 12, interval: 0.2 },
-    { start: 13, end: 17, interval: 0.1 },
-  ]
-})
-layerControl.addOverlay(Graticulelayer, '经纬网');
 
-// ------------------------------------------------------------添加 测量工具
-var measureControl = new L.Control.Measure({
-  position: 'topleft',
-  primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
-  primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
-});
-measureControl.addTo(map);
 // ------------------------------------------------------------添加 绘图工具
 map.pm.addControls({
   position: 'topleft',
@@ -67,21 +46,14 @@ map.pm.addControls({
   drawCircleMarker: false,
   drawLine: false
 });
-var layerControl2 = L.control.layers().addTo(map);
-var basedata = new L.layerGroup();
-layerControl2.addOverlay(basedata, "临时绘图");
+
 //---------------------创建图形时，写入popup方法----------
-var popup = L.popup({
-  autoClose: true,
-  offset: [0, -25],
-  // minWidth: 600,
-  maxWidth : 600,
-});
+var popup = L.popup({ autoClose: true, offset: [0, -25], maxWidth: 600 });
 
 map.on('pm:create', ({ layer }) => {
   console.log("---------事件触发 图形创建------------");
-  console.log(layer);
-  layer.addTo(basedata);
+  // console.log(layer);
+  layer.addTo(templayer);
   layer.on('click', (e) => {
     popupA(e)
   });
@@ -98,7 +70,6 @@ function popupA(e) {
     if (this.id == "属性") {
       $("#descriptext").show();
       $("#rangetext").hide();
-      $("#coordtext").hide();
       $("#coordtext").hide();
       $("#popup-shuxing").attr("class", "popup-open");
       $("#popup-xiangqing").attr("class", "popup-close");
@@ -191,6 +162,14 @@ function MyPopup(layer, featuretype) {
   return popHtml;
 }
 
+var labelTextCollision = new L.LabelTextCollision({
+  collisionFlg: false
+});
+map.options.renderer = labelTextCollision;
+
+map.on('pm:drawstart', ({ }) => {
+  delete map.options.renderer;
+});
 // ------------------------------------------------------------添加 编辑工具
 var styleEditor = L.control.styleEditor({
   position: "topleft",
@@ -201,22 +180,22 @@ var styleEditor = L.control.styleEditor({
   // ignoreLayerTypes :["Marker"],
 });
 map.addControl(styleEditor);
-// ------------------------------------------------------------添加 定位工具
+
+// ----------------------------------------------------------添加 定位工具
 if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
-    position: 'topleft',
-    locateOptions: {
-      maxZoom: 17,
-      enableHighAccuracy: true,
-    },
-    follow: true,
-    icon: 'fa fa-location-arrow',
-    cacheLocation: true,
-    onLocationError: function (err) { alert(err.message) },
-    onLocationFound: function (e) { console.log('定位成功=====>', e) },
+      position: 'topleft',
+      locateOptions: {
+          maxZoom: 17,
+          enableHighAccuracy: true,
+      },
+      follow: true,
+      icon: 'fa fa-location-arrow',
+      cacheLocation: true,
+      onLocationError: function (err) { alert(err.message) },
+      onLocationFound: function (e) { console.log('定位成功=====>', e) },
   }).addTo(map);
 };
-
 
 //------------------------------------------------------------------------等值线图
 //----------------配色方案，可自定义添加新行----------------
@@ -372,7 +351,6 @@ function rgb2hex(rgb) {
   return "#" + zero_fill_hex(decimal, 6);
 }
 function colorRGB2Hex(r, g, b) {
-
   let hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
   return hex;
 }
@@ -403,12 +381,9 @@ function Graham_scan(pointSet, ch) {
       if (direct > 0) {
         k = j;
       } else if (direct == 0) {
-        // k j 同方向
         var dis = distance_no_sqrt(pointSet[0], pointSet[j]) - distance_no_sqrt(pointSet[0], pointSet[k]);
-        use--; // 也就是不要了
+        use--;
         if (dis > 0) {
-          // 保留j
-          // 把 k 就不要了
           pointSet[k] = pointSet[j];
           pointSet[j] = pointSet[use];
           j--;
@@ -442,7 +417,6 @@ function multiply(p0, p1, p2) {
 function distance_no_sqrt(p1, p2) {
   return ((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 }
-
 //凸包检测输出点转为json字符串
 function point2str(po) {
   var arr = new Array();
@@ -452,6 +426,10 @@ function point2str(po) {
   return arr2;
 }
 
+//---------------------------------------------------------------------------div可拖动
+dragFunc("showsetting");
+dragFunc("showtools");
+dragFunc("select");
 //---------------------------------------------------------------------------div可拖动
 function dragFunc(id) {
   var Drag = document.getElementById(id);
@@ -472,13 +450,6 @@ function dragFunc(id) {
     this.style.cursor = "default";
   };
 };
-dragFunc("showsetting");
-dragFunc("showtools");
-dragFunc("select");
-
-
-
-
 
 
 // $.getJSON("https://danwild.github.io/leaflet-velocity/wind-gbr.json", function (data) {
@@ -534,3 +505,16 @@ dragFunc("select");
 //   // for (var i=0;i<value1.length;i++){china.push(value1[i][0])};
 //   // layerControl2.addOverlay(velocityLayer, "china");
 // });
+
+$('#file_input').on('change', function (e) {
+  readFile(this.files[0], function (e) {
+    // use result in callback...
+    $('#output_field').text(e.target.result);
+  });
+});
+
+function readFile(file, onLoadCallback) {
+  var reader = new FileReader();
+  reader.onload = onLoadCallback;
+  reader.readAsText(file);
+}
