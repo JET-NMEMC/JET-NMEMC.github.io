@@ -167,6 +167,27 @@ a {
 	color:#000000;
 	text-shadow:1px 1px 1px #ffffff,-1px 1px 1px #ffffff,-1px -1px 1px #ffffff,1px -1px 1px #ffffff;
 }
+/* .stroke {margin:0;padding:10px 0 0;} */
+.stroke {
+    position: relative;
+    float: left;
+    margin: 0;
+    font-size:15px;
+    color: #ffffff;
+    font-weight: bold;
+    font-family: sans-serif;
+	-webkit-text-stroke:3px #ffffff;
+}
+.stroke-front {    
+    position: absolute;
+    margin: 0;
+    font-size:15px;
+    color: #0019fd;
+    font-weight: 500;
+    font-family: sans-serif;
+}
+.icondiv {
+}
 
 .popup-open {
     width: 49%;
@@ -238,5 +259,7 @@ a {
 .lineblock {
     display: inline-block;
 }
+
+
 
 
