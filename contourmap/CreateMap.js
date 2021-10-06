@@ -1,10 +1,35 @@
-// ------------------------------------------------------------------------生成 map
+// ---------------------------------------------------------------初始化 map
+// ---------------------------------------------------------------初始化 map
 var mapStuff = initDemoMap();
 var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
-// L.marker([39.905530, 116.391305]).addTo(map).bindPopup('<p>WGS84坐标下，天安门广场国旗</p>').openPopup();
+var layerControl2 = mapStuff.layerControl2;
+var templayer = mapStuff.templayer;
 
-// ----------------map初始化---------------------
+//-----------------------------------------------------------添加 经纬网格
+var Graticulelayer = L.latlngGraticule({
+    showLabel: true,
+    zoomInterval: [
+        { start: 2, end: 3, interval: 30 },
+        { start: 4, end: 4, interval: 10 },
+        { start: 5, end: 6, interval: 5 },
+        { start: 7, end: 8, interval: 2 },
+        { start: 9, end: 10, interval: 1 },
+        { start: 11, end: 12, interval: 0.2 },
+        { start: 13, end: 17, interval: 0.1 },
+    ]
+})
+layerControl.addOverlay(Graticulelayer, '经纬网');
+
+// ----------------------------------------------------------添加 测量工具
+var measureControl = new L.Control.Measure({
+    position: 'topleft',
+    primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
+    primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
+}).addTo(map);
+
+// --------------------------------------map初始化程序--------------------------------
+// --------------------------------------map初始化程序--------------------------------
 function initDemoMap() {
     //Esri影像
     var Esri_WorldImagery = L.tileLayer(
@@ -12,11 +37,6 @@ function initDemoMap() {
         maxZoom: 18,
         attribution: "&copy; Esri"
     });
-    //Esri海洋
-    var Esri_OceanBasemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
-        attribution: "&copy; Esri"
-    });
-
     //geoq水系
     var HydroMap = L.tileLayer("https://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/WorldHydroMap/MapServer/tile/{z}/{y}/{x}", {
         corrdType: "gcj02",
@@ -55,39 +75,35 @@ function initDemoMap() {
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
         attribution: "&copy; Google"
     });
-    // Google地图
-    var GoogleMap = L.tileLayer("http://{s}.google.cn/vt/lyrs=m@160000000&hl=zh-CN&gl=CN&src=app&y={y}&x={x}&z={z}&s=Ga", {
-        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        attribution: "&copy; Google"
-    });
-    // 高德影像
+
+    // 高德影像 火星
     var gaode = L.tileLayer("https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}", {
         maxZoom: 18,
         corrdType: "gcj02",
         subdomains: ["1", "2", "3", "4"],
         attribution: "&copy; 高德地图"
     });
-    // 船讯网谷歌影像
+    // 船讯网谷歌影像 火星
     var GoogleImage2 = L.tileLayer("http://gwxc.shipxy.com/tile.g?z={z}&x={x}&y={y}", {
         corrdType: "gcj02",
         attribution: "&copy; 船讯网",
     });
-    // 船讯网谷歌地图
+    // 船讯网谷歌地图 火星
     var GoogleMap2 = L.tileLayer("http://gdtc.shipxy.com/tile.g?z={z}&x={x}&y={y}", {
         corrdType: "gcj02",
         attribution: "&copy; 船讯网",
     });
 
-    // 船讯网海图
-    var haitu_chuanxun = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
-        attribution: "&copy; 船讯网",
-        corrdType: "gcj02",
-    });
-    // 中国港海图
+    // 船讯网海图 未名坐标
+    // var haitu_chuanxun = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
+    //     attribution: "&copy; 船讯网",
+    //     corrdType: "gcj02",
+    // });
+    // 中国港海图 wgs84
     var haitu_chinaport = L.tileLayer("http://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}", {
         attribution: "&copy; 中国港口网",
     });
-    // YE海图
+    // YE海图 wgs84
     var haitu_YE = L.tileLayer("http://118.25.187.132:8071/{z}/{y}/{x}.png", {
         attribution: "&copy; YE海图",
     });
@@ -98,10 +114,9 @@ function initDemoMap() {
         "谷歌影像": GoogleImage,
         "OpenStreet": OpenStreetMap_Mapnik,
         "JawgStreet": Jawg_Streets,
-        // "谷歌地图": GoogleMap,
         // "海图船讯": haitu,
         "海图在线": haitu_chinaport,
-        "海图YE":haitu_YE,
+        "海图YE": haitu_YE,
         "谷歌影像 火星": GoogleImage2,
         "高德影像 火星": gaode,
         "谷歌地图 火星": GoogleMap2,
@@ -117,8 +132,8 @@ function initDemoMap() {
         corrdType: "gcj02",
         subdomains: ["1", "2", "3", "4"]
     });
-    var tianditu_全球境界 = L.tileLayer("http://t0.tianditu.gov.cn/ibo_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ibo&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
-    });
+    // var tianditu_全球境界 = L.tileLayer("http://t0.tianditu.gov.cn/ibo_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ibo&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+    // });
 
     var overlayLayers = {
         "天地图矢量注记": tianditu_矢量注记,
@@ -126,22 +141,24 @@ function initDemoMap() {
         "高德影像注记火星": gaodeAnnotion,
         // "天地图全球境界": tianditu_全球境界,
     }
-    //--------------------------------------------------------------------------地图设置
-    var labelTextCollision = new L.LabelTextCollision({
-        collisionFlg: false
-    });
+    //----------------------------------------------------------------------地图设置
     var map = L.map("map", {
-        layers: [Esri_WorldImagery],
+        // layers: [Esri_WorldImagery],
+        layers: [warm],
         zoomControl: false,
         attributionControl: false,
-        renderer: labelTextCollision
     });
 
     var layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
+    var templayer = new L.layerGroup();
+    var layerControl2 = L.control.layers().addTo(map);
+    layerControl2.addOverlay(templayer, "临时绘图");
     map.setView([37, 117], 4);
     return {
         map: map,
         layerControl: layerControl,
+        layerControl2: layerControl2,
+        templayer: templayer
     };
 };
 
