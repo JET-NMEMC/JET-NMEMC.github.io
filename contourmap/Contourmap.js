@@ -73,7 +73,9 @@ layerControl2.addOverlay(basedata, "临时绘图");
 //---------------------创建图形时，写入popup方法----------
 var popup = L.popup({
   autoClose: true,
-  offset: [0, -25]
+  offset: [0, -25],
+  // minWidth: 600,
+  maxWidth : 600,
 });
 
 map.on('pm:create', ({ layer }) => {
@@ -83,9 +85,9 @@ map.on('pm:create', ({ layer }) => {
   layer.on('click', (e) => {
     popupA(e)
   });
-
   console.log("--------------结 束------------------");
 })
+
 function popupA(e) {
   popup.setContent(MyPopup(e.target,)).setLatLng(e.latlng).addTo(map);
   $("#descriptext").show();
@@ -97,77 +99,48 @@ function popupA(e) {
       $("#descriptext").show();
       $("#rangetext").hide();
       $("#coordtext").hide();
+      $("#coordtext").hide();
+      $("#popup-shuxing").attr("class", "popup-open");
+      $("#popup-xiangqing").attr("class", "popup-close");
     } else {
       $("#descriptext").hide();
       $("#rangetext").show();
       $("#coordtext").show();
+      $("#popup-shuxing").attr("class", "popup-close");
+      $("#popup-xiangqing").attr("class", "popup-open");
     }
   });
 }
-
-
-// $('input[ type=radio][ name=方法]').change(function () {
-//   if (this.id="属性") {alert("Allot Thai Gayo Bhai")
-// } else{
-//     alert("Transfer Thai Gayo");
-//   };
-//   // if ($("input[name='属性']:checked").val() = true) {
-//   //   $("#rangetext").hide();
-//   //   $("#coordtext").hide();
-//   // } else {
-
-//   // }
-// };
-// $(' input[ type=radio][ name=bedStatus]'). change(function(){
-//   if(this. value==' allot'){
-//   alert("Allot Thai Gayo Bhai"); else if(this. value==' transfer'){
-//   alert("Transfer Thai Gayo");
-//   });
-// layer.on('popupopen', function (e) {
-//   if (showStyle === false) {
-//     d3.select('#show-style').property('checked', false);
-//     d3.selectAll('.style-row').style('display', 'none');
-//   }
-//   d3.select('#show-style').on('click', function () {
-//     if (this.checked) {
-//       showStyle = true;
-//       d3.selectAll('.style-row').style('display', '');
-//     } else {
-//       showStyle = false;
-//       d3.selectAll('.style-row').style('display', 'none');
-//     }
-//   });
-// });
-
-
-// layer.on('pm:edit', e => {
-//   var feature_edited = e.target;
-//   console.log("事件触发：图形编辑，对象为", feature_edited);
-//   MyPopup(feature_edited,)
-// });
-
-
+//-------------------------生成popupHTML-----------------------------
 function MyPopup(layer, featuretype) {
   console.log("---------事件触发 图形点击------------");
-  console.log(layer);
-  var nametext, descriptext;
-  if (layer.options.name) { layername = layer.options.name; nametext = '<h3>名称： ' + layername + '</h3>'; } else { nametext = '' };
+  // console.log(layer);
+
+  var nametext;
+  if (layer.options.name) {
+    layername = layer.options.name;
+    nametext = '<h3>名称： ' + layername + '</h3>';
+  } else {
+    nametext = '<h3>名称： Undefined</h3>'
+  };
+
+  var descriptext;
   if (layer.options.description) {
     descriptext = '<div id="descriptext">' +
-    '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">描述:<h4/>' +
-     layer.options.description + "</div>"
+      '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">描述:<h4/>' +
+      layer.options.description + "</div>"
   } else {
     descriptext = '<div id="descriptext"></div>'
   };
 
   if (layer.styleEditor.type) {
     featuretype = layer.styleEditor.type;
-    console.log("图层有type属性：", featuretype);
   } else {
-    console.log("图层没有type属性，请添加第二参数");
+    console.log("图层没有type属性");
+    featuretype = "Unknown";
   }
 
-  var typetext = '<h4>类型： ' + featuretype + '</h4>';
+  var typetext = '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">类型： ' + featuretype + '</h4>';
   switch (featuretype) {
     case 'Polygon':
     case 'Rectangle':
@@ -195,10 +168,6 @@ function MyPopup(layer, featuretype) {
         for (i = 0; i < coord.length; i++) { coordtext = coordtext + coord[i].lat.toFixed(9) + "&emsp;" + coord[i].lng.toFixed(9) + "<br>" };
         coordtext += "</div>";
         if (coord.length > 10) { console.log(coord); coordtext = '数据量超过20个，已打印至控制台，按F12'; }
-        // layer.bindPopup(popHtml, { maxWidth: 500, minWidth: 100, maxHeight: 600 })
-        // .openPopup();
-        // polygon.bindPopup(sitename+'<button>Details</button>');
-        // polygon.bindPopup(sitename+'<br><img src="contourmap/icon/详情.png" onclick=msg("详情")  style="height:20px;display: inline-block;"/>详情');
       }
       break;
     case 'Marker':
@@ -207,29 +176,20 @@ function MyPopup(layer, featuretype) {
       var coordtext = '<div id="coordtext"><h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">位置:<h4/>' +
         '<p>纬度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;经度<br>' +
         coord.lat.toFixed(9) + "&emsp;" + coord.lng.toFixed(8) + '</p>' + '</div>';
-      // layer.bindPopup(popHtml)
-      // .openPopup();
       break;
     default:
       alert("wrong featuretype");
   }
   var endtext = '<div><form action="">' +
-    '<label class="popup-label"><input type="radio" name="方法" id="属性" style="display: none" checked="checked"></input>属性</label>' +
-    '<label class="popup-label"><input type="radio" name="方法" id="详情" style="display: none"></input>详情</label>' +
+    '<label id="popup-shuxing" class="popup-open"><input type="radio" name="方法" id="属性" style="display: none" checked="checked"></input>属性</label>' +
+    '<label id="popup-xiangqing" class="popup-close"><input type="radio" name="方法" id="详情" style="display: none"></input>详情</label>' +
     '</form></div>'
-    // <input type="file" id="kmlFileInput" style="display: none" />
-    // <input type="button" value="Import kml"
-    //     class="navbar-button" />
-
 
   var popHtml = nametext + typetext + Lengthtext + Areatext + descriptext + rangetext + coordtext + endtext;
 
   console.log("--------------结 束------------------");
   return popHtml;
 }
-
-
-
 
 // ------------------------------------------------------------添加 编辑工具
 var styleEditor = L.control.styleEditor({
