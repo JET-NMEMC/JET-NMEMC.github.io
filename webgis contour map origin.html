@@ -98,7 +98,7 @@
             <button class="navbar-button" onclick="drawrigon()">生成行政区边界</button>
         </div>
     </div>
-    
+
 
     <img id="drowtool" src="contourmap/icon2/绘制3.png" width="50px" onclick="showHide('showtools')"
         style="position: fixed; left:130px; bottom:10px;">
@@ -422,7 +422,7 @@
             var sites = L.featureGroup();
             for (var i = 0; i < siteData.length; i++) {
                 var marker0 = L.marker([siteData[i][2], siteData[i][1]], { icon: icon, name: siteData[i][0] }).addTo(sites);
-                marker0.on('click', (e) => {popupA(e)});
+                marker0.on('click', (e) => { popupA(e) });
             };
             sites.addTo(map);
             layerControl2.addOverlay(sites, sitename);
@@ -446,6 +446,19 @@
             layerControl2.addOverlay(sitesLabel, sitename);
             map.fitBounds(sitesLabel.getBounds());
         };
+        //-------------------绘制多段线-----------------------------        
+        function draw_Polyline_in_Map() {
+            var siteData = coord2shuzu('textarea');
+            var sitename = $("#NewlayerName").val() + "-线";
+            var edgecolor = $("#edgecolor").val();
+
+            var latlngs = [];
+            for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
+            var polyline = L.polyline(latlngs, { color: "#FF1493", weight: 3, name: sitename }).addTo(map);
+            polyline.on('click', (e) => { popupA(e) });
+            layerControl2.addOverlay(polyline, sitename);
+            map.fitBounds(polyline.getBounds());
+        };
         //-------------------绘制多边形----------------------------- 
         function drawpolygon() {
             var siteData = coord2shuzu('textarea');
@@ -458,22 +471,9 @@
                 color: edgecolor, weight: 1, fillOpacity: 0.2,
                 name: sitename
             }).addTo(map);
-            polygon.on('click', (e) => {popupA(e)});
+            polygon.on('click', (e) => { popupA(e) });
             layerControl2.addOverlay(polygon, sitename);
             map.fitBounds(polygon.getBounds());
-        };
-        //-------------------绘制多段线-----------------------------        
-        function draw_Polyline_in_Map() {
-            var siteData = coord2shuzu('textarea');
-            var sitename = $("#NewlayerName").val() + "-线";
-            var edgecolor = $("#edgecolor").val();
-
-            var latlngs = [];
-            for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
-            var polyline = L.polyline(latlngs, { color: "#FF1493", weight: 1, name: sitename }).addTo(map);
-            polyline.on('click', (e) => {popupA(e)});
-            layerControl2.addOverlay(polyline, sitename);
-            map.fitBounds(polyline.getBounds());
         };
         //--------------------------------------------------------------------------------Map绘制
 
@@ -509,7 +509,7 @@
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
             var polyline = L.polyline(
                 latlngs, {
-                weight: 2, color: '#fe57a1', name: name, text: name,
+                weight: 3, color: '#fe57a1', name: name, text: name,
                 textStyle: {
                     stroke: true,
                     color: '#ff0000',
