@@ -62,19 +62,32 @@ map.on('pm:create', ({ layer }) => {
 
 function popupA(e) {
   popup.setContent(MyPopup(e.target,)).setLatLng(e.latlng).addTo(map);
+  // $("#descriptext").show();
+  // $("#rangetext").hide();
+  // $("#coordtext").hide();
+  $("#typetext").show();
+  $("#lengthtext").show();
+  $("#areatext").show();
   $("#descriptext").show();
   $("#rangetext").hide();
   $("#coordtext").hide();
+  
 
   $('input[type=radio][name=方法]').change(function () {
     if (this.id == "属性") {
+      $("#typetext").show();
+      $("#lengthtext").show();
+      $("#areatext").show();
       $("#descriptext").show();
       $("#rangetext").hide();
       $("#coordtext").hide();
       $("#popup-shuxing").attr("class", "popup-open");
       $("#popup-xiangqing").attr("class", "popup-close");
     } else {
-      $("#descriptext").hide();
+      $("#typetext").hide();
+      $("#lengthtext").hide();
+      $("#areatext").hide();
+      $("#descriptext").hide();      
       $("#rangetext").show();
       $("#coordtext").show();
       $("#popup-shuxing").attr("class", "popup-close");
@@ -111,7 +124,7 @@ function MyPopup(layer, featuretype) {
     featuretype = "Unknown";
   }
 
-  var typetext = '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">类型： ' + featuretype + '</h4>';
+  var typetext = '<h4 id="typetext" style="padding:10px 0 0 0; border-top:0.5px solid #000;">类型： ' + featuretype + '</h4>';
   switch (featuretype) {
     case 'Polygon':
     case 'Rectangle':
@@ -119,24 +132,24 @@ function MyPopup(layer, featuretype) {
       {
         // var SW = layer.getBounds()._southWest.lat.toFixed(9) + "&emsp;" + layer.getBounds()._southWest.lng.toFixed(9);
         // var NE = layer.getBounds()._northEast.lat.toFixed(9) + "&emsp;" + layer.getBounds()._northEast.lng.toFixed(9);
-        var SW = layer._bounds._southWest.lat.toFixed(9) + "&emsp;" + layer._bounds._southWest.lng.toFixed(9);
-        var NE = layer._bounds._northEast.lat.toFixed(9) + "&emsp;" + layer._bounds._northEast.lng.toFixed(9);
+        var SW = layer._bounds._southWest.lng.toFixed(9) + "&emsp;" + layer._bounds._southWest.lat.toFixed(9);
+        var NE = layer._bounds._northEast.lng.toFixed(9) + "&emsp;" + layer._bounds._northEast.lat.toFixed(9);
 
         var rangetext = '<div id="rangetext"><h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">范围：<h4/>' +
-          '纬度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;经度<br>' + SW + '<br>' + NE + '</div>';
+          '经度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;纬度<br>' + SW + '<br>' + NE + '</div>';
 
         if (featuretype == 'Polyline') {
           var coord = layer.getLatLngs();
-          var Lengthtext = '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">长度： ' + (calc(coord).length / 1000).toFixed(3) + ' km<h4/>';
+          var Lengthtext = '<h4 id="lengthtext" style="padding:10px 0 0 0; border-top:0.5px solid #000;">长度： ' + (calc(coord).length / 1000).toFixed(3) + ' km<h4/>';
           var Areatext = '';
         } else {
           var coord = layer.getLatLngs()[0];
           var Lengthtext = '';
-          var Areatext = '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">面积： ' + (calc(coord).area / 10000).toFixed(4) + ' 公顷<h4/>';
+          var Areatext = '<h4 id="areatext" style="padding:10px 0 0 0; border-top:0.5px solid #000;">面积： ' + (calc(coord).area / 10000).toFixed(4) + ' 公顷<h4/>';
         }
         var coordtext = '<div id="coordtext"><h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">坐标:<h4/>' +
-          '<p>纬度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;经度<br>';
-        for (i = 0; i < coord.length; i++) { coordtext = coordtext + coord[i].lat.toFixed(9) + "&emsp;" + coord[i].lng.toFixed(9) + "<br>" };
+          '<p>经度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;纬度<br>';
+        for (i = 0; i < coord.length; i++) { coordtext = coordtext + coord[i].lng.toFixed(9) + "&emsp;" + coord[i].lat.toFixed(9) + "<br>" };
         coordtext += "</div>";
         if (coord.length > 10) { console.log(coord); coordtext = '数据量超过20个，已打印至控制台，按F12'; }
       }
@@ -145,8 +158,8 @@ function MyPopup(layer, featuretype) {
       var coord = layer.getLatLng();
       var Lengthtext = "", Areatext = "", rangetext = "";
       var coordtext = '<div id="coordtext"><h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">位置:<h4/>' +
-        '<p>纬度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;经度<br>' +
-        coord.lat.toFixed(9) + "&emsp;" + coord.lng.toFixed(8) + '</p>' + '</div>';
+        '<p>经度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;纬度<br>' +
+        coord.lng.toFixed(9) + "&emsp;" + coord.lat.toFixed(8) + '</p>' + '</div>';
       break;
     default:
       alert("wrong featuretype");
