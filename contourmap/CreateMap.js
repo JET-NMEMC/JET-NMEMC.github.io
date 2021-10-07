@@ -100,11 +100,11 @@ function initDemoMap() {
     //     corrdType: "gcj02",
     // });
     // 中国港海图 wgs84
-    var haitu_chinaport = L.tileLayer("http://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}", {
+    var haitu_chinaport = L.tileLayer("//gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}", {
         attribution: "&copy; 中国港口网",
     });
     // YE海图 wgs84
-    var haitu_YE = L.tileLayer("http://118.25.187.132:8071/{z}/{y}/{x}.png", {
+    var haitu_YE = L.tileLayer("//118.25.187.132:8071/{z}/{y}/{x}.png", {
         attribution: "&copy; YE海图",
     });
     //--------------------------设置主图层--------------------------------
