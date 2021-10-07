@@ -58,8 +58,8 @@ function drawcoordrange() {
     var latbreak = getCoordBreaks(latmin, latmax, 2).breaks;
     var lngstep = getCoordBreaks(lngmin, lngmax, 2).step;
     var latstep = getCoordBreaks(latmin, latmax, 2).step;
-    console.log("lngbreak", lngbreak,"lngstep", lngstep);
-    console.log("latbreak", latbreak,"latsetp", latstep);
+    // console.log("lngbreak", lngbreak,"lngstep", lngstep);
+    // console.log("latbreak", latbreak,"latsetp", latstep);
     //读取map的像素坐标
     divbottom = mapdiv.getBoundingClientRect().bottom;
     divtop = mapdiv.getBoundingClientRect().top;
