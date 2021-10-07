@@ -40,8 +40,8 @@
 
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
 
-    <link rel="stylesheet" href="contourmap/leaflet-geoman.css" />
-    <script src="contourmap/leaflet-geoman.min.js"></script>
+    <link rel="stylesheet" href="contourmap/leaflet-geoman2.css" />
+    <script src="contourmap/leaflet-geoman.min2.js"></script>
 
     <link rel="stylesheet" href="contourmap/leaflet-measure.css">
     <script src="contourmap/leaflet-measure.js"></script>
@@ -90,11 +90,9 @@
         <p>矢量图层 导入设置</p>
         <div class="sidebar-body">
             <input type="file" id="kmlFileInput" accept=".kml" style="display: none" />
-            <input type="button" onclick="$('#kmlFileInput').click()" value="Import kml"
-                class="navbar-button" />
+            <input type="button" onclick="$('#kmlFileInput').click()" value="Import kml" class="navbar-button" />
             <input type="file" id="jsonFileInput" accept=".json, .geojson" style="display: none" />
-            <input type="button" onclick="$('#jsonFileInput').click()" value="Import GeoJSON"
-                class="navbar-button" />
+            <input type="button" onclick="$('#jsonFileInput').click()" value="Import GeoJSON" class="navbar-button" />
             <input type="text" id="rigon" value="大连市" placeholder="输入行政区名称" class="navbar-inputtext">
             <button class="navbar-button" onclick="drawrigon()">生成行政区边界</button>
         </div>
@@ -181,7 +179,7 @@
             msg("导入kml文件" + filename);
         }
 
-        $("#jsonFileInput").onchange = function (event) { 
+        $("#jsonFileInput").onchange = function (event) {
             var filename = jsonFileInput.files[0].name;
             var file = URL.createObjectURL(jsonFileInput.files[0]);
             // Load GeoJSON file
@@ -239,20 +237,21 @@
                 yrange[0] = Math.min.apply(null, lats); yrange[1] = Math.max.apply(null, lats);
                 data_range = [[[xrange[0], yrange[0]], [xrange[0], yrange[1]], [xrange[1], yrange[1]], [xrange[1], yrange[0]]]];
                 msg("点位信息加载完成");
-                console.log("原始坐标范围", xrange, yrange);
+                // console.log("原始坐标范围", xrange, yrange);
             };
 
             if ($.inArray(newxiangmu, finishlist) !== -1) {
                 msg(newxiangmu + ",已绘制过,调取显示");
+                console.log(newxiangmu + ",已绘制过,调取显示");
             }
             else {
                 var beginTime = +new Date();
-                console.log("开始绘制---------------" + newxiangmu);                
+                console.log("开始绘制---------------" + newxiangmu);
                 // let gridArea=china; 如果插值范围超过散点的范围，需重新设置x,y,range
                 // let gridArea=data_range;
                 let gridArea = area_clip;
                 //设置拟绘制色带个数
-                const TargetN = $('#TargetN').val(); 
+                const TargetN = $('#TargetN').val();
                 // 配色方案
                 const colorpattern = $('#colorpattern option:selected').text();
                 const colorSet = colordatabase[key = colorpattern];
@@ -278,21 +277,20 @@
             legend.onAdd = function (map) {
                 var div = L.DomUtil.create('div', 'info legend');
                 var labels = [];
-                var from, to;
-                for (var i = grades.length; i > 0; i--) {
-                    from = grades[i - 1];
-                    to = grades[i];
+                for (var i = colors.length; i > 0; i--) {
+                    var from = grades[i - 1];
+                    var to = grades[i];
                     labels.push(
                         '<i style="background:' + colors[i - 1] + '"></i> ' +
-                        from + (to ? '&ndash;' + to : '+'));
+                        from + (to ? '&ndash;' + to : ''));
                 }
-                div.innerHTML = labels.join('<br>');
+                div.innerHTML = '<div style="text-align:center; font-weight:bold;">图例</div>' + labels.join('<br>');
                 return div;
             };
             figurectrol[newxiangmu].legend = legend;
-            legend.addTo(map);
+            figurectrol[newxiangmu].legend.addTo(map);
 
-            countourmap = figurectrol[newxiangmu]["overlay"];
+            countourmap = figurectrol[newxiangmu]["overlay"]
             countourmap.addTo(map);
             map.fitBounds(countourmap.getBounds());
         }
@@ -338,7 +336,7 @@
             // var colorcanvas = kriging.pixel_Grid_drawImage(gridArea, mycanvas, variogram, xrange, yrange, colors, breaks);
             var Img = mycanvas.toDataURL("image/png");
             var imageBounds = [[yrange[0], xrange[0]], [yrange[1], xrange[1]]];
-            
+
             var newmap = L.imageOverlay(Img, imageBounds, { opacity: opacity });//将image映射到leaflet图层
             // newmap.options.layerId = newxiangmu; // 给图层（组）绑定自定义id,在options参数里添加
 
