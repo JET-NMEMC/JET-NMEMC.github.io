@@ -62,16 +62,12 @@ map.on('pm:create', ({ layer }) => {
 
 function popupA(e) {
   popup.setContent(MyPopup(e.target,)).setLatLng(e.latlng).addTo(map);
-  // $("#descriptext").show();
-  // $("#rangetext").hide();
-  // $("#coordtext").hide();
   $("#typetext").show();
   $("#lengthtext").show();
   $("#areatext").show();
   $("#descriptext").show();
   $("#rangetext").hide();
   $("#coordtext").hide();
-  
 
   $('input[type=radio][name=方法]').change(function () {
     if (this.id == "属性") {
@@ -87,7 +83,7 @@ function popupA(e) {
       $("#typetext").hide();
       $("#lengthtext").hide();
       $("#areatext").hide();
-      $("#descriptext").hide();      
+      $("#descriptext").hide();
       $("#rangetext").show();
       $("#coordtext").show();
       $("#popup-shuxing").attr("class", "popup-close");
@@ -108,33 +104,31 @@ function MyPopup(layer, featuretype) {
     nametext = '<h3>名称： Undefined</h3>'
   };
 
-  var descriptext;
-  if (layer.options.description) {
-    descriptext = '<div id="descriptext">' +
-      '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">描述:<h4/>' +
-      layer.options.description + "</div>"
-  } else {
-    descriptext = '<div id="descriptext"></div>'
-  };
-
   if (layer.styleEditor.type) {
     featuretype = layer.styleEditor.type;
   } else {
     console.log("图层没有type属性");
     featuretype = "Unknown";
   }
+  var typetext = '<h4 id="typetext" style="padding:10px 0 0 0; border-top:0.5px solid #000;">类型： ' +
+    featuretype + '</h4>';
 
-  var typetext = '<h4 id="typetext" style="padding:10px 0 0 0; border-top:0.5px solid #000;">类型： ' + featuretype + '</h4>';
+  var descriptext;
+  if (layer.options.description) {
+    descriptext = '<div id="descriptext">' +
+      '<h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">描述:<h4/><div>' +
+      layer.options.description + "</div></div>"
+  } else {
+    descriptext = ''
+  };
+
   switch (featuretype) {
     case 'Polygon':
     case 'Rectangle':
     case 'Polyline':
       {
-        // var SW = layer.getBounds()._southWest.lat.toFixed(9) + "&emsp;" + layer.getBounds()._southWest.lng.toFixed(9);
-        // var NE = layer.getBounds()._northEast.lat.toFixed(9) + "&emsp;" + layer.getBounds()._northEast.lng.toFixed(9);
         var SW = layer._bounds._southWest.lng.toFixed(9) + "&emsp;" + layer._bounds._southWest.lat.toFixed(9);
         var NE = layer._bounds._northEast.lng.toFixed(9) + "&emsp;" + layer._bounds._northEast.lat.toFixed(9);
-
         var rangetext = '<div id="rangetext"><h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">范围：<h4/>' +
           '经度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;纬度<br>' + SW + '<br>' + NE + '</div>';
 
@@ -147,11 +141,22 @@ function MyPopup(layer, featuretype) {
           var Lengthtext = '';
           var Areatext = '<h4 id="areatext" style="padding:10px 0 0 0; border-top:0.5px solid #000;">面积： ' + (calc(coord).area / 10000).toFixed(4) + ' 公顷<h4/>';
         }
-        var coordtext = '<div id="coordtext"><h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">坐标:<h4/>' +
-          '<p>经度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;纬度<br>';
-        for (i = 0; i < coord.length; i++) { coordtext = coordtext + coord[i].lng.toFixed(9) + "&emsp;" + coord[i].lat.toFixed(9) + "<br>" };
-        coordtext += "</div>";
-        if (coord.length > 10) { console.log(coord); coordtext = '数据量超过20个，已打印至控制台，按F12'; }
+
+        var coordtext;
+        var coordtext0 = '<div id="coordtext"><h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">坐标:<h4/>';
+        var coordtext1 = '<p>经度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;纬度<br>';
+        var coordtext2 = []; var coordoutput = [];
+        for (i = 0; i < coord.length; i++) {
+          coordtext2.push(coord[i].lng.toFixed(9) + "&emsp;" + coord[i].lat.toFixed(9));
+          coordoutput.push([coord[i].lng.toFixed(9) + " " + coord[i].lat.toFixed(9)]);
+        };
+        if (coord.length > 5) {
+          console.log("对象坐标串为：",coordoutput);
+          coordtext = coordtext0 + '数据量超过5个，已打印至控制台<br></div>';
+        } else {
+          coordtext = coordtext0 + coordtext1 + coordtext2.join("<br>") + "</div>";
+        }
+
       }
       break;
     case 'Marker':
@@ -197,16 +202,16 @@ map.addControl(styleEditor);
 // ----------------------------------------------------------添加 定位工具
 if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
   var lc = L.control.locate({
-      position: 'topleft',
-      locateOptions: {
-          maxZoom: 17,
-          enableHighAccuracy: true,
-      },
-      follow: true,
-      icon: 'fa fa-location-arrow',
-      cacheLocation: true,
-      onLocationError: function (err) { alert(err.message) },
-      onLocationFound: function (e) { console.log('定位成功=====>', e) },
+    position: 'topleft',
+    locateOptions: {
+      maxZoom: 17,
+      enableHighAccuracy: true,
+    },
+    follow: true,
+    icon: 'fa fa-location-arrow',
+    cacheLocation: true,
+    onLocationError: function (err) { alert(err.message) },
+    onLocationFound: function (e) { console.log('定位成功=====>', e) },
   }).addTo(map);
 };
 
