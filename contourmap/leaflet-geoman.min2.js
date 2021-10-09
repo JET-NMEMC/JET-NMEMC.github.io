@@ -4880,7 +4880,7 @@
                 actions: ["finishMode"]
             };
             this._addButton("drawMarker", new L.Control.PMButton(e)),
-            // this._addButton("drawSingleline", new L.Control.PMButton(r)),
+            this._addButton("drawSingleline", new L.Control.PMButton(r)),
             this._addButton("drawPolyline", new L.Control.PMButton(n)),            
             this._addButton("drawPolygon", new L.Control.PMButton(i)),
             this._addButton("drawRectangle", new L.Control.PMButton(s)),
@@ -5528,6 +5528,7 @@
             }),
             this._map.on("click", this._finishShape, this)
         },
+        //标注格式
         _finishShape: function() {
             var t = this._layer.getLatLngs();
             if (!(t.length <= 1)) {
@@ -5536,7 +5537,7 @@
                     offset: -5,
                     center: !0,
                     attributes: {
-                        font: "bold 30px serif",
+                        font: "bold 50px serif",
                         fill: "black"
                     }
                 }),
