@@ -62,8 +62,7 @@
 
 <body>
     <div><canvas id="mycanvas" style="display: none;"></canvas></div>
-    <div id="map"></div>
-
+    <div id="map" class="map"></div>
     <img src="contourmap/icon2/1-earthnet.png" width="40px" onclick="changemap()"
         style="position: fixed; left:5px; bottom:10px;">
     <img src="contourmap/icon2/2-设置.png" width="36px" onclick="showHide('showsetting')"
@@ -457,7 +456,6 @@
             polyline.on('click', (e) => { popupA(e) });
             layerControl2.addOverlay(polyline, sitename + "-线");
             map.fitBounds(polyline.getBounds());
-            delete map.options.renderer;
         };
         //-------------------绘制多边形----------------------------- 
         function draw_Polygon_in_Map() {
