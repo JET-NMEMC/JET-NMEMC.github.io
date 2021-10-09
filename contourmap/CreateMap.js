@@ -22,11 +22,11 @@ var Graticulelayer = L.latlngGraticule({
 layerControl.addOverlay(Graticulelayer, '经纬网');
 
 // ----------------------------------------------------------添加 测量工具
-var measureControl = new L.Control.Measure({
-    position: 'topleft',
-    primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
-    primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
-}).addTo(map);
+// var measureControl = new L.Control.Measure({
+//     position: 'topleft',
+//     primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
+//     primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
+// }).addTo(map);
 
 // --------------------------------------map初始化程序--------------------------------
 // --------------------------------------map初始化程序--------------------------------
