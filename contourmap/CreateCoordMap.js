@@ -1,51 +1,51 @@
 // //-----------------------------------------------------------------------------------------------生成坐标边框
 // //-----------------------------------------------------------------------------------------------生成坐标边框
-// 设置初始开关、是否绘制北东
-var switchmode = false;
-var drawNE = true;
+
 //创建坐标存放div
 var coordmap0 = document.createElement("div"); coordmap0.id = "coordmap";
 document.body.appendChild(coordmap0);
 //-------------------------------主程序-------------------------------
 function changemap() {
     var mapdiv = document.getElementById("map");
+    var thisNode = document.getElementById("coordmap");
+    console.log(mapdiv.style.width);
 
-    if (switchmode == true) {
+    if (mapdiv.style.width == "65%") {
         console.log("开启转关闭");
-        switchmode = false;
         //注销事件:地图改变时,绘制坐标框
         map.off("zoomend");
         map.off("moveend");
+        //清空坐标div
+        thisNode.innerHTML = "";
         //地图恢复为全屏样式，刷新地图
-        mapdiv.style.width = "100%"; mapdiv.style.height = "100%"; mapdiv.style.left = "0%"; mapdiv.style.top = "0%";
+        mapdiv.style.width = "100%"; mapdiv.style.height = "100%"; mapdiv.style.left = "0"; mapdiv.style.top = "0";
         mapdiv.style.border = "#000";
         map.invalidateSize(true);
         //恢复工具栏
         document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility = "visible";
         document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility = "visible";
-        var thisNode = document.getElementById("coordmap");
-        thisNode.innerHTML = "";
-        thisNode.parentNode.removeNode(thisNode);
-        console.log("thisNode has been removed");
-    };
-    if (switchmode == false) {
+    } else {
         console.log("关闭转开启");
-        switchmode = true;
         //激活事件:地图改变时,绘制坐标框
         map.on("zoomend", function () { drawcoordrange() });
         map.on("moveend", function () { drawcoordrange() });
         //地图更改为小图样式，刷新地图
         mapdiv.style.width = "65%"; mapdiv.style.height = "90%"; mapdiv.style.left = "200px"; mapdiv.style.top = "5%";
         mapdiv.style.border = "0.5px solid #000";
-        map.invalidateSize(true);
+
         //隐藏工具栏
         document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility = "hidden";
         document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility = "hidden";
+        map.invalidateSize(true);
     };
 };
 //--------------------------------------------------------------------------------------------绘制坐标
 function drawcoordrange() {
     var mapdiv = document.getElementById("map");
+    var coordmap = document.getElementById("coordmap");
+    coordmap.innerHTML = "";
+    // 设置初始开关、是否绘制北东
+    var drawNE = true;
 
     var lngmin, lngmax, latmin, latmax, zoomlevel;
     lngmin = map.getBounds().getSouthWest().lng;
@@ -68,8 +68,6 @@ function drawcoordrange() {
     // console.log(divtop, divbottom, divleft, divright);
 
     //--------------------------循环叠加，形成经度的图形--------------------------
-    var coordmap = document.getElementById("coordmap");
-    coordmap.innerHTML = "";
 
     for (var i = 0; i < lngbreak.length; i++) {
         var Xpix = divleft + (lngbreak[i] - lngmin) * (divright - divleft) / (lngmax - lngmin)
@@ -119,7 +117,6 @@ function drawcoordrange() {
         var divtextB = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix - 5) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">—</font></div>'
         coordmap.innerHTML = divtext0 + divtextA + divtextB;
     };
-    console.log("-----------draw end------------")
 }
 
 //---------------------------------------------------------------------------------自动生成坐标刻度
