@@ -35,7 +35,7 @@ function changemap() {
         map.on("zoomend", function () { drawcoordrange() });
         map.on("moveend", function () { drawcoordrange() });
         //地图更改为小图样式，刷新地图
-        mapdiv.style.width = "65%"; mapdiv.style.height = "90%"; mapdiv.style.left = "17.5%"; mapdiv.style.top = "5%";
+        mapdiv.style.width = "65%"; mapdiv.style.height = "90%"; mapdiv.style.left = "200px"; mapdiv.style.top = "5%";
         mapdiv.style.border = "0.5px solid #000";
         map.invalidateSize(true);
         //隐藏工具栏
@@ -54,10 +54,10 @@ function drawcoordrange() {
     latmax = map.getBounds().getNorthEast().lat;
     // console.log("经度:", lngmin.toFixed(3), lngmax.toFixed(3), "纬度:", latmin.toFixed(3), latmax.toFixed(3));
     //调用子程序计算坐标刻度
-    var lngbreak = getCoordBreaks(lngmin, lngmax, 2).breaks;
-    var latbreak = getCoordBreaks(latmin, latmax, 2).breaks;
-    var lngstep = getCoordBreaks(lngmin, lngmax, 2).step;
-    var latstep = getCoordBreaks(latmin, latmax, 2).step;
+    var lngbreak = getCoordBreaks(lngmin, lngmax, 2.0, "lng").breaks;
+    var latbreak = getCoordBreaks(latmin, latmax, 1.9, "lat").breaks;
+    var lngstep = getCoordBreaks(lngmin, lngmax, 2.0, "lng").step;
+    var latstep = getCoordBreaks(latmin, latmax, 1.9, "lat").step;
     // console.log("lngbreak", lngbreak,"lngstep", lngstep);
     // console.log("latbreak", latbreak,"latsetp", latstep);
     //读取map的像素坐标
@@ -91,7 +91,8 @@ function drawcoordrange() {
         if (lngstep < 0.016666667) {
             divtextA = '<div><font style="position:absolute; left:' + (Xpix - 39) + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + du2dufenmiao(lngbreak[i], 0) + divtextA0 + '</font></div>'
         };
-        var divtextB = '<div><font style="position:absolute; left:' + Xpix + 'px; top:' + (divtop - 2) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">|</font></div>';
+        // var divtextB = '<div><font style="position:absolute; left:' + Xpix + 'px; top:' + (divtop - 2) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">|</font></div>';
+        var divtextB = '<div><font style="position:absolute; left:' + (Xpix + 7) + 'px; top:' + (divtop - 3) + 'px; font-size: 10px;font-family: sans-serif; transform: rotate(270deg); transform-origin:left bottom"; color="#000000">—</font></div>';
         coordmap.innerHTML = divtext0 + divtextA + divtextB;
     }
     //--------------------------循环叠加，形成纬度的图形--------------------------
@@ -122,11 +123,17 @@ function drawcoordrange() {
 }
 
 //---------------------------------------------------------------------------------自动生成坐标刻度
-function getCoordBreaks(Tvaluemin, Tvaluemax, TargetN) {
+function getCoordBreaks(Tvaluemin, Tvaluemax, TargetN, latlngsy) {
     // var TargetN = 2;//设置坐标轴显示坐标的个数
     if (Tvaluemin > Tvaluemax) { alert("wrong position for Tvaluemin, Tvaluemax") };
     var DX;
-    var a = [30, 20, 10, 5, 3, 2, 1, 0.5, 0.33333333, 0.16666667, 0.08333333, 0.03333333, 0.01666667, 0.00833333, 0.00555556, 0.00277778, 0.00138889, 0.00055556, 0.00027778];
+    var a;
+    if (latlngsy == "lng") {
+        a = [30, 20, 10, 5, 3, 2, 1, 0.5, 0.33333333, 0.16666667, 0.08333333, 0.03333333, 0.01666667, 0.00833333, 0.00555556, 0.00277778, 0.00138889, 0.00055556, 0.00027778];
+    }
+    if (latlngsy == "lat") {
+        a = [30, 20, 10, 5, 2, 1, 0.5, 0.33333333, 0.16666667, 0.08333333, 0.03333333, 0.01666667, 0.00833333, 0.00555556, 0.00277778, 0.00138889, 0.00055556, 0.00027778];
+    }
 
     var TDelta = Tvaluemax - Tvaluemin;
     for (var kk = 0; kk < a.length; kk++) {
