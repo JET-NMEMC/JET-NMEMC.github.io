@@ -44,11 +44,12 @@ map.pm.addControls({
   position: 'topleft',
   drawCircle: false,
   drawCircleMarker: false,
-  drawLine: false
+  // drawLine: false,
+  cutPolygon: false,
 });
 
 //---------------------创建图形时，写入popup方法----------
-var popup = L.popup({ autoClose: true, offset: [0, -25], maxWidth: 600 });
+var popup = L.popup({ autoClose: true, offset: [0, -25], maxWidth: 600, minWidth: 180 });
 
 map.on('pm:create', ({ layer }) => {
   console.log("---------事件触发 图形创建------------");
@@ -61,31 +62,16 @@ map.on('pm:create', ({ layer }) => {
 })
 
 function popupA(e) {
-  popup.setContent(MyPopup(e.target,)).setLatLng(e.latlng).addTo(map);
-  $("#typetext").show();
-  $("#lengthtext").show();
-  $("#areatext").show();
-  $("#descriptext").show();
-  $("#rangetext").hide();
-  $("#coordtext").hide();
+  var aaa = MyPopup(e.target,);
+  popup.setContent(aaa.popHtml).setLatLng(e.latlng).addTo(map);
 
   $('input[type=radio][name=方法]').change(function () {
     if (this.id == "属性") {
-      $("#typetext").show();
-      $("#lengthtext").show();
-      $("#areatext").show();
-      $("#descriptext").show();
-      $("#rangetext").hide();
-      $("#coordtext").hide();
+      $("#pop_mid").html(aaa.pop_mid1);
       $("#popup-shuxing").attr("class", "popup-open");
       $("#popup-xiangqing").attr("class", "popup-close");
     } else {
-      $("#typetext").hide();
-      $("#lengthtext").hide();
-      $("#areatext").hide();
-      $("#descriptext").hide();
-      $("#rangetext").show();
-      $("#coordtext").show();
+      $("#pop_mid").html(aaa.pop_mid2);
       $("#popup-shuxing").attr("class", "popup-close");
       $("#popup-xiangqing").attr("class", "popup-open");
     }
@@ -151,7 +137,7 @@ function MyPopup(layer, featuretype) {
           coordoutput.push([coord[i].lng.toFixed(9) + " " + coord[i].lat.toFixed(9)]);
         };
         if (coord.length > 5) {
-          console.log("对象坐标串为：",coordoutput);
+          console.log("对象坐标串为：", coordoutput);
           coordtext = coordtext0 + '数据量超过5个，已打印至控制台<br></div>';
         } else {
           coordtext = coordtext0 + coordtext1 + coordtext2.join("<br>") + "</div>";
@@ -174,12 +160,19 @@ function MyPopup(layer, featuretype) {
     '<label id="popup-xiangqing" class="popup-close"><input type="radio" name="方法" id="详情" style="display: none"></input>详情</label>' +
     '</form></div>'
 
-  var popHtml = nametext + typetext + Lengthtext + Areatext + descriptext + rangetext + coordtext + endtext;
+  // var popHtml = nametext + typetext + Lengthtext + Areatext + descriptext + rangetext + coordtext + endtext;
+  var pop_mid1 = typetext + Lengthtext + Areatext + descriptext;
+  var pop_mid2 = rangetext + coordtext;
 
   console.log("--------------结 束------------------");
-  return popHtml;
+  return {
+    pop_mid1: pop_mid1,
+    pop_mid2: pop_mid2,
+    popHtml: nametext + '<div id="pop_mid">' + pop_mid1 + '</div>' + endtext
+  };
 }
-
+//-------------------------------------------------------------------------------------popup
+//-------------------------------------------------------------------------------------popup
 var labelTextCollision = new L.LabelTextCollision({
   collisionFlg: false
 });
