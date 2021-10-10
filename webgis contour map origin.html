@@ -36,15 +36,15 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
-    <script src="contourmap/L.LabelTextCollision.js"></script>
+    <!-- <script src="contourmap/L.LabelTextCollision.js"></script> -->
 
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
 
     <link rel="stylesheet" href="contourmap/leaflet-geoman2.css" />
     <script src="contourmap/leaflet-geoman.min2.js"></script>
 
-    <link rel="stylesheet" href="contourmap/leaflet-measure.css">
-    <script src="contourmap/leaflet-measure.js"></script>
+    <!-- <link rel="stylesheet" href="contourmap/leaflet-measure.css"> -->
+    <!-- <script src="contourmap/leaflet-measure.js"></script> -->
     <!-- <link rel="stylesheet" href="contourmap/leaflet-measure-origin.css">
     <script src="contourmap/leaflet-measure-origin.js"></script> -->
 
@@ -66,7 +66,7 @@
     <img src="contourmap/icon2/1-earthnet.png" width="40px" onclick="changemap()"
         style="position: fixed; left:5px; bottom:10px;">
     <img src="contourmap/icon2/2-设置.png" width="36px" onclick="showHide('showsetting')"
-        style="position: fixed; left:45px; bottom:10px;">
+        style="position: fixed; left:47px; bottom:10px;">
     <img src="contourmap/icon2/3-绘制.png" width="38px" onclick="showHide('showtools')"
         style="position: fixed; left:85px; bottom:10px;">
 
@@ -99,14 +99,18 @@
 
     <div id="showtools" style="display: none;">
         <p><button onclick="showHide('showtools')" style="position: absolute; top: 1px; right: 1px;">X</button></p>
-        <p>图层名称: <input type="text" id="NewlayerName" value="New"></p>
-        <p>颜色选择：<input type="color" id="edgecolor" value="#2D9900"></p>
+        <p>名称: <input type="text" id="NewlayerName" value="New" style="width:235px;"></p>
+        <p>颜色：<input type="color" id="edgecolor" value="#2D9900">
+            字色：<input type="color" id="textcolor" value="#0019FD">
+            字号：<input type="text" id="textheight" value="15" style="width:20px; height: 20px;">
+        </p>
         <div>
             <div style="float:left;">
                 <textarea id="textarea" cols="30" rows="20"
                     style="resize: none;">大连市 121.561 38.875&#10;青岛市 120.427 36.093&#10;威海市 122.112 37.422</textarea>
             </div>
-            <div style="float:right;"><button onclick="draw_Site()" style="height: 30px;">点集合</button></div>
+            <!-- <div style="float:right;"><button onclick="draw_Site()" style="height: 30px;">点集合</button></div> -->
+            <div><button onclick="draw_Site()" style="height: 30px;">点集合</button></div>
             <div><button onclick="draw_Site_Text()" style="height: 30px;">点标注</button></div>
             <div><button onclick="draw_Polyline_in_Map()" style="height: 30px;">多段线</button></div>
             <div><button onclick="draw_Polygon_in_Map()" style="height: 30px;">多边形</button></div>
@@ -126,22 +130,13 @@
 
     <script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>
     <script src="contourmap/leaflet.mapCorrection.js"></script>
-
+    <script src="contourmap/leaflet.canvas-markers.js"></script>
     <script src="contourmap/CreateMap.js"></script>
     <script src="contourmap/Contourmap.js"></script>
     <script src="contourmap/CreateCoordMap.js"></script>
 
     <script>
         //----------------------------------------------------------------------------------------------主程序
-        // // Instantiate KMZ layer (async)
-        // var kmz = L.kmzLayer().addTo(map);
-        // kmz.on('load', function (e) {
-        //     layerControl2.addOverlay(e.layer, e.name);
-        //     // e.layer.addTo(map);
-        // });
-        // // Add remote KMZ files as layers (NB if they are 3rd-party servers, they MUST have CORS enabled)
-        // kmz.load("http://raruto.github.io/leaflet-kmz/examples/capitals.kmz");
-
         var data;     //声明全局，存放json对象;
         var xiangmu;  //声明全局，存放项目名序列;
 
@@ -400,7 +395,7 @@
         //--------------------------------------------------------------------------------Map绘制
         //-------------------绘制点位图----------------------------- 
         function draw_Site() {
-            delete map.options.renderer;
+            // delete map.options.renderer;
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val() + "-点";
             let icon = L.icon({
@@ -417,25 +412,28 @@
             sites.addTo(map);
             layerControl2.addOverlay(sites, sitename);
             map.fitBounds(sites.getBounds());
-            delete map.options.renderer;
+            // delete map.options.renderer;
         };
         //-------------------绘制点文字----------------------------- 
         function draw_Site_Text() {
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val();
             var edgecolor = $("#edgecolor").val();
+            var textcolor = $("#textcolor").val();
+            var textheight = $("#textheight").val();
 
             var sitesLabel = L.featureGroup();
             for (var i = 0; i < siteData.length; i++) {
                 var name = siteData[i][0];
                 var nLength = name.length;
+                var iconhtml =
+                    '<div class="stroke" style="font-size:' + textheight + 'px;">' + name + '</div>' +
+                    '<div class="stroke-front" style="font-size:' + textheight + 'px; color: ' + textcolor + ';">' + name + '</div>';
                 let markerIcon = L.divIcon({
-                    // html: siteData[i][0],//marker标注内容
-                    html: '<div class="stroke">' + name + '</div><div class="stroke-front">' + name + '</div>',
-                    // className: 'stroke',
+                    html: iconhtml,
                     className: 'icondiv',
-                    iconSize: [15 * nLength, 15],//marker宽高
-                    iconAnchor: [7.5 * nLength, 0]//文字标注相对位置
+                    iconSize: [textheight * nLength, textheight],//marker宽高
+                    iconAnchor: [textheight / 2 * nLength, 0]//文字标注相对位置
                 });
                 L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon }).addTo(sitesLabel);
             };
@@ -445,7 +443,7 @@
         };
         //-------------------绘制多段线-----------------------------        
         function draw_Polyline_in_Map() {
-            delete map.options.renderer;
+            // delete map.options.renderer;
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val();
             var edgecolor = $("#edgecolor").val();
@@ -459,7 +457,7 @@
         };
         //-------------------绘制多边形----------------------------- 
         function draw_Polygon_in_Map() {
-            delete map.options.renderer;
+            // delete map.options.renderer;
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val();
             var edgecolor = $("#edgecolor").val();
@@ -480,31 +478,52 @@
 
         //-------------------Canvas绘制 点位 及标注-----------------------------
         function draw_Site_in_Canvas() {
-            map.options.renderer = labelTextCollision;
+            // map.options.renderer = labelTextCollision;
+            // var siteData = coord2shuzu('textarea');
+            // var sitename = $("#NewlayerName").val();
+            // var sites = L.featureGroup();
+            // for (var i = 0; i < siteData.length; i++) {
+            //     var c = L.circleMarker([siteData[i][2], siteData[i][1]], {
+            //         radius: 3,
+            //         text: siteData[i][0],
+            //         textStyle: {
+            //             stroke: true,
+            //             color: '#3388ff',
+            //             font: "15px 'Microsoft Yahei'",
+            //             offsetX: 100,
+            //             offsetY: 100,
+            //         }
+            //     }).addTo(sites);
+            // };
+            // sites.addTo(map);
+            // layerControl2.addOverlay(sites, sitename + "-Canvas点");
+            // map.fitBounds(sites.getBounds());
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val();
-            var sites = L.featureGroup();
+
+            var ciLayer = L.canvasIconLayer({}).addTo(map);
+            var iconUrl = "contourmap/icon2/pin-m+7e7e7e@2x.png"
             for (var i = 0; i < siteData.length; i++) {
-                var c = L.circleMarker([siteData[i][2], siteData[i][1]], {
-                    radius: 3,
-                    text: siteData[i][0],
-                    textStyle: {
-                        stroke: true,
-                        color: '#3388ff',
-                        font: "15px 'Microsoft Yahei'",
-                        offsetX: 100,
-                        offsetY: 100,
-                    }
-                }).addTo(sites);
-            };
-            sites.addTo(map);
-            layerControl2.addOverlay(sites, sitename + "-Canvas点");
-            map.fitBounds(sites.getBounds());
+                //定义一个icon设置图片和文字
+                var icon = L.icon({
+                    iconUrl: iconUrl,	      //背景图片
+                    iconSize: [30, 40],		  //设置图标大小
+                    iconAnchor: [15, 40],	  //设置图标偏移
+
+                    text: siteData[i][0],	   //添加文字
+                    textAnchor: [0, 0],        //设置文本偏移
+                    textFont: '15px bold sans-serif',     //设置字体大小和样式
+                    textFillStyle: '#000000',   //设置字体颜色
+                    textStrokeStyle: '#FFFFFF',   //设置字体颜色
+                });
+                var marker = L.marker([siteData[i][2], siteData[i][1]], { icon: icon });
+                ciLayer.addMarker(marker);
+            }
         };
 
         //-------------------Canvas绘制 多段线 及标注-----------------------------
         function draw_Polyline_in_Canvas() {
-            map.options.renderer = labelTextCollision;
+            // map.options.renderer = labelTextCollision;
             var siteData = coord2shuzu('textarea');
             var name = $("#NewlayerName").val();
             var latlngs = [];
@@ -525,7 +544,7 @@
         };
         //-------------------Canvas绘制 多边形 及标注-----------------------------
         function draw_Polygon_in_Canvas() {
-            map.options.renderer = labelTextCollision;
+            // map.options.renderer = labelTextCollision;
             var siteData = coord2shuzu('textarea');
             var name = $("#NewlayerName").val();
             var latlngs = [];
