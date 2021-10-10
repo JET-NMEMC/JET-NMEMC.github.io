@@ -7,40 +7,36 @@ document.body.appendChild(coordmap0);
 //-------------------------------主程序-------------------------------
 function changemap() {
     var mapdiv = document.getElementById("map");
-    var thisNode = document.getElementById("coordmap");
-    console.log(mapdiv.style.width);
 
-    if (mapdiv.style.width == "65%") {
+    if (mapdiv.style.width == "70%") {
         console.log("开启转关闭");
         //注销事件:地图改变时,绘制坐标框
-        map.off("zoomend");
-        map.off("moveend");
+        map.off("zoomend", drawcoordrange);
+        map.off("moveend", drawcoordrange);
         //清空坐标div
-        thisNode.innerHTML = "";
+        document.getElementById("coordmap").innerHTML = "";
         //地图恢复为全屏样式，刷新地图
-        mapdiv.style.width = "100%"; mapdiv.style.height = "100%"; mapdiv.style.left = "0"; mapdiv.style.top = "0";
-        mapdiv.style.border = "#000";
-        map.invalidateSize(true);
+        mapdiv.style.width = "100%"; mapdiv.style.height = "100%"; mapdiv.style.left = "0px"; mapdiv.style.top = "0px"; mapdiv.style.border = "#000";
         //恢复工具栏
         document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility = "visible";
         document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility = "visible";
     } else {
         console.log("关闭转开启");
         //激活事件:地图改变时,绘制坐标框
-        map.on("zoomend", function () { drawcoordrange() });
-        map.on("moveend", function () { drawcoordrange() });
+        map.on("zoomend", drawcoordrange);
+        map.on("moveend", drawcoordrange);
         //地图更改为小图样式，刷新地图
-        mapdiv.style.width = "65%"; mapdiv.style.height = "90%"; mapdiv.style.left = "200px"; mapdiv.style.top = "5%";
+        mapdiv.style.width = "70%"; mapdiv.style.height = "90%"; mapdiv.style.left = "200px"; mapdiv.style.top = "5%";
         mapdiv.style.border = "0.5px solid #000";
-
         //隐藏工具栏
         document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility = "hidden";
         document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility = "hidden";
-        map.invalidateSize(true);
     };
+    map.invalidateSize(true);
 };
 //--------------------------------------------------------------------------------------------绘制坐标
-function drawcoordrange() {
+var drawcoordrange = function () {
+    console.log("更新坐标图");
     var mapdiv = document.getElementById("map");
     var coordmap = document.getElementById("coordmap");
     coordmap.innerHTML = "";
