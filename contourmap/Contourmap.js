@@ -32,7 +32,7 @@ function getType(targetLayer) {
     return 'Polyline'
   } else if (targetLayer instanceof L.Marker) {
     return 'Marker'
-  } else if (targetLayer instanceof L.Icon) {
+  } else if (targetLayer instanceof L.divIcon) {
     return 'Marker'
   } else {
     return 'unknown'
@@ -56,14 +56,22 @@ map.on('pm:create', ({ layer }) => {
   // console.log(layer);
   layer.addTo(templayer);
   layer.on('click', (e) => {
-    popupA(e)
+    popupA(e);
   });
   console.log("--------------结 束------------------");
+
+  // console.log(templayer._layers);
 })
 
 function popupA(e) {
+  console.log("---------事件触发 图形点击------------");
+  console.log("type:", getType(e.target));
+  console.log(e.target);
   var aaa = MyPopup(e.target,);
   popup.setContent(aaa.popHtml).setLatLng(e.latlng).addTo(map);
+  $("#pop_mid").html(aaa.pop_mid1);
+  $("#popup-shuxing").attr("class", "popup-open");
+  $("#popup-xiangqing").attr("class", "popup-close");
 
   $('input[type=radio][name=方法]').change(function () {
     if (this.id == "属性") {
@@ -76,12 +84,11 @@ function popupA(e) {
       $("#popup-xiangqing").attr("class", "popup-open");
     }
   });
+  console.log("--------------结 束------------------");
 }
 //-------------------------生成popupHTML-----------------------------
 function MyPopup(layer, featuretype) {
-  console.log("---------事件触发 图形点击------------");
   // console.log(layer);
-
   var nametext;
   if (layer.options.name) {
     layername = layer.options.name;
@@ -142,7 +149,6 @@ function MyPopup(layer, featuretype) {
         } else {
           coordtext = coordtext0 + coordtext1 + coordtext2.join("<br>") + "</div>";
         }
-
       }
       break;
     case 'Marker':
@@ -159,12 +165,9 @@ function MyPopup(layer, featuretype) {
     '<label id="popup-shuxing" class="popup-open"><input type="radio" name="方法" id="属性" style="display: none" checked="checked"></input>属性</label>' +
     '<label id="popup-xiangqing" class="popup-close"><input type="radio" name="方法" id="详情" style="display: none"></input>详情</label>' +
     '</form></div>'
-
-  // var popHtml = nametext + typetext + Lengthtext + Areatext + descriptext + rangetext + coordtext + endtext;
   var pop_mid1 = typetext + Lengthtext + Areatext + descriptext;
   var pop_mid2 = rangetext + coordtext;
 
-  console.log("--------------结 束------------------");
   return {
     pop_mid1: pop_mid1,
     pop_mid2: pop_mid2,
@@ -173,18 +176,19 @@ function MyPopup(layer, featuretype) {
 }
 //-------------------------------------------------------------------------------------popup
 //-------------------------------------------------------------------------------------popup
-var labelTextCollision = new L.LabelTextCollision({
-  collisionFlg: false
-});
-map.options.renderer = labelTextCollision;
+// var labelTextCollision = new L.LabelTextCollision({
+//   collisionFlg: false
+// });
+// map.options.renderer = labelTextCollision;
 
-map.on('pm:drawstart', ({ }) => {
-  delete map.options.renderer;
-});
+// map.on('pm:drawstart', ({ }) => {
+//   delete map.options.renderer;
+// });
 // ------------------------------------------------------------添加 编辑工具
 var styleEditor = L.control.styleEditor({
   position: "topleft",
-  colorRamp: ['#007FFF', '#7400A1', '#3CB371', '#7B68EE', '#0000CD', '#C71585', '#4169E1', '#22C32E', '#FFFF00', '#E60000'],
+  // colorRamp: ['#007FFF', '#7400A1', '#3CB371', '#7B68EE', '#0000CD', '#C71585', '#4169E1', '#22C32E', '#FFFF00', '#E60000'],
+  colorRamp: ['#E60000','#FFFF00','#00FF00','#0000CD','#8000FF','#C71585', '#FF8000','#22C32E', '#007FFF', '#7B68EE'],
   showTooltip: false,
   useGrouping: true,
   defaultMarkerIcon: 'circle',
