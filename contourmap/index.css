@@ -30,7 +30,7 @@ a {
     left: 40%;
     border:1px solid rgb(0, 0, 0);
     background-color:#f9f9f9;
-    padding: 12px 36px;
+    padding: 12px 36px 12px 36px;
     opacity: 1;
     text-align:center;
     
@@ -75,16 +75,15 @@ a {
     font-size: 16px;
     /* display: inline; */
 }
-.map {
+#map {
+    /* position:fixed; */
     position:absolute;
     height: 100%;
     width: 100%;
     left: 0px;
     top: 0px;
-    /* background-color: rgb(8, 38, 49); */
     background-color: #333;
-    /* border-color: rgb(0, 0, 0); */
-    z-index: -999;    
+    z-index: -999;
 }
 .leaflet-canvas-layer {
     opacity: 1;
@@ -169,7 +168,6 @@ a {
     position: relative;
     float: left;
     margin: 0;
-    font-size:15px;
     color: #ffffff;
     font-weight: bold;
     font-family: sans-serif;
@@ -178,8 +176,6 @@ a {
 .stroke-front {    
     position: absolute;
     margin: 0;
-    font-size:15px;
-    color: #0019fd;
     font-weight: 500;
     font-family: sans-serif;
 }
@@ -187,7 +183,7 @@ a {
 }
 
 .popup-open {
-    width: 49%;
+    width: 48.5%;
     height: 30px;
     margin: 0;
     padding: 0;
@@ -204,7 +200,7 @@ a {
 }
 
 .popup-close {
-    width: 48%;
+    width: 48.5%;
     height: 30px;
     margin: 0;
     padding: 0;
@@ -228,33 +224,6 @@ a {
     font-size: 12px;
     font-weight: normal;
     font-family: sans-serif;
-}
-.pad10 {
-    padding:10px 0 10px 0; 
-}
-.padtop5 {
-    padding:5px 0 0 0; 
-}
-.padbottom5 {
-    padding: 0 0 5px 0; 
-}
-.padtop10 {
-    padding:10px 0 0 0; 
-}
-.padbottom10 {
-    padding: 0 0 10px 0; 
-}
-.nopad {
-    padding:0 0 0 0; 
-}
-.headline {
-    border-top:0.5px solid #000;
-}
-.hr {
-    width: 98%;
-}
-.lineblock {
-    display: inline-block;
 }
 
 
