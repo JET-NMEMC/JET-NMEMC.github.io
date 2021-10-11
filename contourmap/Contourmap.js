@@ -84,6 +84,10 @@ function popupA(e) {
       $("#popup-xiangqing").attr("class", "popup-open");
     }
   });
+  // $("button[id=printCoord]").on("click",function () {
+  //   console.log("aaa.coordoutput");
+  //   console.log(aaa.coordoutput)
+  // });
   console.log("--------------结 束------------------");
 }
 //-------------------------生成popupHTML-----------------------------
@@ -97,7 +101,7 @@ function MyPopup(layer, featuretype) {
     nametext = '<h3>名称： Undefined</h3>'
   };
 
-  if (layer.styleEditor.type) {
+  if (layer.styleEditor.type !== undefined) {
     featuretype = layer.styleEditor.type;
   } else {
     console.log("图层没有type属性");
@@ -143,11 +147,19 @@ function MyPopup(layer, featuretype) {
           coordtext2.push(coord[i].lng.toFixed(9) + "&emsp;" + coord[i].lat.toFixed(9));
           coordoutput.push([coord[i].lng.toFixed(9) + " " + coord[i].lat.toFixed(9)]);
         };
-        if (coord.length > 5) {
-          console.log("对象坐标串为：", coordoutput);
-          coordtext = coordtext0 + '数据量超过5个，已打印至控制台<br></div>';
-        } else {
+        // if (coord.length <= 5) {
+        //   coordtext = coordtext0 + coordtext1 + coordtext2.join("<br>") + "</div>";
+        // } else {
+        //   // console.log("对象坐标串为：", coordoutput);
+        //   coordtext = coordtext0 + '超过10个<button onclick=printCoord>打印坐标至控制台</button></div><br>';
+        // }
+        if (coord.length <= 5) {
           coordtext = coordtext0 + coordtext1 + coordtext2.join("<br>") + "</div>";
+        } else if (coord.length <= 100) {
+          console.log("对象坐标串为：", coordoutput);
+          coordtext = coordtext0 + '数据量超过5个，已打印至控制台</div><br>';
+        } else {
+          coordtext = coordtext0 + '数据量超过100个，不显示</div><br>';
         }
       }
       break;
@@ -171,7 +183,8 @@ function MyPopup(layer, featuretype) {
   return {
     pop_mid1: pop_mid1,
     pop_mid2: pop_mid2,
-    popHtml: nametext + '<div id="pop_mid">' + pop_mid1 + '</div>' + endtext
+    popHtml: nametext + '<div id="pop_mid">' + pop_mid1 + '</div>' + endtext,
+    coordoutput: coordoutput
   };
 }
 //-------------------------------------------------------------------------------------popup
@@ -188,7 +201,7 @@ function MyPopup(layer, featuretype) {
 var styleEditor = L.control.styleEditor({
   position: "topleft",
   // colorRamp: ['#007FFF', '#7400A1', '#3CB371', '#7B68EE', '#0000CD', '#C71585', '#4169E1', '#22C32E', '#FFFF00', '#E60000'],
-  colorRamp: ['#E60000','#FFFF00','#00FF00','#0000CD','#8000FF','#C71585', '#FF8000','#22C32E', '#007FFF', '#7B68EE'],
+  colorRamp: ['#E60000', '#FFFF00', '#00FF00', '#0000CD', '#8000FF', '#C71585', '#FF8000', '#22C32E', '#007FFF', '#7B68EE'],
   showTooltip: false,
   useGrouping: true,
   defaultMarkerIcon: 'circle',
