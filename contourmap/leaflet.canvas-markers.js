@@ -593,8 +593,8 @@
             _drawText: function(t, n) {
                 var i = t.options.icon.options;
                 i.text && (this._context.font = i.textFont,
-                this._context.strokeStyle = i.textStrokeStyle,
-                this._context.strokeText(i.text, n.x - i.textAnchor[0], n.y - i.textAnchor[1]),
+                // this._context.strokeStyle = i.textStrokeStyle,
+                // this._context.strokeText(i.text, n.x - i.textAnchor[0], n.y - i.textAnchor[1]),
                 this._context.fillStyle = i.textFillStyle,
                 this._context.fillText(i.text, n.x - i.textAnchor[0], n.y - i.textAnchor[1]))
             },
