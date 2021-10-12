@@ -8,7 +8,7 @@ document.body.appendChild(coordmap0);
 function changemap() {
     var mapdiv = document.getElementById("map");
 
-    if (mapdiv.style.width == "70%") {
+    if (mapdiv.style.left == "200px") {
         console.log("开启转关闭");
         //注销事件:地图改变时,绘制坐标框
         map.off("zoomend", drawcoordrange);
@@ -16,17 +16,20 @@ function changemap() {
         //清空坐标div
         document.getElementById("coordmap").innerHTML = "";
         //地图恢复为全屏样式，刷新地图
-        mapdiv.style.width = "100%"; mapdiv.style.height = "100%"; mapdiv.style.left = "0px"; mapdiv.style.top = "0px"; mapdiv.style.border = "#000";
+        mapdiv.style.left = "0px"; mapdiv.style.top = "0px"; mapdiv.style.width = "100%"; mapdiv.style.height = "100%";
+        mapdiv.style.border = "#000";
         //恢复工具栏
         document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility = "visible";
         document.getElementsByClassName("leaflet-top leaflet-right")[0].style.visibility = "visible";
     } else {
         console.log("关闭转开启");
+        map.options.drawRB = confirm("要绘制右侧和下侧坐标吗？");
+        map.options.coordHeight = prompt("默认字体高度为", "18");
         //激活事件:地图改变时,绘制坐标框
         map.on("zoomend", drawcoordrange);
         map.on("moveend", drawcoordrange);
         //地图更改为小图样式，刷新地图
-        mapdiv.style.width = "70%"; mapdiv.style.height = "90%"; mapdiv.style.left = "200px"; mapdiv.style.top = "5%";
+        mapdiv.style.left = "200px"; mapdiv.style.top = "40px"; mapdiv.style.width = "calc(100% - 400px)"; mapdiv.style.height = "calc(100% - 80px)";
         mapdiv.style.border = "0.5px solid #000";
         //隐藏工具栏
         document.getElementsByClassName("leaflet-top leaflet-left")[0].style.visibility = "hidden";
@@ -36,31 +39,32 @@ function changemap() {
 };
 //--------------------------------------------------------------------------------------------绘制坐标
 var drawcoordrange = function () {
-    console.log("更新坐标图");
     var mapdiv = document.getElementById("map");
     var coordmap = document.getElementById("coordmap");
     coordmap.innerHTML = "";
-    // 设置初始开关、是否绘制北东
+    // 设置初始开关、是否绘制N E
     var drawNE = true;
+    // 设置初始开关、是否绘制右侧和下侧坐标
+    var drawRB = this.options.drawRB;
+    var coordHeight = Number(this.options.coordHeight);
+    console.log("更新坐标图");
 
-    var lngmin, lngmax, latmin, latmax, zoomlevel;
-    lngmin = map.getBounds().getSouthWest().lng;
-    latmin = map.getBounds().getSouthWest().lat;
-    lngmax = map.getBounds().getNorthEast().lng;
-    latmax = map.getBounds().getNorthEast().lat;
-    // console.log("经度:", lngmin.toFixed(3), lngmax.toFixed(3), "纬度:", latmin.toFixed(3), latmax.toFixed(3));
+    var lngmin, lngmax, latmin, latmax;
+    lngmin = map.getBounds().getWest();
+    latmin = map.getBounds().getSouth();
+    lngmax = map.getBounds().getEast();
+    latmax = map.getBounds().getNorth();
     //调用子程序计算坐标刻度
-    var lngbreak = getCoordBreaks(lngmin, lngmax, 2.0, "lng").breaks;
-    var latbreak = getCoordBreaks(latmin, latmax, 1.9, "lat").breaks;
-    var lngstep = getCoordBreaks(lngmin, lngmax, 2.0, "lng").step;
-    var latstep = getCoordBreaks(latmin, latmax, 1.9, "lat").step;
+    var lngbreak = getCoordBreaks(lngmin, lngmax, 2.2, "lng").breaks;
+    var lngstep = getCoordBreaks(lngmin, lngmax, 2.2, "lng").step;
+
+    var latbreak = getCoordBreaks(latmin, latmax, 1.8, "lat").breaks;
+    var latstep = getCoordBreaks(latmin, latmax, 1.8, "lat").step;
     // console.log("lngbreak", lngbreak,"lngstep", lngstep);
     // console.log("latbreak", latbreak,"latsetp", latstep);
     //读取map的像素坐标
-    divbottom = mapdiv.getBoundingClientRect().bottom;
-    divtop = mapdiv.getBoundingClientRect().top;
-    divleft = mapdiv.getBoundingClientRect().left;
-    divright = mapdiv.getBoundingClientRect().right;
+    var divrange = mapdiv.getBoundingClientRect();
+    divbottom = divrange.bottom; divtop = divrange.top; divleft = divrange.left; divright = divrange.right;
     // console.log(divtop, divbottom, divleft, divright);
 
     //--------------------------循环叠加，形成经度的图形--------------------------
@@ -75,19 +79,33 @@ var drawcoordrange = function () {
         } else {
             divtextA0 = ''
         }
-        var divtextA;
+        var divtextA, divtextAT;
         if (lngstep >= 1) {
-            divtextA = '<div><font style="position:absolute; left:' + (Xpix - 13) + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + Math.abs(lngbreak[i]) + '°' + divtextA0 + '</font></div>'
+            divtextA = '<div><font style="position:absolute; left:' + (Xpix - coordHeight) + 'px; top:' + (divtop - coordHeight - 5) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;" color="#000000">' + Math.abs(lngbreak[i]) + '°' + divtextA0 + '</font></div>'
         };
         if (lngstep < 1 && lngstep >= 0.016666667) {
-            divtextA = '<div><font style="position:absolute; left:' + (Xpix - 26) + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + du2dufen(lngbreak[i], 0) + divtextA0 + '</font></div>'
+            divtextA = '<div><font style="position:absolute; left:' + (Xpix - 1.7 * coordHeight) + 'px; top:' + (divtop - coordHeight - 5) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;" color="#000000">' + du2dufen(lngbreak[i], 0) + divtextA0 + '</font></div>'
         };
         if (lngstep < 0.016666667) {
-            divtextA = '<div><font style="position:absolute; left:' + (Xpix - 39) + 'px; top:' + (divtop - 20) + 'px; font-size: 15px;font-family: sans-serif;" color="#000000">' + du2dufenmiao(lngbreak[i], 0) + divtextA0 + '</font></div>'
+            divtextA = '<div><font style="position:absolute; left:' + (Xpix - 2.7 * coordHeight) + 'px; top:' + (divtop - coordHeight - 5) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;" color="#000000">' + du2dufenmiao(lngbreak[i], 0) + divtextA0 + '</font></div>'
         };
-        // var divtextB = '<div><font style="position:absolute; left:' + Xpix + 'px; top:' + (divtop - 2) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">|</font></div>';
-        var divtextB = '<div><font style="position:absolute; left:' + (Xpix + 7) + 'px; top:' + (divtop - 3) + 'px; font-size: 10px;font-family: sans-serif; transform: rotate(270deg); transform-origin:left bottom"; color="#000000">—</font></div>';
-        coordmap.innerHTML = divtext0 + divtextA + divtextB;
+        divtextAT = '<div><font style="position:absolute; left:' + (Xpix + 7) + 'px; top:' + (divtop - 3) + 'px; font-size: 10px;font-family: sans-serif; transform: rotate(270deg); transform-origin:left bottom"; color="#000000">—</font></div>';
+
+        var divtextB = '', divtextBT = '';
+        if (drawRB == true) {
+            if (lngstep >= 1) {
+                divtextB = '<div><font style="position:absolute; left:' + (Xpix - coordHeight) + 'px; top:' + (divbottom) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;" color="#000000">' + Math.abs(lngbreak[i]) + '°' + divtextA0 + '</font></div>'
+            };
+            if (lngstep < 1 && lngstep >= 0.016666667) {
+                divtextB = '<div><font style="position:absolute; left:' + (Xpix - 1.7 * coordHeight) + 'px; top:' + (divbottom) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;" color="#000000">' + du2dufen(lngbreak[i], 0) + divtextA0 + '</font></div>'
+            };
+            if (lngstep < 0.016666667) {
+                divtextB = '<div><font style="position:absolute; left:' + (Xpix - 2.7 * coordHeight) + 'px; top:' + (divbottom) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;" color="#000000">' + du2dufenmiao(lngbreak[i], 0) + divtextA0 + '</font></div>'
+            };
+            divtextBT = '<div><font style="position:absolute; left:' + (Xpix + 7) + 'px; top:' + (divbottom - 16) + 'px; font-size: 10px;font-family: sans-serif; transform: rotate(270deg); transform-origin:left bottom"; color="#000000">—</font></div>';
+        }
+
+        coordmap.innerHTML = divtext0 + divtextA + divtextAT + divtextB + divtextBT;
     }
     //--------------------------循环叠加，形成纬度的图形--------------------------
     for (var i = 0; i < latbreak.length; i++) {
@@ -100,18 +118,33 @@ var drawcoordrange = function () {
         } else {
             divtextA0 = ''
         }
-        var divtextA;
+        var divtextA, divtextAT;
         if (latstep >= 1) {
-            divtextA = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix - 5) + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + Math.abs(latbreak[i]) + '°' + divtextA0 + '</font></div>'
+            divtextA = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix - 5) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + Math.abs(latbreak[i]) + '°' + divtextA0 + '</font></div>'
         };
         if (latstep < 1 && latstep >= 0.016666667) {
-            divtextA = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix + 5) + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufen(latbreak[i], 0) + divtextA0 + '</font></div>'
+            divtextA = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix + 5) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufen(latbreak[i], 0) + divtextA0 + '</font></div>'
         };
         if (latstep < 0.016666667) {
-            divtextA = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix + 15) + 'px; font-size: 15px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufenmiao(latbreak[i], 0) + divtextA0 + '</font></div>'
+            divtextA = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix + 15) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufenmiao(latbreak[i], 0) + divtextA0 + '</font></div>'
         };
-        var divtextB = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix - 5) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">—</font></div>'
-        coordmap.innerHTML = divtext0 + divtextA + divtextB;
+        divtextAT = '<div><font style="position:fixed; left:' + divleft + 'px; top:' + (Ypix - 5) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">—</font></div>'
+
+        var divtextB = '', divtextBT = '';
+        if (drawRB == true) {
+            if (latstep >= 1) {
+                divtextB = '<div><font style="position:fixed; left:' + (divright + coordHeight + 5) + 'px; top:' + (Ypix - 5) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + Math.abs(latbreak[i]) + '°' + divtextA0 + '</font></div>'
+            };
+            if (latstep < 1 && latstep >= 0.016666667) {
+                divtextB = '<div><font style="position:fixed; left:' + (divright + coordHeight + 5) + 'px; top:' + (Ypix + 5) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufen(latbreak[i], 0) + divtextA0 + '</font></div>'
+            };
+            if (latstep < 0.016666667) {
+                divtextB = '<div><font style="position:fixed; left:' + (divright + coordHeight + 5) + 'px; top:' + (Ypix + 15) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufenmiao(latbreak[i], 0) + divtextA0 + '</font></div>'
+            };
+            divtextBT = '<div><font style="position:fixed; left:' + (divright - 13) + 'px; top:' + (Ypix - 5) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">—</font></div>'
+        }
+
+        coordmap.innerHTML = divtext0 + divtextA + divtextAT + divtextB + divtextBT;
     };
 }
 
