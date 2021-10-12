@@ -33,7 +33,7 @@ function getType(targetLayer) {
   } else if (targetLayer instanceof L.Marker) {
     return 'Marker'
   } else if (targetLayer instanceof L.divIcon) {
-    return 'Marker'
+    return 'divIcon'
   } else {
     return 'unknown'
   }
@@ -94,8 +94,11 @@ function popupA(e) {
 function MyPopup(layer, featuretype) {
   // console.log(layer);
   var nametext;
-  if (layer.options.name) {
+  if (layer.options.name !== undefined) {
     layername = layer.options.name;
+    nametext = '<h3>名称： ' + layername + '</h3>';
+  } else if (layer.options.icon.options.name !== undefined) {
+    layername = layer.options.icon.options.name;
     nametext = '<h3>名称： ' + layername + '</h3>';
   } else {
     nametext = '<h3>名称： Undefined</h3>'
