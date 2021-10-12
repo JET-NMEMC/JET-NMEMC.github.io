@@ -165,11 +165,12 @@ a {
 }
 /* .stroke {margin:0;padding:10px 0 0;} */
 .stroke {
-    position: relative;
+    /* position: relative; */
     float: left;
     margin: 0;
     color: #ffffff;
     font-weight: bold;
+    /* font-weight: 500; */
     font-family: sans-serif;
 	-webkit-text-stroke:3px #ffffff;
 }
