@@ -418,26 +418,62 @@
             var edgecolor = $("#edgecolor").val();
             var textcolor = $("#textcolor").val();
             var textheight = $("#textheight").val();
-
             var sitesLabel = L.featureGroup();
+            function getIconHtml(name, textheight, textcolor) {
+                var nLength = name.length;
+                return '<div class="stroke" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px;">' + name + '</div>' +
+                    '<div class="stroke-front" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px; color: ' + textcolor + ';">' + name + '</div>'
+            }
             for (var i = 0; i < siteData.length; i++) {
                 var name = siteData[i][0];
-                var nLength = name.length;
-                var iconhtml =
-                    '<div class="stroke" style="font-size:' + textheight + 'px;">' + name + '</div>' +
-                    '<div class="stroke-front" style="font-size:' + textheight + 'px; color: ' + textcolor + ';">' + name + '</div>';
+                var iconhtml = getIconHtml(name, textheight, textcolor)
+                // var iconhtml =
+                //     '<div class="stroke" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px;">' + name + '</div>' +
+                //     '<div class="stroke-front" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px; color: ' + textcolor + ';">' + name + '</div>';
                 let markerIcon = L.divIcon({
                     html: iconhtml,
+                    name: name,
                     className: 'icondiv',
-                    iconSize: [textheight * nLength, textheight],//marker宽高
-                    iconAnchor: [textheight / 2 * nLength, 0]//文字标注相对位置
+                    iconSize: [textheight * name.length, textheight],//marker宽高
+                    iconAnchor: [0, 0]//文字标注相对位置
+                    // iconAnchor: [textheight / 2 * nLength, 0]//文字标注相对位置
                 });
-                L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon }).addTo(sitesLabel);
+                var markers = L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon })
+                    .bindPopup('<div>名称：<input id="sitetextname" type="text" value="' + name + '" /></div>')
+                    .addTo(sitesLabel);
+                // markers.on("click", function (e) {
+                //     console.log(e.target.options.icon.options);
+                //     var opts = e.target.options.icon.options;
+                //     var popup2HTML = '<div>名称：<input id="sitetextname" type="text" value="' + opts.name + '" /></div>';
+                //     popup.setContent(popup2HTML).setLatLng(e.latlng).addTo(map);
+                //     // $("#sitetextname").onchange = function () {
+                //     //     opts.innerHTML=getIconHtml(This.value, textheight, textcolor)
+                //     // };
+                //     // $("#sitetextname").onchange = function () {
+                //     //     console.log("e");
+                //     // }
+                // });
+                markers.on('popupopen', function (e) {
+                    console.log("e", e);
+                    // $('input[type=text][id=sitetextname]').onchange = function () {
+                    //     console.log(this.value);
+                    // }
+                })
             };
             sitesLabel.addTo(map);
             layerControl2.addOverlay(sitesLabel, sitename + "-文字标注");
             map.fitBounds(sitesLabel.getBounds());
         };
+
+        // map.on("popupopen", function (e) {
+        //     console.log("e", e);
+        //     $("#sitetextname").onchange = function () {
+        //         console.log("e");
+        //     }
+        // });
+
+
+        // markers.on('click', (e) => { popupA(e) });
         //-------------------绘制多段线-----------------------------        
         function draw_Polyline_in_Map() {
             // delete map.options.renderer;
@@ -497,6 +533,8 @@
             // map.fitBounds(sites.getBounds());
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val();
+            var textcolor = $("#textcolor").val();
+            var textheight = $("#textheight").val();
 
             var ciLayer = L.canvasIconLayer({}).addTo(map);
             var iconUrl = "contourmap/icon2/pin-m+7e7e7e@2x.png"
@@ -506,16 +544,16 @@
                     iconUrl: iconUrl,	      //背景图片
                     iconSize: [30, 40],		  //设置图标大小
                     iconAnchor: [15, 40],	  //设置图标偏移
-
                     text: siteData[i][0],	   //添加文字
                     textAnchor: [0, 0],        //设置文本偏移
-                    textFont: '15px bold sans-serif',     //设置字体大小和样式
-                    textFillStyle: '#000000',   //设置字体颜色
-                    textStrokeStyle: '#FFFFFF',   //设置字体颜色
+                    textFont: textheight + 'px bold sans-serif',     //设置字体大小和样式
+                    textFillStyle: textcolor,   //设置字体颜色
+                    textStrokeStyle: textcolor,   //设置字体颜色
                 });
                 var marker = L.marker([siteData[i][2], siteData[i][1]], { icon: icon });
                 ciLayer.addMarker(marker);
             }
+            layerControl2.addOverlay(ciLayer, sitename + "-canvas marker");
         };
 
         //-------------------Canvas绘制 多段线 及标注-----------------------------
