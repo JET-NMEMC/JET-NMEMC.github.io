@@ -1,5 +1,19 @@
 body {
     margin: 0px;
+    /* padding: 30px; */
+    /* width: 100%; */
+    /* height: 100%; */
+    /* margin: 40px 200px; */
+}
+#map {
+    position:absolute;
+    height: 100%;
+    width: 100%;
+    /* left: 0px;
+    top: 0px; */
+    
+    background-color: #333;
+    z-index: -999;
 }
 #heading {
     text-align: center;
@@ -20,7 +34,6 @@ a {
     padding: 12px 36px;
     opacity: 0.7;
     text-align:center;
-    /* padding-top:30px; */
     border-radius: 10px;
     z-index: 1;
 }
@@ -33,9 +46,6 @@ a {
     padding: 12px 36px 12px 36px;
     opacity: 1;
     text-align:center;
-    
-        /* padding-top:30px; */
-    /* border-radius: 10px; */
 }
 #showtools {
     position: fixed;
@@ -46,26 +56,19 @@ a {
     padding: 10px 10px;
     opacity: 1;
     text-align:center;
-    /* padding-top:30px; */
-    /* border-radius: 10px; */
 }
 #select {
     position:absolute;
     top: 10px;
     left: 80%;
-    /* display: inline-block; */
-    /* display: inline; */
-    padding: 12px 2px;
-    /* margin: 10px 0; */
+    padding: 12px 2px; 
     color: rgb(0, 0, 0);
-    /* text-decoration: none; */
     font-size: 16px;
     text-align: center;
     text-align-last:center;
     letter-spacing: 2px;
     border-radius: 0px;
     background-color: #e2e2e2;
-    /* background: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%); */
     z-index: 1;
 }
 .opt {
@@ -75,16 +78,7 @@ a {
     font-size: 16px;
     /* display: inline; */
 }
-#map {
-    /* position:fixed; */
-    position:absolute;
-    height: 100%;
-    width: 100%;
-    left: 0px;
-    top: 0px;
-    background-color: #333;
-    z-index: -999;
-}
+
 .leaflet-canvas-layer {
     opacity: 1;
 }
@@ -163,24 +157,24 @@ a {
 	color:#000000;
 	text-shadow:1px 1px 1px #ffffff,-1px 1px 1px #ffffff,-1px -1px 1px #ffffff,1px -1px 1px #ffffff;
 }
-/* .stroke {margin:0;padding:10px 0 0;} */
 .stroke {
-    /* position: relative; */
     float: left;
-    margin: 0;
     color: #ffffff;
     font-weight: bold;
-    /* font-weight: 500; */
-    font-family: sans-serif;
+    /* font-family: sans-serif; */
+    font-family: "Verdana", "Arial", sans-serif;
 	-webkit-text-stroke:3px #ffffff;
+    /* border: 1px solid red; */
 }
-.stroke-front {    
+.stroke-front {
     position: absolute;
-    margin: 0;
     font-weight: 500;
-    font-family: sans-serif;
+    /* font-family: sans-serif; */
+    font-family: "Verdana", "Arial", sans-serif;
+    /* border: 2px solid rgb(46, 7, 224); */
 }
 .icondiv {
+    margin: 0px;
 }
 
 .popup-open {
