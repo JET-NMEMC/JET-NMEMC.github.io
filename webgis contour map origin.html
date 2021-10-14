@@ -426,54 +426,40 @@
             }
             for (var i = 0; i < siteData.length; i++) {
                 var name = siteData[i][0];
-                var iconhtml = getIconHtml(name, textheight, textcolor)
-                // var iconhtml =
-                //     '<div class="stroke" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px;">' + name + '</div>' +
-                //     '<div class="stroke-front" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px; color: ' + textcolor + ';">' + name + '</div>';
                 let markerIcon = L.divIcon({
-                    html: iconhtml,
+                    html: getIconHtml(name, textheight, textcolor),
                     name: name,
+                    textheight: textheight,
+                    textcolor: textcolor,
                     className: 'icondiv',
                     iconSize: [textheight * name.length, textheight],//marker宽高
                     iconAnchor: [0, 0]//文字标注相对位置
                     // iconAnchor: [textheight / 2 * nLength, 0]//文字标注相对位置
                 });
+
                 var markers = L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon })
-                    .bindPopup('<div>名称：<input id="sitetextname" type="text" value="' + name + '" /></div>')
                     .addTo(sitesLabel);
-                // markers.on("click", function (e) {
-                //     console.log(e.target.options.icon.options);
-                //     var opts = e.target.options.icon.options;
-                //     var popup2HTML = '<div>名称：<input id="sitetextname" type="text" value="' + opts.name + '" /></div>';
-                //     popup.setContent(popup2HTML).setLatLng(e.latlng).addTo(map);
-                //     // $("#sitetextname").onchange = function () {
-                //     //     opts.innerHTML=getIconHtml(This.value, textheight, textcolor)
-                //     // };
-                //     // $("#sitetextname").onchange = function () {
-                //     //     console.log("e");
-                //     // }
-                // });
-                markers.on('popupopen', function (e) {
-                    console.log("e", e);
-                    // $('input[type=text][id=sitetextname]').onchange = function () {
-                    //     console.log(this.value);
-                    // }
-                })
+
+                markers.on('click', (e) => {
+                    var iconOptions = e.target.options.icon.options;
+                    // console.log(iconOptions);
+                    var popupHtml = '<h3>名称: <input id="iconname" type="text" value="' + iconOptions.name + '" style="height:30px;" /></h3>' +
+                        '<h3>颜色: <input id="iconcolor" type="color" value="' + iconOptions.textcolor + '" style="width:170px;" /></h3>'
+                    popup.setContent(popupHtml).setLatLng(e.latlng).addTo(map);
+                    $("#iconname,#iconcolor").change(function () {
+                        iconOptions.name = $("#iconname").val();
+                        iconOptions.textcolor = $("#iconcolor").val();
+                        iconOptions.iconSize = [iconOptions.textheight * iconOptions.name.length, iconOptions.textheight];
+                        iconOptions.html = getIconHtml(iconOptions.name, iconOptions.textheight, iconOptions.textcolor);
+                        map.removeLayer(e.target);
+                        map.addLayer(e.target);
+                    });
+                });
             };
             sitesLabel.addTo(map);
             layerControl2.addOverlay(sitesLabel, sitename + "-文字标注");
             map.fitBounds(sitesLabel.getBounds());
         };
-
-        // map.on("popupopen", function (e) {
-        //     console.log("e", e);
-        //     $("#sitetextname").onchange = function () {
-        //         console.log("e");
-        //     }
-        // });
-
-
-        // markers.on('click', (e) => { popupA(e) });
         //-------------------绘制多段线-----------------------------        
         function draw_Polyline_in_Map() {
             // delete map.options.renderer;
