@@ -444,11 +444,13 @@
                     var iconOptions = e.target.options.icon.options;
                     // console.log(iconOptions);
                     var popupHtml = '<h3>名称: <input id="iconname" type="text" value="' + iconOptions.name + '" style="height:30px;" /></h3>' +
-                        '<h3>颜色: <input id="iconcolor" type="color" value="' + iconOptions.textcolor + '" style="width:170px;" /></h3>'
+                        '<h3>颜色: <input id="iconcolor" type="color" value="' + iconOptions.textcolor + '" style="width:170px;" /></h3>'+
+                        '<h3>字号: <input id="iconheight" type="text" value="' + iconOptions.textheight + '" style="height:20px;" /></h3>'
                     popup.setContent(popupHtml).setLatLng(e.latlng).addTo(map);
-                    $("#iconname,#iconcolor").change(function () {
+                    $("#iconname,#iconcolor,#iconheight").change(function () {
                         iconOptions.name = $("#iconname").val();
                         iconOptions.textcolor = $("#iconcolor").val();
+                        iconOptions.textheight = $("#iconheight").val();
                         iconOptions.iconSize = [iconOptions.textheight * iconOptions.name.length, iconOptions.textheight];
                         iconOptions.html = getIconHtml(iconOptions.name, iconOptions.textheight, iconOptions.textcolor);
                         map.removeLayer(e.target);
