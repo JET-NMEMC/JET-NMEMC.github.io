@@ -97,7 +97,7 @@ function MyPopup(layer, featuretype) {
   if (layer.options.name !== undefined) {
     layername = layer.options.name;
     nametext = '<h3>名称： ' + layername + '</h3>';
-  } else if (layer.options.icon.options.name !== undefined) {
+  } else if (layer.options.icon !== undefined) {
     layername = layer.options.icon.options.name;
     nametext = '<h3>名称： ' + layername + '</h3>';
   } else {
