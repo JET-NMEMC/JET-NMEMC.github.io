@@ -60,6 +60,7 @@
 <body>
     <div><canvas id="mycanvas" style="display: none;"></canvas></div>
     <div id="map" class="map"></div>
+    <button onclick="printmap()" style="position: fixed; left:5px; bottom:60px;">点我</button>
     <img src="contourmap/icon2/1-earthnet.png" width="40px" onclick="changemap()"
         style="position: fixed; left:5px; bottom:10px;">
     <img src="contourmap/icon2/2-设置.png" width="36px" onclick="showHide('showsetting')"
@@ -147,6 +148,10 @@
         var figurectrol = {};
         var legend;
         var countourmap;
+        function printmap() {
+            console.log("maplayer");
+            console.log(map._layers)
+        }
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
             var kmlFileInput = document.getElementById("kmlFileInput");
@@ -394,7 +399,7 @@
         function draw_Site() {
             // delete map.options.renderer;
             var siteData = coord2shuzu('textarea');
-            var sitename = $("#NewlayerName").val() + "-点";
+            var sitename = $("#NewlayerName").val();
             let icon = L.icon({
                 iconUrl: 'contourmap/icon2/pin-m+7e7e7e@2x.png',
                 iconSize: [30,],//marker宽高
@@ -403,11 +408,13 @@
             });
             var sites = L.featureGroup();
             for (var i = 0; i < siteData.length; i++) {
-                var marker0 = L.marker([siteData[i][2], siteData[i][1]], { icon: icon, name: siteData[i][0] }).addTo(sites);
+                var marker0 = L.marker([siteData[i][2], siteData[i][1]], { icon: icon, name: siteData[i][0], type: "marker" }).addTo(sites);
                 marker0.on('click', (e) => { popupA(e) });
             };
             sites.addTo(map);
-            layerControl2.addOverlay(sites, sitename);
+            sites.options.name = sitename + "-点";
+            sites.options.type = "featureGroupOverlay";
+            layerControl2.addOverlay(sites, sitename + "-点");
             map.fitBounds(sites.getBounds());
             // delete map.options.renderer;
         };
@@ -437,14 +444,14 @@
                     // iconAnchor: [textheight / 2 * nLength, 0]//文字标注相对位置
                 });
 
-                var markers = L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon })
+                var markers = L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon, type: "markerdivIcon" })
                     .addTo(sitesLabel);
 
                 markers.on('click', (e) => {
                     var iconOptions = e.target.options.icon.options;
                     // console.log(iconOptions);
                     var popupHtml = '<h3>名称: <input id="iconname" type="text" value="' + iconOptions.name + '" style="height:30px;" /></h3>' +
-                        '<h3>颜色: <input id="iconcolor" type="color" value="' + iconOptions.textcolor + '" style="width:170px;" /></h3>'+
+                        '<h3>颜色: <input id="iconcolor" type="color" value="' + iconOptions.textcolor + '" style="width:170px;" /></h3>' +
                         '<h3>字号: <input id="iconheight" type="text" value="' + iconOptions.textheight + '" style="height:20px;" /></h3>'
                     popup.setContent(popupHtml).setLatLng(e.latlng).addTo(map);
                     $("#iconname,#iconcolor,#iconheight").change(function () {
@@ -459,7 +466,11 @@
                 });
             };
             sitesLabel.addTo(map);
+            // sitesLabel.options.name = sitename + "-文字标注";
+            // sites.options.type = "marker";
             layerControl2.addOverlay(sitesLabel, sitename + "-文字标注");
+            sitesLabel.options.name = sitename + "-点";
+            sitesLabel.options.type = "featureGroupOverlay";
             map.fitBounds(sitesLabel.getBounds());
         };
         //-------------------绘制多段线-----------------------------        
@@ -471,7 +482,7 @@
 
             var latlngs = [];
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
-            var polyline = L.polyline(latlngs, { color: "#FF1493", weight: 3, name: sitename }).addTo(map);
+            var polyline = L.polyline(latlngs, { color: "#FF1493", weight: 3, name: sitename, type: "polyline" }).addTo(map);
             polyline.on('click', (e) => { popupA(e) });
             layerControl2.addOverlay(polyline, sitename + "-线");
             map.fitBounds(polyline.getBounds());
@@ -487,7 +498,8 @@
             for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
             var polygon = L.polygon(latlngs, {
                 color: edgecolor, weight: 1, fillOpacity: 0.2,
-                name: sitename
+                name: sitename,
+                type: "polygon"
             }).addTo(map);
             polygon.on('click', (e) => { popupA(e) });
             layerControl2.addOverlay(polygon, sitename + "-面");
