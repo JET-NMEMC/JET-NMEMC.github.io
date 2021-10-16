@@ -5,6 +5,7 @@ var map = mapStuff.map;
 var layerControl = mapStuff.layerControl;
 var layerControl2 = mapStuff.layerControl2;
 var templayer = mapStuff.templayer;
+// templayer.options.name = "templayer";
 
 //-----------------------------------------------------------添加 经纬网格
 var Graticulelayer = L.latlngGraticule({
