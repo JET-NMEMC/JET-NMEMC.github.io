@@ -149,8 +149,29 @@
         var legend;
         var countourmap;
         function printmap() {
-            console.log("maplayer");
-            console.log(map._layers)
+            console.log("maplayer:");
+            console.log(map._layers);
+            // var maplayers = [];
+            // Object.keys(map._layers).forEach(function (key) {
+            //     if (getType(map._layers[key]) == "Marker") { maplayers.push(map._layers[key]) };
+            //     if (getType(map._layers[key]) == "Polyline") { maplayers.push(map._layers[key]) };
+            //     if (getType(map._layers[key]) == "Polygon") { maplayers.push(map._layers[key]) };
+            // });        
+            // console.log(maplayers);
+            var collection = {
+                "type": "FeatureCollection",
+                "features": []
+            };
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker || layer instanceof L.Polygon || layer instanceof L.Polyline) {
+                    var geojson = layer.toGeoJSON();
+                    collection.features.push(geojson);
+                }
+            });
+
+            // Log GeoJSON collection to console
+            console.log(collection);
+
         }
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
