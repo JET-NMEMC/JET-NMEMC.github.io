@@ -34,6 +34,10 @@ function getType(targetLayer) {
     return 'Marker'
   } else if (targetLayer instanceof L.divIcon) {
     return 'divIcon'
+  } else if (targetLayer instanceof L.layerGroup) {
+    return 'layerGroup'
+  } else if (targetLayer instanceof L.featureGroup) {
+    return 'featureGroup'
   } else {
     return 'unknown'
   }
@@ -66,7 +70,7 @@ map.on('pm:create', ({ layer }) => {
 function popupA(e) {
   console.log("---------事件触发 图形点击------------");
   console.log("type:", getType(e.target));
-  console.log("type to json:", e.target.toGeoJSON());
+  // console.log("type to json:", e.target.toGeoJSON());
   console.log(e.target);
   var aaa = MyPopup(e.target,);
   popup.setContent(aaa.popHtml).setLatLng(e.latlng).addTo(map);
