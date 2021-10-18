@@ -40,14 +40,64 @@ a {
 #showsetting {
     position: fixed;
     top:1%;
-    left: 40%;
+    left: 10%;
     border:1px solid rgb(0, 0, 0);
-    background-color:#f9f9f9;
-    padding: 12px 36px 12px 36px;
+    background-color:#ffffff;
     opacity: 1;
-    text-align:center;
+    /* text-align:center; */
+} 
+.title{
+    width:100%;
+    height:30px;
+    background: #2f9de2;
+    /* background-color:#6699cc; */
+    /* border: 1px solid #000000; */
+    font-size: 20px;
 }
-#showtools {
+.closebutn{
+    position:absolute;     
+    float: right; 
+    top: 0px; 
+    right: 0px;
+    width: 30px; 
+    height: 30px;
+    background: #2f9de2;
+    font-size: 20px;
+    border: none;
+}
+.navbar-button {
+    width: 200px;
+    padding: 10px;
+    background-color: rgb(121, 120, 120);
+    color: white;
+    border: solid 1px white;
+    border-radius: 4px;
+    display: block;
+}
+.navbar-button:hover {
+    background-color: rgb(75, 75, 75);
+}
+.navbar-inputtext {
+    width: 178px;
+    padding: 10px;
+    background-color: rgb(255, 253, 253);
+    color: rgb(0, 0, 0);
+    border: solid 1px rgb(0, 0, 0);
+    border-radius: 4px;
+    display: block;
+}
+.navbar-inputtext2 {
+    width: 200px;
+    margin: 0;
+    /* padding: 10px; */
+    background-color: rgb(121, 120, 120);
+    color: white;
+    border: solid 1px white;
+    border-radius: 4px;
+    display: block;
+}
+
+/* #showtools {
     position: fixed;
     top:1%;
     left: 20%;
@@ -56,7 +106,17 @@ a {
     padding: 10px 10px;
     opacity: 1;
     text-align:center;
+} */
+#showtools {
+    position: fixed;
+    top:1%;
+    left: 40%;
+    border:1px solid rgb(0, 0, 0);
+    background-color:#ffffff;
+    opacity: 1;
+    /* text-align:center; */
 }
+
 #select {
     position:absolute;
     top: 10px;
@@ -90,42 +150,6 @@ a {
     overflow: auto;
     display: block;
 }
-
-.navbar-button {
-    width: 200px;
-    margin: 0;
-    padding: 10px;
-    background-color: rgb(121, 120, 120);
-    color: white;
-    border: solid 1px white;
-    border-radius: 4px;
-    display: block;
-}
-.navbar-inputtext {
-    width: 178px;
-    margin: 0;
-    padding: 10px;
-    background-color: rgb(255, 253, 253);
-    color: rgb(0, 0, 0);
-    border: solid 1px rgb(0, 0, 0);
-    border-radius: 4px;
-    display: block;
-}
-.navbar-inputtext2 {
-    width: 200px;
-    margin: 0;
-    padding: 10px;
-    background-color: rgb(121, 120, 120);
-    color: white;
-    border: solid 1px white;
-    border-radius: 4px;
-    display: block;
-}
-
-.navbar-button:hover {
-    background-color: rgb(75, 75, 75);
-}
-
 .info {
     padding: 5px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
