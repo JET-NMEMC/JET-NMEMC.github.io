@@ -16,7 +16,6 @@
   <link href='css/site.css' rel='stylesheet' />
   <link href='css/my.css' rel='stylesheet' />
   <link href='css/theme.css' rel='stylesheet' />
-  <link rel='icon' type='image/x-icon' href='/img/favicon.png' />
   <meta name='author' content='MapBox' />
   <meta name='description' content='simply edit geojson map data' />
   <meta property='og:site_name' content='geojson.io' />
@@ -126,12 +125,11 @@
     var coord0 = new Array;
     // var vectormap = L.featureGroup();
     var mymap = window.api.map;
+    var mymaplayer = window.api.mapLayer;
+    // L.marker([60, 120], {}).addTo(window.api.mapLayer);
+    // mymap.panTo([0, 120]);
+    console.log(window.api);
 
-    function getlocation5() {
-      var yyy = Text2Arr("textarea");
-      console.log("获取数组为:");
-      console.log(yyy);
-    }
 
     function drawPoline() {
       var yyy = Text2Arr("textarea");
@@ -231,9 +229,7 @@
       var featuresAll = [];
 
       for (var j = 1; j < point1.length; j++) {
-        // var point1 = yyy[j].split(/,|，|\s+/);
         var coord = [Number(point1[j][0]), Number(point1[j][1])];
-        console.log(coord);
         //重组属性prop，赋给properties
         var prop = {};
         for (var i = 2; i < liename.length; i++) {
@@ -245,7 +241,7 @@
       }
       var featuresFinal = featureCollection(featuresAll);
       console.log(featuresFinal);
-      var expJson = JSON.stringify(featuresFinal)
+      var expJson = JSON.stringify(featuresFinal);
       // console.log(expJson);
       document.getElementById("textarea2").value = expJson;
       document.querySelector("#textarea2").select();
@@ -253,56 +249,16 @@
       alert("点位JSON已复制到剪贴板，替换右侧内容即可")
     }
 
-
-    // var options = {
-    //   folder: 'myshapes',
-    //   types: {
-    //     point: 'mypoints',
-    //     polygon: 'mypolygons',
-    //     line: 'mylines'
-    //   }
-    // }
-
-    // var sdf = importGeoJSON(featuresFinal);
-    // consolelog(sdf)
-    // a GeoJSON bridge for features
-    // shpwrite.download(featuresFinal, options);
-
-    // GeoShape.transformAndDownload(JSON.parse(expJson));
-    // GeoShape.transformAndDownload(featuresFinal);    
-
-
-    function exportshp() {
-      var abd = document.getElementsByTagName("pre");
-      var jsonstr = "";
-      for (var i = 0; i < abd.length; i++) {
-        // console.log(abd[i].innerText)
-        jsonstr += abd[i].innerText
-      }
-      console.log(jsonstr);
-      console.log(JSON.parse(jsonstr));
-      GeoShape.transformAndDownload(JSON.parse(jsonstr));
-    }
-
     function exportshp2() {
-      var jsonstr = document.getElementById("textarea2").value;
-      GeoShape.transformAndDownload(JSON.parse(jsonstr));
+      var jsonstr = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"大连市","province":"辽宁省"},"geometry":{"type":"Point","coordinates":[121.561,38.875]}},{"type":"Feature","properties":{"name":"青岛市","province":"山东省"},"geometry":{"type":"Point","coordinates":[120.427,36.093]}},{"type":"Feature","properties":{"name":"烟台市","province":"山东省"},"geometry":{"type":"Point","coordinates":[122.112,37.422]}}]};
+      // var jsonstr = document.getElementById("textarea2").value;
+      // console.log(typeof jsonstr);
+      // GeoShape.transformAndDownload(JSON.parse(jsonstr));
+      GeoShape.transformAndDownload(jsonstr);
     }
-
-    function exportshp3() {
-      var ade = document.getElementsByClassName("CodeMirror-code");
-      console.log(ade[0].innerText);
-      ade.id = "code";
-      $("#code").select();
-      document.execCommand("selectAll");
-      document.execCommand("copy");
-      // adr.execCommand("selectAll");
-      // document.execCommand("selectAll");
-      // document.execCommand("copy");
-      // console.log(abe);
-      // selectAll("CodeMirror-code");
-    }
-
+    // window.api.map.on("click",function(e){
+    //   console.log(e)
+    // })
 
     function featureCollection(features, option) {
       var fc = { type: "FeatureCollection" };
