@@ -463,29 +463,55 @@ function point2str(po) {
 }
 
 //---------------------------------------------------------------------------div可拖动
-dragFunc("showsetting");
-dragFunc("showtools");
-dragFunc("select");
-//---------------------------------------------------------------------------div可拖动
-function dragFunc(id) {
-  var Drag = document.getElementById(id);
-  Drag.onmousedown = function (event) {
-    var ev = event || window.event;
-    event.stopPropagation();
-    var disX = ev.clientX - Drag.offsetLeft;
-    var disY = ev.clientY - Drag.offsetTop;
+// dragFunc("showsetting");
+// dragFunc("showsettingTitle");
+// dragFunc("showtools");
+// dragFunc("select");
+// //---------------------------------------------------------------------------div可拖动
+// function dragFunc(id) {
+//   var Drag = document.getElementById(id);
+//   Drag.onmousedown = function (event) {
+//     var ev = event || window.event;
+//     event.stopPropagation();
+//     var disX = ev.clientX - Drag.offsetLeft;
+//     var disY = ev.clientY - Drag.offsetTop;
+//     document.onmousemove = function (event) {
+//       var ev = event || window.event;
+//       Drag.style.left = ev.clientX - disX + "px";
+//       Drag.style.top = ev.clientY - disY + "px";
+//       Drag.style.cursor = "move";
+//     };
+//   };
+//   Drag.onmouseup = function () {
+//     document.onmousemove = null;
+//     this.style.cursor = "default";
+//   };
+// };
+
+dragFatherBySon('showsetting', 'showsettingTitle');
+dragFatherBySon('showtools', 'showtoolsTitle');
+//父元素随子元素拖动而移动
+function dragFatherBySon(fatherID, SonID) {
+  var popupfather = document.getElementById(fatherID);
+  var popupson = document.getElementById(SonID);
+  popupson.onmousedown = function (event) {
+    var event = event || window.event;
+    var x = event.clientX - popupfather.offsetLeft;
+    var y = event.clientY - popupfather.offsetTop;
+    this.style.cursor = "move";
     document.onmousemove = function (event) {
-      var ev = event || window.event;
-      Drag.style.left = ev.clientX - disX + "px";
-      Drag.style.top = ev.clientY - disY + "px";
-      Drag.style.cursor = "move";
-    };
-  };
-  Drag.onmouseup = function () {
+      var event = event || window.event;
+      popupfather.style.left = event.clientX - x + "px";
+      popupfather.style.top = event.clientY - y + "px";
+      window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+    }
+  }
+  popupson.onmouseup = function () {
     document.onmousemove = null;
     this.style.cursor = "default";
-  };
-};
+  }
+}
+
 
 
 // $.getJSON("https://danwild.github.io/leaflet-velocity/wind-gbr.json", function (data) {
