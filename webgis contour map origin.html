@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<script>
+<!-- <script>
     //通过window.screen.width获取屏幕的宽度
     console.log("当前设备分辨率" + window.screen.width + 'px', window.screen.height + 'px');
     if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
@@ -22,12 +22,13 @@
         machineStyle = "hengping-computer"
     };
     console.log(machineStyle);
-</script>
+</script> -->
 
 <head>
     <title>Web Gis</title>
     <meta charset="utf-8">
     <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
+    <!-- <meta http-equiv='X-UA-Compatible' content='IE=Edge'> -->
     <link rel="stylesheet" href="contourmap/index.css" />
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
@@ -42,19 +43,18 @@
 
     <link rel="stylesheet" href="contourmap/leaflet-geoman2.css" />
     <script src="contourmap/leaflet-geoman.min2.js"></script>
-
     <!-- <link rel="stylesheet" href="contourmap/leaflet-measure.css"> -->
     <!-- <script src="contourmap/leaflet-measure.js"></script> -->
-    <!-- <link rel="stylesheet" href="contourmap/leaflet-measure-origin.css">
-    <script src="contourmap/leaflet-measure-origin.js"></script> -->
 
-    <script src="contourmap/L.KML.js"></script>
     <!-- <script src="https://unpkg.com/leaflet-kmz@1.0.6/dist/leaflet-kmz-src.js"></script> -->
     <!-- <script src="https://www.windy.com/v/33.0.3.ind.47e4/plugins/upload.js"></script> -->
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="contourmap/L.Control.Locate.min.css" />
     <script src="contourmap/L.Control.Locate.min.js"></script>
+
+    <script src="contourmap/jszip.min.js"></script>
+    <script src="contourmap/GeoShape.js"></script>
 </head>
 
 <body>
@@ -69,35 +69,43 @@
         style="position: fixed; left:85px; bottom:10px;">
 
     <div id="showsetting" style="display: none;">
-        <button onclick="showHide('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
-        <p>等值线图 绘图设置</p>
-        <p>
-            <input type="file" id="selectdatafile" accept=".xlsx" onchange="impexcel(this)" style="display: none" />
-            <input type="button" onclick="document.getElementById('selectdatafile').click()" value="选择散点数据"
-                class="navbar-button" />
-        </p>
-        <p>计划带数: <input type="text" id="TargetN" value="10" style="height: 25px; width: 82px;"></p>
-        <p>图层透明: <input type="text" id="opacity" value="1" style="height: 25px; width: 82px;"></p>
-        配色方案: <select id="colorpattern" style="height: 30px; width: 90px;">
-            <option value="rainbow">rainbow</option>
-            <option value="bgyr" selected=selected>bgyr</option>
-            <option value="jet">jet</option>
-            <option value="cool">cool</option>
-        </select>
-        <p>矢量图层 导入设置</p>
-        <div class="sidebar-body">
-            <input type="file" id="kmlFileInput" accept=".kml" style="display: none" />
-            <input type="button" onclick="$('#kmlFileInput').click()" value="Import kml" class="navbar-button" />
-            <input type="file" id="jsonFileInput" accept=".json, .geojson" style="display: none" />
-            <input type="button" onclick="$('#jsonFileInput').click()" value="Import GeoJSON" class="navbar-button" />
-            <input type="text" id="rigon" value="大连市" placeholder="输入行政区名称" class="navbar-inputtext">
-            <button class="navbar-button" onclick="drawrigon()">生成行政区边界</button>
+        <div id="showsettingTitle" class="title">绘图设置<button onclick="showHide('showsetting')"
+                class="closebutn">X</button>
+        </div>
+        <div style="padding: 0px 10px;">
+            <h4 style="text-align: center;">等值线图 绘图设置</h4>
+            <p>
+                <input type="file" id="selectdatafile" accept=".xlsx" onchange="impexcel(this)" style="display: none" />
+                <input type="button" onclick="document.getElementById('selectdatafile').click()" value="选择散点数据"
+                    class="navbar-button" />
+            </p>
+            <p>计划带数: <input type="text" id="TargetN" value="10" style="height: 25px; width: 82px;"></p>
+            <p>图层透明: <input type="text" id="opacity" value="1" style="height: 25px; width: 82px;"></p>
+            配色方案: <select id="colorpattern" style="height: 30px; width: 90px;">
+                <option value="rainbow">rainbow</option>
+                <option value="bgyr" selected=selected>bgyr</option>
+                <option value="jet">jet</option>
+                <option value="cool">cool</option>
+            </select>
+        </div>
+        <div style="padding: 0px 10px; margin-bottom: 10px;">
+            <h4 style="text-align: center;">矢量图层 导入设置</h4>
+            <div class="sidebar-body">
+                <input type="file" id="kmlFileInput" accept=".kml" style="display: none" />
+                <input type="button" onclick="$('#kmlFileInput').click()" value="Import kml" class="navbar-button" />
+                <input type="file" id="jsonFileInput" accept=".json, .geojson" style="display: none" />
+                <input type="button" onclick="$('#jsonFileInput').click()" value="Import GeoJSON"
+                    class="navbar-button" />
+                <input type="text" id="rigon" value="大连市" placeholder="输入行政区名称" class="navbar-inputtext">
+                <button class="navbar-button" onclick="drawrigon()">生成行政区边界</button>
+            </div>
         </div>
     </div>
 
     <div id="showtools" style="display: none;">
-        <p><button onclick="showHide('showtools')" style="position: absolute; top: 1px; right: 1px;">X</button></p>
-        <p>名称: <input type="text" id="NewlayerName" value="New" style="width:310px;"></p>
+        <div id="showtoolsTitle" class="title">坐标绘图<button onclick="showHide('showtools')" class="closebutn">X</button>
+        </div>
+        <p>名称: <input type="text" id="NewlayerName" value="New" style="width:302px;"></p>
         <p>颜色：<input type="color" id="edgecolor" value="#2D9900">
             字色：<input type="color" id="textcolor" value="#0019FD">
             字号：<input type="text" id="textheight" value="15" style="width:90px; height: 20px;">
@@ -107,7 +115,6 @@
                 <textarea id="textarea" cols="38" rows="20"
                     style="resize: none;">大连市 121.561 38.875&#10;青岛市 120.427 36.093&#10;威海市 122.112 37.422</textarea>
             </div>
-            <!-- <div style="float:right;"><button onclick="draw_Site()" style="height: 30px;">点集合</button></div> -->
             <div><button onclick="draw_Site()" style="height: 30px;">点集合</button></div>
             <div><button onclick="draw_Site_Text()" style="height: 30px;">点标注</button></div>
             <div><button onclick="draw_Polyline_in_Map()" style="height: 30px;">多段线</button></div>
@@ -128,6 +135,8 @@
 
     <script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>
     <script src="contourmap/leaflet.mapCorrection.js"></script>
+
+    <script src="contourmap/L.KML.js"></script>
     <script src="contourmap/leaflet.canvas-markers.js"></script>
     <script src="contourmap/CreateMap.js"></script>
     <script src="contourmap/Contourmap.js"></script>
@@ -149,8 +158,6 @@
         var legend;
         var countourmap;
         function printmap() {
-            console.log("maplayer:");
-            console.log(map._layers);
             // var maplayers = [];
             // Object.keys(map._layers).forEach(function (key) {
             //     if (getType(map._layers[key]) == "Marker") { maplayers.push(map._layers[key]) };
@@ -158,6 +165,7 @@
             //     if (getType(map._layers[key]) == "Polygon") { maplayers.push(map._layers[key]) };
             // });        
             // console.log(maplayers);
+
             var collection = {
                 "type": "FeatureCollection",
                 "features": []
@@ -165,13 +173,19 @@
             map.eachLayer(function (layer) {
                 if (layer instanceof L.Marker || layer instanceof L.Polygon || layer instanceof L.Polyline) {
                     var geojson = layer.toGeoJSON();
+                    // geojson.properties = layer.options;
                     collection.features.push(geojson);
                 }
             });
+            GeoShape.transformAndDownload(collection);
+        }
 
-            // Log GeoJSON collection to console
-            console.log(collection);
-
+        function printmap2() {
+            var jsonstr = { "type": "FeatureCollection", "features": [{ "type": "Feature", "properties": { "name": "大连市", "province": "辽宁省" }, "geometry": { "type": "Point", "coordinates": [121.561, 38.875] } }, { "type": "Feature", "properties": { "name": "青岛市", "province": "山东省" }, "geometry": { "type": "Point", "coordinates": [120.427, 36.093] } }, { "type": "Feature", "properties": { "name": "烟台市", "province": "山东省" }, "geometry": { "type": "Point", "coordinates": [122.112, 37.422] } }] };
+            // var jsonstr = document.getElementById("textarea2").value;
+            // console.log(typeof jsonstr);
+            // GeoShape.transformAndDownload(JSON.parse(jsonstr));
+            GeoShape.transformAndDownload(jsonstr);
         }
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
@@ -429,7 +443,7 @@
             });
             var sites = L.featureGroup();
             for (var i = 0; i < siteData.length; i++) {
-                var marker0 = L.marker([siteData[i][2], siteData[i][1]], { icon: icon, name: siteData[i][0], type: "marker" }).addTo(sites);
+                var marker0 = L.marker([siteData[i][2], siteData[i][1]], { icon: icon, name: siteData[i][0] }).addTo(sites);
                 marker0.on('click', (e) => { popupA(e) });
             };
             sites.addTo(map);
