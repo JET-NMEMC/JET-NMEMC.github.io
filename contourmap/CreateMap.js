@@ -7,28 +7,6 @@ var layerControl2 = mapStuff.layerControl2;
 var templayer = mapStuff.templayer;
 // templayer.options.name = "templayer";
 
-//-----------------------------------------------------------添加 经纬网格
-var Graticulelayer = L.latlngGraticule({
-    showLabel: true,
-    zoomInterval: [
-        { start: 2, end: 3, interval: 30 },
-        { start: 4, end: 4, interval: 10 },
-        { start: 5, end: 6, interval: 5 },
-        { start: 7, end: 8, interval: 2 },
-        { start: 9, end: 10, interval: 1 },
-        { start: 11, end: 12, interval: 0.2 },
-        { start: 13, end: 17, interval: 0.1 },
-    ]
-})
-layerControl.addOverlay(Graticulelayer, '经纬网');
-
-// ----------------------------------------------------------添加 测量工具
-// var measureControl = new L.Control.Measure({
-//     position: 'topleft',
-//     primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
-//     primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
-// }).addTo(map);
-
 // --------------------------------------map初始化程序--------------------------------
 // --------------------------------------map初始化程序--------------------------------
 function initDemoMap() {
@@ -163,6 +141,61 @@ function initDemoMap() {
     };
 };
 
+//-----------------------------------------------------------添加 经纬网格
+var Graticulelayer = L.latlngGraticule({
+    showLabel: true,
+    zoomInterval: [
+        { start: 2, end: 3, interval: 30 },
+        { start: 4, end: 4, interval: 10 },
+        { start: 5, end: 6, interval: 5 },
+        { start: 7, end: 8, interval: 2 },
+        { start: 9, end: 10, interval: 1 },
+        { start: 11, end: 12, interval: 0.2 },
+        { start: 13, end: 17, interval: 0.1 },
+    ]
+})
+layerControl.addOverlay(Graticulelayer, '经纬网');
+// ------------------------------------------------------------添加 绘图工具
+map.pm.addControls({
+    position: 'topleft',
+    drawCircle: false,
+    drawCircleMarker: false,
+    // drawLine: false,
+    cutPolygon: false,
+});
+var styleEditor = L.control.styleEditor({
+    position: "topleft",
+    // colorRamp: ['#007FFF', '#7400A1', '#3CB371', '#7B68EE', '#0000CD', '#C71585', '#4169E1', '#22C32E', '#FFFF00', '#E60000'],
+    colorRamp: ['#E60000', '#FFFF00', '#00FF00', '#0000CD', '#8000FF', '#C71585', '#FF8000', '#22C32E', '#007FFF', '#7B68EE'],
+    showTooltip: false,
+    useGrouping: true,
+    defaultMarkerIcon: 'circle',
+    // ignoreLayerTypes :["Marker"],
+});
+map.addControl(styleEditor);
+
+// ----------------------------------------------------------添加 定位工具
+if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
+    var lc = L.control.locate({
+        position: 'topleft',
+        locateOptions: {
+            maxZoom: 17,
+            enableHighAccuracy: true,
+        },
+        follow: true,
+        icon: 'fa fa-location-arrow',
+        cacheLocation: true,
+        onLocationError: function (err) { alert(err.message) },
+        onLocationFound: function (e) { console.log('定位成功=====>', e) },
+    }).addTo(map);
+};
+// ----------------------------------------------------------添加 测量工具
+// var measureControl = new L.Control.Measure({
+//     position: 'topleft',
+//     primaryLengthUnit: 'kilometers', secondaryLengthUnit: undefined,
+//     primaryAreaUnit: 'hectares', secondaryAreaUnit: undefined
+// }).addTo(map);
+
 // var layerControl2 = mapStuff.layerControl2;
 
 // var command = L.control({position: 'topleft'}); 
@@ -172,3 +205,48 @@ function initDemoMap() {
 //     return div;
 // }; 
 // command.addTo(map);
+
+
+// $.getJSON("https://danwild.github.io/leaflet-velocity/wind-gbr.json", function (data) {
+//   var velocityLayer = L.velocityLayer({
+//     displayValues: true,
+//     displayOptions: {
+//       velocityType: "GBR Wind",
+//       position: "bottomleft",
+//       emptyString: "No wind data",
+//       showCardinal: true
+//     },
+//     data: data,
+//     maxVelocity: 10
+//   });
+//   layerControl.addOverlay(velocityLayer, "Wind - Great Barrier Reef");
+// });
+
+// $.getJSON("https://danwild.github.io/leaflet-velocity/water-gbr.json", function (data) {
+//   var velocityLayer = L.velocityLayer({
+//     displayValues: true,
+//     displayOptions: {
+//       velocityType: "GBR Water",
+//       position: "bottomleft",
+//       emptyString: "No water data"
+//     },
+//     data: data,
+//     maxVelocity: 0.6,
+//     velocityScale: 0.1 // arbitrary default 0.005
+//   });
+//   layerControl.addOverlay(velocityLayer, "Ocean Current - Great Barrier Reef");
+// });
+
+// $.getJSON("https://danwild.github.io/leaflet-velocity/wind-global.json", function (data) {
+//   var velocityLayer = L.velocityLayer({
+//     displayValues: true,
+//     displayOptions: {
+//       velocityType: "Global Wind",
+//       position: "bottomleft",
+//       emptyString: "No wind data"
+//     },
+//     data: data,
+//     maxVelocity: 15
+//   });
+//   layerControl.addOverlay(velocityLayer, "Wind - Global");
+// });
