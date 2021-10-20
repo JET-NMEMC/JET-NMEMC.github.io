@@ -116,7 +116,7 @@
         <div>
             <div style="float:left;">
                 <textarea id="textarea" cols="38" rows="20"
-                    style="resize: none;">大连市 121.561 38.875&#10;青岛市 120.427 36.093&#10;威海市 122.112 37.422</textarea>
+                    style="resize: none;">name  经度    纬度&#10;大连市 121.561 38.875&#10;青岛市 120.427 36.093&#10;威海市 122.112 37.422</textarea>
             </div>
             <div><button onclick="draw_Site()" style="height: 30px;">点集合</button></div>
             <div><button onclick="draw_Site_Text()" style="height: 30px;">点标注</button></div>
@@ -144,7 +144,7 @@
     <script src="contourmap/CreateMap.js"></script>
     <script src="contourmap/Contourmap.js"></script>
     <script src="contourmap/CreateCoordMap.js"></script>
-    <script src="contourmap/popupMap.js"></script>
+    <script src="contourmap/CreatePopupMap.js"></script>
 
     <script>
         //----------------------------------------------------------------------------------------------主程序
@@ -156,11 +156,12 @@
             mapname.eachLayer(function (layer) {
                 if (layer instanceof L.Marker || layer instanceof L.Polygon || layer instanceof L.Polyline) {
                     var geojson = layer.toGeoJSON();
-                    // geojson.properties = layer.options;
-                    collection.features.push(geojson);
+                    if (layer.options.attribute) { geojson.properties = layer.options.attribute };
+                    collection.features.push(geojson)
                 }
             });
-            GeoShape.transformAndDownload(collection);
+            console.log(collection);
+            GeoShape.transformAndDownload(collection)
         }
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
@@ -245,8 +246,11 @@
                 popupAnchor: [0, -50]
             });
             var sites = L.featureGroup();
-            for (var i = 0; i < siteData.length; i++) {
-                var marker0 = L.marker([siteData[i][2], siteData[i][1]], { icon: icon, name: siteData[i][0] }).addTo(sites);
+            for (var i = 1; i < siteData.length; i++) {
+                var attribute = Object();
+                for (var j = 0; j < siteData[i].length; j++) { attribute[siteData[0][j]] = siteData[i][j] }
+                // console.log(JSON.stringify(attribute));
+                var marker0 = L.marker([siteData[i][2], siteData[i][1]], { icon: icon, name: siteData[i][0], attribute: attribute }).addTo(sites);
                 marker0.on('click', (e) => { popupA(e) });
             };
             sites.addTo(map);
@@ -268,7 +272,7 @@
                 return '<div class="stroke" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px;">' + name + '</div>' +
                     '<div class="stroke-front" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px; color: ' + textcolor + ';">' + name + '</div>'
             }
-            for (var i = 0; i < siteData.length; i++) {
+            for (var i = 1; i < siteData.length; i++) {
                 var name = siteData[i][0];
                 let markerIcon = L.divIcon({
                     html: getIconHtml(name, textheight, textcolor),
@@ -314,7 +318,7 @@
             var edgecolor = $("#edgecolor").val();
 
             var latlngs = [];
-            for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
+            for (var i = 1; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
             var polyline = L.polyline(latlngs, { color: "#FF1493", weight: 3, name: sitename, type: "polyline" }).addTo(map);
             polyline.on('click', (e) => { popupA(e) });
             layerControl2.addOverlay(polyline, sitename + "-线");
@@ -327,7 +331,7 @@
             var edgecolor = $("#edgecolor").val();
 
             var latlngs = [];
-            for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
+            for (var i = 1; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
             var polygon = L.polygon(latlngs, {
                 color: edgecolor, weight: 1, fillOpacity: 0.2,
                 name: sitename,
