@@ -221,8 +221,9 @@ class ShapeRecord {
                 this.propertiesOrig[pname] = orig;
                 if (!fileGen.propertyLengths[pname] || fileGen.propertyLengths[pname] < len)
                     fileGen.propertyLengths[pname] = len;
-            }
+            }            
         }
+        console.log(this)
     }
     /**
      * Update the record geometry bounds with respect to given point
@@ -317,7 +318,6 @@ class ShapeRecord {
 
         for (var item in this.fileGen.propertyNames) {
             if (typeof this.fileGen.propertyNames[item] !== "function") {
-                console.log("1", item);
                 var flen = this.fileGen.propertyLengths[item];
                 var f = new Array(flen)/*.fill(32)*/;
                 for (var i = 0; i < f.length; i++)
@@ -498,9 +498,28 @@ class ESRIFileGen {
         var f = [0x46, 0x49, 0x44, 0, 0, 0, 0, 0, 0, 0, 0, 0x4e, 0, 0, 0, 0, flen, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         h = h.concat(f);
 
+        // for (var item in this.propertyNames) {
+        //     // console.log(item);
+        //     if (typeof this.propertyNames[item] !== "function") {
+        //         console.log(item,"yes")
+        //         flen = this.propertyLengths[item];
+        //         f = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x43, 0, 0, 0, 0, flen, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        //         for (var i = 0; i < item.length; i++){
+        //             f[i] = parseInt(item[i].charCodeAt(0),10).toString(16);
+        //             console.log(i,item[i],f);
+        //             // str+="\\u"+parseInt(data[i].charCodeAt(0),10);
+        //         }
+        //         fieldCount++;
+        //         recordBytes += flen;
+        //         h = h.concat(f);                
+        //     }else{
+        //         // console.log(item,"no")
+        //     }
+        // };
         for (var item in this.propertyNames) {
             // console.log(item);
             if (typeof this.propertyNames[item] !== "function") {
+                console.log(item,"yes")
                 flen = this.propertyLengths[item];
                 f = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x43, 0, 0, 0, 0, flen, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                 for (var i = 0; i < item.length; i++)
@@ -508,6 +527,9 @@ class ESRIFileGen {
                 fieldCount++;
                 recordBytes += flen;
                 h = h.concat(f);
+                console.log(h)
+            }else{
+                console.log(item,"no")
             }
         };
 
@@ -529,6 +551,7 @@ class ESRIFileGen {
         var id = 1;
         this.records.forEach(function (record, index) {
             var rec = record.getDbfRecordArray(id, idLen);
+            // console.log(rec);
             array.set(rec, offset);
             offset += (1/*delMarker*/ + recordBytes);
 
