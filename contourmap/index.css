@@ -185,6 +185,7 @@ a {
     float: left;
     color: #ffffff;
     font-weight: bold;
+    text-align: center;
     /* font-family: sans-serif; */
     font-family: "Verdana", "Arial", sans-serif;
 	-webkit-text-stroke:3px #ffffff;
@@ -192,6 +193,7 @@ a {
 }
 .stroke-front {
     position: absolute;
+    text-align: center;
     font-weight: 500;
     /* font-family: sans-serif; */
     font-family: "Verdana", "Arial", sans-serif;
