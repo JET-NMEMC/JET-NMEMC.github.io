@@ -116,7 +116,7 @@
         <div>
             <div style="float:left;">
                 <textarea id="textarea" cols="38" rows="20"
-                    style="resize: none;">name  经度    纬度&#10;大连市 121.561 38.875&#10;青岛市 120.427 36.093&#10;威海市 122.112 37.422</textarea>
+                    style="resize: none;">name  lng    lat&#10;大连市 121.561 38.875&#10;青岛市 120.427 36.093&#10;威海市 122.112 37.422</textarea>
             </div>
             <div><button onclick="draw_Site()" style="height: 30px;">点集合</button></div>
             <div><button onclick="draw_Site_Text()" style="height: 30px;">点标注</button></div>
@@ -161,7 +161,7 @@
                 }
             });
             console.log(collection);
-            GeoShape.transformAndDownload(collection)
+            GeoShape.transformAndDownload(collection);
         }
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
