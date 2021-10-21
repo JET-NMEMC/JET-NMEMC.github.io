@@ -223,7 +223,7 @@ class ShapeRecord {
                     fileGen.propertyLengths[pname] = len;
             }            
         }
-        console.log(this)
+        // console.log(this)
     }
     /**
      * Update the record geometry bounds with respect to given point
@@ -503,12 +503,7 @@ class ESRIFileGen {
         //     if (typeof this.propertyNames[item] !== "function") {
         //         console.log(item,"yes")
         //         flen = this.propertyLengths[item];
-        //         f = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x43, 0, 0, 0, 0, flen, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        //         for (var i = 0; i < item.length; i++){
-        //             f[i] = parseInt(item[i].charCodeAt(0),10).toString(16);
-        //             console.log(i,item[i],f);
-        //             // str+="\\u"+parseInt(data[i].charCodeAt(0),10);
-        //         }
+        //         f = ShapeRecord.toUTF8Array(this.propertyNames[item]);
         //         fieldCount++;
         //         recordBytes += flen;
         //         h = h.concat(f);                
@@ -517,9 +512,7 @@ class ESRIFileGen {
         //     }
         // };
         for (var item in this.propertyNames) {
-            // console.log(item);
             if (typeof this.propertyNames[item] !== "function") {
-                console.log(item,"yes")
                 flen = this.propertyLengths[item];
                 f = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x43, 0, 0, 0, 0, flen, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                 for (var i = 0; i < item.length; i++)
@@ -527,9 +520,7 @@ class ESRIFileGen {
                 fieldCount++;
                 recordBytes += flen;
                 h = h.concat(f);
-                console.log(h)
             }else{
-                console.log(item,"no")
             }
         };
 
@@ -551,7 +542,6 @@ class ESRIFileGen {
         var id = 1;
         this.records.forEach(function (record, index) {
             var rec = record.getDbfRecordArray(id, idLen);
-            // console.log(rec);
             array.set(rec, offset);
             offset += (1/*delMarker*/ + recordBytes);
 
