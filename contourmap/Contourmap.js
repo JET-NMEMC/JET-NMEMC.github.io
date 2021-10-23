@@ -194,7 +194,7 @@ function predrawclip(datainput) {
   // 绘制散点
   var sites = L.featureGroup();
   for (var i = 0; i < lats.length; i++) {
-    L.circleMarker([lats[i], lngs[i]], { radius: 5, color: "#000000", fillColor: "#000000", fillOpacity: 1 })
+    L.circleMarker([lats[i], lngs[i]], { radius: 8, color: "#FFFFFF", fillColor: "#F44334", weight: 1.5, fillOpacity: 1 }) //#F44334#27ae60
       .bindPopup(datainput[i].site.toString())
       .addTo(sites)
   };
