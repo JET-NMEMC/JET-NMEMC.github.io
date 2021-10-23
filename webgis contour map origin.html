@@ -118,14 +118,15 @@
                 <textarea id="textarea" cols="38" rows="20"
                     style="resize: none;">name  lng    lat&#10;大连市 121.561 38.875&#10;青岛市 120.427 36.093&#10;威海市 122.112 37.422</textarea>
             </div>
-            <div><button onclick="draw_Site()" style="height: 30px;">点集合</button></div>
+            <div><button onclick=" draw_CircleMarker()" style="height: 30px;">圆标记</button></div>
+            <div><button onclick="draw_Site()" style="height: 30px;">点标记</button></div>
             <div><button onclick="draw_Site_Text()" style="height: 30px;">点标注</button></div>
             <div><button onclick="draw_Polyline_in_Map()" style="height: 30px;">多段线</button></div>
             <div><button onclick="draw_Polygon_in_Map()" style="height: 30px;">多边形</button></div>
             <br>
             <div><button onclick="draw_Site_in_Canvas()" style="height: 30px;">画布点</button></div>
-            <div><button onclick="draw_Polyline_in_Canvas()" style="height: 30px;">画布线</button></div>
-            <div><button onclick="draw_Polygon_in_Canvas()" style="height: 30px;">画布面</button></div>
+            <!-- <div><button onclick="draw_Polyline_in_Canvas()" style="height: 30px;">画布线</button></div> -->
+            <!-- <div><button onclick="draw_Polygon_in_Canvas()" style="height: 30px;">画布面</button></div> -->
         </div>
     </div>
     <div id="ShowDiv" name="ShowDiv"></div>
@@ -140,7 +141,6 @@
     <script src="contourmap/leaflet.mapCorrection.js"></script>
 
     <script src="contourmap/L.KML.js"></script>
-    <script src="contourmap/leaflet.canvas-markers.js"></script>
     <script src="contourmap/CreateMap.js"></script>
     <script src="contourmap/Contourmap.js"></script>
     <script src="contourmap/CreateCoordMap.js"></script>
@@ -154,7 +154,7 @@
                 "features": []
             };
             mapname.eachLayer(function (layer) {
-                if (layer instanceof L.Marker || layer instanceof L.Polygon || layer instanceof L.Polyline) {
+                if (layer instanceof L.Marker || layer instanceof L.Polygon || layer instanceof L.Polyline || layer.options.featureType == "CircleMarker") {
                     var geojson = layer.toGeoJSON();
                     if (layer.options.attribute) { geojson.properties = layer.options.attribute };
                     collection.features.push(geojson)
@@ -164,9 +164,9 @@
                 console.log(collection);
                 GeoShape.transformAndDownload(collection)
             } else {
+                console.log(map._layers);
                 alert("当前图层没有可导出的要素")
             }
-
         }
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
@@ -200,48 +200,38 @@
             showHide('showsetting');
             msg("导入json文件" + filename);
         }
-        //----------------------------------------------------------------------------------单击事件，开始绘制等值线
 
-        dragFatherBySon('showsetting', 'showsettingTitle');
-        dragFatherBySon('showtools', 'showtoolsTitle');
-        dragFatherBySon('select', 'select');
-        //父元素随子元素拖动而移动
-        function dragFatherBySon(fatherID, SonID) {
-            var popupfather = document.getElementById(fatherID);
-            var popupson = document.getElementById(SonID);
-            popupson.onmousedown = function (event) {
-                var event = event || window.event;
-                var x = event.clientX - popupfather.offsetLeft;
-                var y = event.clientY - popupfather.offsetTop;
-                this.style.cursor = "move";
-                document.onmousemove = function (event) {
-                    var event = event || window.event;
-                    popupfather.style.left = event.clientX - x + "px";
-                    popupfather.style.top = event.clientY - y + "px";
-                    window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
-                }
-            }
-            popupson.onmouseup = function () {
-                document.onmousemove = null;
-                this.style.cursor = "default";
-            }
-        }
 
-        //---------------------------------------------------------------字符转数组
-        function coord2shuzu(id) {
-            var text1 = document.getElementById(id).value;
-            text1 = text1.trim();//去除字符串最前和最后的空白
-            var yyy = text1.split(/[\n]/); //按行分割
-            var shuju = [] //行内分割，写入新数组
-            for (var i = 0; i < yyy.length; i++) {
-                shuju[i] = yyy[i].split(/,|，|\s+/);
-            };
-            return shuju;
-        }
         //--------------------------------------------------------------------------------Map绘制
         //-------------------绘制点位图----------------------------- 
+        function draw_CircleMarker() {
+            var siteData = coord2shuzu('textarea');
+            var layername = $("#NewlayerName").val();
+
+            var sites = L.featureGroup();
+            for (var i = 1; i < siteData.length; i++) {
+                var attribute = Object();
+                for (var j = 0; j < siteData[i].length; j++) { attribute[siteData[0][j]] = siteData[i][j] };
+                var marker0 = L.circleMarker([siteData[i][2], siteData[i][1]], {
+                    featureType: "CircleMarker",
+                    name: siteData[i][0],
+                    attribute: attribute,
+                    radius: 8,
+                    color: "#FFFFFF",
+                    fillColor: "#F44334",//#F44334#27ae60
+                    weight: 1.5,
+                    fillOpacity: 1
+                }).addTo(sites)
+                marker0.on('click', (e) => { popupA(e) });
+            };
+            sites.addTo(map);
+            sites.options.name = layername + "-点";
+            sites.options.type = "featureGroupOverlay";
+            layerControl2.addOverlay(sites, layername + "-点");
+            map.fitBounds(sites.getBounds());
+        };
+        //-------------------绘制点位图----------------------------- 
         function draw_Site() {
-            // delete map.options.renderer;
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val();
             let icon = L.icon({
@@ -268,15 +258,10 @@
         function draw_Site_Text() {
             var siteData = coord2shuzu('textarea');
             var sitename = $("#NewlayerName").val();
-            var edgecolor = $("#edgecolor").val();
             var textcolor = $("#textcolor").val();
             var textheight = $("#textheight").val();
             var sitesLabel = L.featureGroup();
-            function getIconHtml(name, textheight, textcolor) {
-                var nLength = name.length;
-                return '<div class="stroke" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px;">' + name + '</div>' +
-                    '<div class="stroke-front" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px; color: ' + textcolor + ';">' + name + '</div>'
-            }
+
             for (var i = 1; i < siteData.length; i++) {
                 var name = siteData[i][0];
                 let markerIcon = L.divIcon({
@@ -315,6 +300,11 @@
             sitesLabel.options.name = sitename + "-点";
             map.fitBounds(sitesLabel.getBounds());
         };
+        function getIconHtml(name, textheight, textcolor) {
+            var nLength = name.length;
+            return '<div class="stroke" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px;">' + name + '</div>' +
+                '<div class="stroke-front" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px; color: ' + textcolor + ';">' + name + '</div>'
+        }
         //-------------------绘制多段线-----------------------------        
         function draw_Polyline_in_Map() {
             var siteData = coord2shuzu('textarea');
@@ -348,10 +338,8 @@
         //--------------------------------------------------------------------------------Map绘制
 
         //-----------------------------------------------------------------------------Canvas绘制
-
         //-------------------Canvas绘制 点位 及标注-----------------------------
         function draw_Site_in_Canvas() {
-            // map.options.renderer = labelTextCollision;
             // var siteData = coord2shuzu('textarea');
             // var sitename = $("#NewlayerName").val();
             // var sites = L.featureGroup();
@@ -371,70 +359,8 @@
             // sites.addTo(map);
             // layerControl2.addOverlay(sites, sitename + "-Canvas点");
             // map.fitBounds(sites.getBounds());
-            var siteData = coord2shuzu('textarea');
-            var sitename = $("#NewlayerName").val();
-            var textcolor = $("#textcolor").val();
-            var textheight = $("#textheight").val();
-
-            var ciLayer = L.canvasIconLayer({}).addTo(map);
-            var iconUrl = "contourmap/icon2/pin-m+7e7e7e@2x.png"
-            for (var i = 0; i < siteData.length; i++) {
-                //定义一个icon设置图片和文字
-                var icon = L.icon({
-                    iconUrl: iconUrl,	      //背景图片
-                    iconSize: [30, 40],		  //设置图标大小
-                    iconAnchor: [15, 40],	  //设置图标偏移
-                    text: siteData[i][0],	   //添加文字
-                    textAnchor: [0, 0],        //设置文本偏移
-                    textFont: textheight + 'px bold sans-serif',     //设置字体大小和样式
-                    textFillStyle: textcolor,   //设置字体颜色
-                    textStrokeStyle: textcolor,   //设置字体颜色
-                });
-                var marker = L.marker([siteData[i][2], siteData[i][1]], { icon: icon });
-                ciLayer.addMarker(marker);
-            }
-            layerControl2.addOverlay(ciLayer, sitename + "-canvas marker");
         };
 
-        //-------------------Canvas绘制 多段线 及标注-----------------------------
-        function draw_Polyline_in_Canvas() {
-            var siteData = coord2shuzu('textarea');
-            var name = $("#NewlayerName").val();
-            var latlngs = [];
-            for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
-            var polyline = L.polyline(
-                latlngs, {
-                weight: 3, color: '#fe57a1', name: name, text: name,
-                textStyle: {
-                    stroke: true,
-                    color: '#ff0000',
-                    font: "16px 'Microsoft Yahei'",
-                }
-            }).bindPopup(name)
-                .addTo(map);
-            layerControl2.addOverlay(polyline, name + "-Canvas线");
-            map.fitBounds(polyline.getBounds());
-        };
-        //-------------------Canvas绘制 多边形 及标注-----------------------------
-        function draw_Polygon_in_Canvas() {
-            // map.options.renderer = labelTextCollision;
-            var siteData = coord2shuzu('textarea');
-            var name = $("#NewlayerName").val();
-            var latlngs = [];
-            for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
-            var polygon = L.polygon(
-                latlngs, {
-                weight: 1, color: 'green', name: name, text: name,
-                textStyle: {
-                    stroke: true,
-                    color: '#ff0000',
-                    font: "16px 'Microsoft Yahei'",
-                }
-            }).bindPopup(name)
-                .addTo(map);
-            layerControl2.addOverlay(polygon, name + "-Canvas面");
-            map.fitBounds(polygon.getBounds());
-        };
         //-------------------------------------------------------------绘制行政区域边界来自高德
         function drawrigon() {
             var address = $("#rigon").val();
@@ -484,10 +410,37 @@
                     }
                 }
                 polygons.addTo(map);
+                layerControl2.addOverlay(polygons, address);
                 map.fitBounds(polygons.getBounds());
             });
             showHide('showsetting');
         };
+
+        //------------------------------------------------------------------父元素随子元素拖动
+        dragFatherBySon('showsetting', 'showsettingTitle');
+        dragFatherBySon('showtools', 'showtoolsTitle');
+        dragFatherBySon('select', 'select');
+        //跟随拖动
+        function dragFatherBySon(fatherID, SonID) {
+            var popupfather = document.getElementById(fatherID);
+            var popupson = document.getElementById(SonID);
+            popupson.onmousedown = function (event) {
+                var event = event || window.event;
+                var x = event.clientX - popupfather.offsetLeft;
+                var y = event.clientY - popupfather.offsetTop;
+                this.style.cursor = "move";
+                document.onmousemove = function (event) {
+                    var event = event || window.event;
+                    popupfather.style.left = event.clientX - x + "px";
+                    popupfather.style.top = event.clientY - y + "px";
+                    window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+                }
+            }
+            popupson.onmouseup = function () {
+                document.onmousemove = null;
+                this.style.cursor = "default";
+            }
+        }
         //---------------------------------------------------------------------------显示开关
         function showHide(idname) {
             var obj = document.getElementById(idname);
@@ -500,7 +453,17 @@
             $("#ShowDiv").html(text);
             $('#ShowDiv').delay(3000).slideUp();
         };
-
+        //-------------------------------------------------------------------------字符转数组
+        function coord2shuzu(id) {
+            var text1 = document.getElementById(id).value;
+            text1 = text1.trim();//去除字符串最前和最后的空白
+            var yyy = text1.split(/[\n]/); //按行分割
+            var shuju = [] //行内分割，写入新数组
+            for (var i = 0; i < yyy.length; i++) {
+                shuju[i] = yyy[i].split(/,|，|\s+/);
+            };
+            return shuju;
+        }
     </script>
 </body>
 
