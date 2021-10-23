@@ -47,10 +47,8 @@ map.on('pm:create', ({ layer }) => {
 
 function popupA(e) {
     console.log("-----事件触发 图形点击-----");
-    console.log("get-type:", getType(e.target));
-    // console.log("type to json:", e.target.toGeoJSON());
     console.log(e.target);
-    var aaa = MyPopup(e.target,);
+    var aaa = MyPopup(e.target);
     popup.setContent(aaa.popHtml).setLatLng(e.latlng).addTo(map);
     $("#pop_mid").html(aaa.pop_mid1);
     $("#popup-shuxing").attr("class", "popup-open");
@@ -91,13 +89,23 @@ function MyPopup(layer, featuretype) {
     } else {
         nametext = '<h3>名称： Undefined</h3>'
     };
+    featuretype = layer.styleEditor ? layer.styleEditor.type :
+    layer.options.featureType ? layer.options.featureType : "unknow";
+    // if (layer.styleEditor) {
+    //     featuretype = layer.styleEditor.type
+    // } else if (e.target.featureType) {
+    //     featuretype = e.target.featureType
+    // } else {
+    //     console.log("图层没有type属性");
+    //     featuretype = "Unknown";
+    // }
+    // if (layer.styleEditor) {
+    //     featuretype = layer.styleEditor.type;
+    // } else {
+    //     console.log("图层没有type属性");
+    //     featuretype = "Unknown";
+    // }
 
-    if (layer.styleEditor.type !== undefined) {
-        featuretype = layer.styleEditor.type;
-    } else {
-        console.log("图层没有type属性");
-        featuretype = "Unknown";
-    }
     var typetext = '<h4 id="typetext" style="padding:10px 0 0 0; border-top:0.5px solid #000;">类型： ' +
         featuretype + '</h4>';
 
@@ -147,6 +155,7 @@ function MyPopup(layer, featuretype) {
             }
             break;
         case 'Marker':
+        case 'CircleMarker':
             var coord = layer.getLatLng();
             var Lengthtext = "", Areatext = "", rangetext = "";
             var coordtext = '<div id="coordtext"><h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">位置:<h4/>' +
