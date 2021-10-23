@@ -57,7 +57,7 @@
 <body>
     <div><canvas id="mycanvas" style="display: none;"></canvas></div>
     <div id="map" class="map"></div>
-    <button onclick="printmap(map)" style="position: fixed; left:5px; bottom:60px;">导出</button>
+    <button onclick="exportShp(map)" style="position: fixed; left:5px; bottom:60px;">导出</button>
     <!-- <input type="file" id="selectdatafile2" accept=".csv,.xls,.xlsx" style="position: fixed; left:5px; bottom:100px;" /> -->
     <img src="contourmap/icon2/1-earthnet.png" width="40px" onclick="changemap()"
         style="position: fixed; left:5px; bottom:10px;">
@@ -148,7 +148,7 @@
 
     <script>
         //----------------------------------------------------------------------------------------------主程序
-        function printmap(mapname) {
+        function exportShp(mapname) {
             var collection = {
                 "type": "FeatureCollection",
                 "features": []
@@ -160,8 +160,13 @@
                     collection.features.push(geojson)
                 }
             });
-            console.log(collection);
-            GeoShape.transformAndDownload(collection);
+            if (collection.features.length !== 0) {
+                console.log(collection);
+                GeoShape.transformAndDownload(collection)
+            } else {
+                alert("当前图层没有可导出的要素")
+            }
+
         }
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
@@ -308,7 +313,6 @@
             sitesLabel.addTo(map);
             layerControl2.addOverlay(sitesLabel, sitename + "-文字标注");
             sitesLabel.options.name = sitename + "-点";
-            sitesLabel.options.type = "featureGroupOverlay";
             map.fitBounds(sitesLabel.getBounds());
         };
         //-------------------绘制多段线-----------------------------        
