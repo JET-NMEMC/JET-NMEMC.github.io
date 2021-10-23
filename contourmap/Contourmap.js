@@ -194,10 +194,12 @@ function predrawclip(datainput) {
   // 绘制散点
   var sites = L.featureGroup();
   for (var i = 0; i < lats.length; i++) {
-    L.circleMarker([lats[i], lngs[i]], { radius: 8, color: "#FFFFFF", fillColor: "#F44334", weight: 1.5, fillOpacity: 1 }) //#F44334#27ae60
-      .bindPopup(datainput[i].site.toString())
-      .addTo(sites)
+    var marker0 = L.circleMarker([lats[i], lngs[i]], { featureType: "CircleMarker", name: datainput[i].site, radius: 8, color: "#FFFFFF", fillColor: "#F44334", weight: 1.5, fillOpacity: 1 }) //#F44334#27ae60
+      .addTo(sites);
+    marker0.on('click', (e) => { popupA(e) });
   };
+  sites.addTo(map);
+
   // 调用凸包检测
   var p = new Array(); var res = new Array();
   for (var i = 0; i < lngs.length; i++) { p[i] = new Object(); p[i].x = lngs[i]; p[i].y = lats[i]; p[i].tj = false; }
