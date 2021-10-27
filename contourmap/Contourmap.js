@@ -151,10 +151,11 @@ function mapping(figurectrol, newxiangmu, data, xrange, yrange, TargetN, gridAre
   // console.log(variogram);
   //网格插值模式，对在区域内的格点进行插值，格点精度500个
   var grid = kriging.grid(gridArea, variogram, (xrange[1] - xrange[0]) / 500, (yrange[1] - yrange[0]) / 500);
+  console.log(grid);
 
   var countourSet = autobreak(grid.zlim[0], grid.zlim[1], TargetN);
   var breaks = countourSet.breaks;
-  // console.log("自动生成的breaks序列", breaks);
+  console.log("自动生成的breaks序列", breaks);
 
   var interpcolor = interp1(colorSet, countourSet);
   //RGB颜色转换为16进制，存入colors
@@ -335,7 +336,8 @@ function autobreak(Tvaluemin, Tvaluemax, TargetN) {
   var percentage = (100 * (Tvaluemax - Tvaluemin) / (levelMax - levelMin)).toFixed(1);
   var breaks = [];
   for (var jj = 0; jj < levelnum + 1; jj++) {
-    breaks.push(Number(levelMin + jj * DX).toFixed(nnn));
+    breaks.push(Number((levelMin + jj * DX).toFixed(nnn)));
+    // breaks[jj] = Number((levelMin + jj * DX).toFixed(nnn));
   }
   return {
     "levelMin": levelMin,
