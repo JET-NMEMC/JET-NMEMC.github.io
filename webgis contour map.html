@@ -1,6 +1,6 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<script>
+<!-- <script>
     //通过window.screen.width获取屏幕的宽度
     console.log("当前设备分辨率" + window.screen.width + 'px', window.screen.height + 'px');
     if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
@@ -20,134 +20,158 @@
     } else {
         machine = "computer";
         machineStyle = "hengping-computer"
-        var offWidth = window.screen.height / 80;
-        document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px';
-        console.log(offWidth + 'px');
     };
     console.log(machineStyle);
-</script>
+</script> -->
 
 <head>
-    <title>webgis</title>
+    <title>Web Gis</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="contourmap/demo.css" />
+    <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
+    <!-- <meta http-equiv='X-UA-Compatible' content='IE=Edge'> -->
+    <link rel="stylesheet" href="contourmap/index.css" />
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script>
+    <!-- <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script> -->
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <!-- <link rel="stylesheet" href="contourmap/leaflet-velocity.css" /> -->
-    <!-- <script src="contourmap/leaflet-velocity.js"></script> -->
-    <script src="contourmap/leaflet.ChineseTmsProviders.js"></script>
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+    <!-- <script src="contourmap/L.LabelTextCollision.js"></script> -->
+
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
 
     <link rel="stylesheet" href="contourmap/leaflet-geoman2.css" />
     <script src="contourmap/leaflet-geoman.min2.js"></script>
-
-    <link rel="stylesheet" href="contourmap/leaflet-measure.css">
-    <script src="contourmap/leaflet-measure.js"></script>
-
-    <script src="contourmap/L.KML.js"></script>
+    <!-- <link rel="stylesheet" href="contourmap/leaflet-measure.css"> -->
+    <!-- <script src="contourmap/leaflet-measure.js"></script> -->
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="contourmap/L.Control.Locate.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+    <script src="contourmap/L.Control.Locate.min.js"></script>
 
-    <style>
-    </style>
+    <script src="contourmap/jszip.min.js"></script>
+    <script src="contourmap/GeoShape.js"></script>
 </head>
 
 <body>
     <div><canvas id="mycanvas" style="display: none;"></canvas></div>
-    <div id="map"></div>
-    <!-- <div><input type="button" id="act1" value="WELCOME" onclick="test()" /></div> -->
-
-    <img src="contourmap/icon2/设置2.png" width="50px" onclick="showHide('showsetting')"
-        style="position: fixed; left:90px; bottom:10px;">
+    <div id="map" class="map"></div>
+    <button onclick="exportShp(map)" style="position: fixed; left:5px; bottom:60px;">导出</button>
+    <!-- <input type="file" id="selectdatafile2" accept=".csv,.xls,.xlsx" style="position: fixed; left:5px; bottom:100px;" /> -->
+    <img src="contourmap/icon2/1-earthnet.png" width="40px" onclick="changemap()"
+        style="position: fixed; left:5px; bottom:10px;">
+    <img src="contourmap/icon2/2-设置.png" width="36px" onclick="showHide('showsetting')"
+        style="position: fixed; left:47px; bottom:10px;">
+    <img src="contourmap/icon2/3-绘制.png" width="38px" onclick="showHide('showtools')"
+        style="position: fixed; left:85px; bottom:10px;">
 
     <div id="showsetting" style="display: none;">
-        <button onclick="showHide('showsetting')" style="position: absolute; top: 1px; right: 1px;">X</button>
-        <p>等值线图 绘图设置</p>
-        <p>
-            <input type="file" id="selectdatafile" accept=".xlsx" onchange="impexcel(this)" style="display: none" />
-            <input type="button" onclick="document.getElementById('selectdatafile').click()" value="选择散点数据"
-                class="navbar-button" />
-        </p>
-        <p>计划带数: <input type="text" id="TargetN" value="10" style="height: 25px; width: 82px;"></p>
-        <p>图层透明: <input type="text" id="opacity" value="0.5" style="height: 25px; width: 82px;"></p>
-        配色方案: <select id="colorpattern" style="height: 30px; width: 90px;">
-            <option value="rainbow">rainbow</option>
-            <option value="bgyr" selected=selected>bgyr</option>
-            <option value="jet">jet</option>
-            <option value="cool">cool</option>
-        </select>
-        <p>矢量图层 导入设置</p>
-        <div id="sidebarBody" class="sidebar-body">
-            <input type="file" id="kmlFileInput" accept=".kml" style="display: none" />
-            <input type="button" onclick="document.getElementById('kmlFileInput').click()" value="Import kml"
-                class="navbar-button" />
-            <input type="file" id="jsonFileInput" accept=".json, .geojson" style="display: none" />
-            <input type="button" onclick="document.getElementById('jsonFileInput').click()" value="Import GeoJSON"
-                class="navbar-button" />
-            <input type="text" id="rigon" value="大连市" placeholder="输入行政区名称" class="navbar-inputtext">
-            <button class="navbar-button" onclick="drawrigon()">生成行政区边界</button>
+        <div id="showsettingTitle" class="title">绘图设置<button onclick="showHide('showsetting')"
+                class="closebutn">X</button>
+        </div>
+        <div style="padding: 0px 10px;">
+            <h4 style="text-align: center;">等值线图 绘图设置</h4>
+            <p>
+                <input type="file" id="selectdatafile" accept=".csv" style="display: none" />
+                <input type="button" onclick="document.getElementById('selectdatafile').click()" value="选择散点数据"
+                    class="navbar-button" />
+            </p>
+            <p>计划带数: <input type="text" id="TargetN" value="10" style="height: 25px; width: 82px;"></p>
+            <p>图层透明: <input type="text" id="opacity" value="1" style="height: 25px; width: 82px;"></p>
+            配色方案: <select id="colorpattern" style="height: 30px; width: 90px;">
+                <option value="rainbow">rainbow</option>
+                <option value="bgyr" selected=selected>bgyr</option>
+                <option value="jet">jet</option>
+                <option value="cool">cool</option>
+            </select>
+            <p>绘图模式: <select id="drawModel" style="height: 30px; width: 90px;">
+                    <option value="netModel" selected=selected>网格插值法</option>
+                    <option value="pixModel">像素插值法</option>
+                </select>
+            </p>
+        </div>
+        <div style="padding: 0px 10px; margin-bottom: 10px;">
+            <h4 style="text-align: center;">矢量图层 导入设置</h4>
+            <div class="sidebar-body">
+                <input type="file" id="kmlFileInput" accept=".kml" style="display: none" />
+                <input type="button" onclick="$('#kmlFileInput').click()" value="Import kml" class="navbar-button" />
+                <input type="file" id="jsonFileInput" accept=".json, .geojson" style="display: none" />
+                <input type="button" onclick="$('#jsonFileInput').click()" value="Import GeoJSON"
+                    class="navbar-button" />
+                <input type="text" id="rigon" value="大连市" placeholder="输入行政区名称" class="navbar-inputtext">
+                <button class="navbar-button" onclick="drawrigon()">生成行政区边界</button>
+            </div>
         </div>
     </div>
 
-    <img src="contourmap/icon2/绘制3.png" width="50px" onclick="showHide('showtools')"
-        style="position: fixed; left:150px; bottom:10px;">
-
     <div id="showtools" style="display: none;">
-        <p><button onclick="showHide('showtools')" style="position: absolute; top: 1px; right: 1px;">X</button></p>
-        <p>图层名: <input type="text" id="NewlayerName" value="New" width="70px"></p>
-        <p>边线色：<input type="color" id="edgecolor" value="#2D9900"> 填充色：<input type="color" id="fillcolor"
-                value="#2124c7"></p>
+        <div id="showtoolsTitle" class="title">坐标绘图<button onclick="showHide('showtools')" class="closebutn">X</button>
+        </div>
+        <p>名称: <input type="text" id="NewlayerName" value="New" style="width:312px;"></p>
+        <p>颜色：<input type="color" id="edgecolor" value="#2D9900">
+            字色：<input type="color" id="textcolor" value="#0019FD">
+            字号：<input type="text" id="textheight" value="15" style="width:70px; height: 20px;">
+        </p>
         <div>
             <div style="float:left;">
-                <textarea id="textarea" cols="30" rows="20"
-                    style="resize: none;">A1 121.4581 30.6888&#10;A2 121.5875 30.6744&#10;A3 121.5883 30.6331</textarea>
+                <textarea id="textarea" cols="38" rows="20"
+                    style="resize: none;">name  lng    lat&#10;大连市 121.561 38.875&#10;青岛市 120.427 36.093&#10;威海市 122.112 37.422</textarea>
             </div>
-            <div style="float:right;"><button onclick="drawsite()" style="height: 30px;">点集合</button></div>
-            <div><button onclick="drawpolygon()" style="height: 30px;">多边形</button></div>
-            <div><button onclick="drawpolyline()" style="height: 30px;">多段线</button></div>
+            <div><button onclick=" draw_CircleMarker()" style="height: 30px;">圆标记</button></div>
+            <div><button onclick="draw_Site()" style="height: 30px;">点标记</button></div>
+            <div><button onclick="draw_Site_Text()" style="height: 30px;">点标注</button></div>
+            <div><button onclick="draw_Polyline_in_Map()" style="height: 30px;">多段线</button></div>
+            <div><button onclick="draw_Polygon_in_Map()" style="height: 30px;">多边形</button></div>
+            <br>
+            <div><button onclick="draw_Site_in_Canvas()" style="height: 30px;">画布点</button></div>
+            <!-- <div><button onclick="draw_Polyline_in_Canvas()" style="height: 30px;">画布线</button></div> -->
+            <!-- <div><button onclick="draw_Polygon_in_Canvas()" style="height: 30px;">画布面</button></div> -->
         </div>
     </div>
     <div id="ShowDiv" name="ShowDiv"></div>
 
     <select id="select" style="display: none;"></select>
-    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
-    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
-    <!-- <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script> -->
-    <script src="contourmap/kriging0.js"></script>
-    <script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>
+
     <script
         src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
-    <script src="contourmap/demo.js"></script>
+    <script src="contourmap/kriging0.js"></script>
+
+    <script src="https://unpkg.com/gcoord/dist/gcoord.js"></script>
+    <script src="contourmap/leaflet.mapCorrection.js"></script>
+
+    <script src="contourmap/L.KML.js"></script>
+    <script src="contourmap/CreateMap.js"></script>
+    <script src="contourmap/Contourmap.js"></script>
+    <script src="contourmap/CreateCoordMap.js"></script>
+    <script src="contourmap/CreatePopupMap.js"></script>
 
     <script>
         //----------------------------------------------------------------------------------------------主程序
-        var TargetN;//设置拟绘制色带个数
-        var data;     //声明全局，存放json对象;
-        var xiangmu;  //声明全局，存放项目名序列;
-
-        var xrange = [];
-        var yrange = [];
-        var data_range = [];      //以x,y极值组成的矩形裁剪范围;
-        var area_clip = Array();  //以凸边检测获得的多边形裁剪范围;
-
-        var mycanvas = document.getElementById("mycanvas");
-        var finishlist = [];  //已绘制的项目清单;
-        var figurectrol = {};
-        var legend;
-        var countourmap;
+        function exportShp(mapname) {
+            var collection = {
+                "type": "FeatureCollection",
+                "features": []
+            };
+            mapname.eachLayer(function (layer) {
+                if (layer instanceof L.Marker || layer instanceof L.Polygon || layer instanceof L.Polyline || layer.options.featureType == "CircleMarker") {
+                    var geojson = layer.toGeoJSON();
+                    if (layer.options.attribute) { geojson.properties = layer.options.attribute };
+                    collection.features.push(geojson)
+                }
+            });
+            if (collection.features.length !== 0) {
+                console.log(collection);
+                GeoShape.transformAndDownload(collection)
+            } else {
+                console.log(map._layers);
+                alert("当前图层没有可导出的要素")
+            }
+        }
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
-            var kmlFileInput = document.getElementById("kmlFileInput");
             var filename = kmlFileInput.files[0].name;
             var file = URL.createObjectURL(kmlFileInput.files[0]);
-            // Load kml file
             fetch(file)
                 .then(res => res.text())
                 .then(kmltext => {
@@ -155,9 +179,9 @@
                     const parser = new DOMParser();
                     const kml = parser.parseFromString(kmltext, 'text/xml');
                     const track = new L.KML(kml);
+                    console.log(track);
                     map.addLayer(track);
-                    layerControl.addOverlay(track, filename);
-                    // Adjust map to show the kml
+                    layerControl2.addOverlay(track, filename);
                     map.fitBounds(track.getBounds());
                 }
                 );
@@ -166,295 +190,180 @@
         }
 
         jsonFileInput.onchange = function (event) {
-            var jsonFileInput = document.getElementById("jsonFileInput");
             var filename = jsonFileInput.files[0].name;
             var file = URL.createObjectURL(jsonFileInput.files[0]);
-            // Load GeoJSON file
             $.getJSON(file, function (data) {
                 var geojsonfeatures = L.geoJson(data).addTo(map);
-                layerControl.addOverlay(geojsonfeatures, filename);
+                layerControl2.addOverlay(geojsonfeatures, filename);
                 map.fitBounds(geojsonfeatures.getBounds());
             });
             showHide('showsetting');
             msg("导入json文件" + filename);
         }
-        //----------------------------------------------------------------------------------单击事件，开始绘制等值线
-        $("#select").change(function () {
-            var newxiangmu = $("#select").val();
-            if (finishlist == "") {
-                var lngs = [];
-                var lats = [];
-                // 读取散点
-                for (var i = 0; i < data.length; i++) { lngs.push(data[i].lng); lats.push(data[i].lat) };
-                // 凸包检测
-                var p = new Array();
-                for (var i = 0; i < lngs.length; i++) {
-                    p[i] = new Object();
-                    p[i].x = lngs[i];
-                    p[i].y = lats[i];
-                    p[i].tj = false;
-                }
-                var res = new Array();//存放凸包角点
-                Graham_scan(p, res);
-                // console.log("凸边=:",res);
 
-                //凸边角点转为leaflet多段线坐标(纬度在前);绘制插值凸包边界线
-                var latlngs_clip = [];
-                for (var i = 0; i < res.length; i++) { latlngs_clip.push([res[i].y, res[i].x]) };
-                var polygon = L.polygon(latlngs_clip, { color: 'red', weight: 1.5, fillOpacity: 0 });
-                layerControl.addOverlay(polygon, "边界");
-                map.fitBounds(polygon.getBounds());
-                // 绘制散点
-                var sites = L.featureGroup();
-                for (var i = 0; i < lats.length; i++) {
-                    // L.marker([lats[i], lngs[i]])
-                    L.circleMarker([lats[i], lngs[i]], { radius: 5, fillColor: "#1296DB", fillOpacity: 1 })
-                        .bindPopup(data[i].site.toString())
-                        .addTo(sites)
-                };
-                layerControl.addOverlay(sites, "sites");
 
-                //生成canvas插值多边形，leaf调换x,y
-                var lnglats_clip = [];
-                for (var i = 0; i < res.length; i++) { lnglats_clip.push([res[i].x, res[i].y]) };
-                area_clip[0] = lnglats_clip; //全局变量,不能加var
-                // console.log("area_clip=:", area_clip);
-
-                xrange[0] = Math.min.apply(null, lngs); xrange[1] = Math.max.apply(null, lngs);
-                yrange[0] = Math.min.apply(null, lats); yrange[1] = Math.max.apply(null, lats);
-                data_range = [[[xrange[0], yrange[0]], [xrange[0], yrange[1]], [xrange[1], yrange[1]], [xrange[1], yrange[0]]]];
-                msg("点位信息加载完成");
-                console.log("原始坐标范围", xrange, yrange);
-            };
-
-            if ($.inArray(newxiangmu, finishlist) !== -1) {
-                msg(newxiangmu + "已经绘制过了");
-            }
-            else {
-                var beginTime = +new Date();
-                console.log("开始绘制---------------" + newxiangmu);
-                TargetN = $('#TargetN').val(); //设置拟绘制色带个数
-                // let gridArea=china; 如果插值范围超过散点的范围，需重新设置x,y,range
-                // let gridArea=data_range;
-                let gridArea = area_clip;
-
-                const colorpattern = $('#colorpattern option:selected').text();
-                // getSelectedText("colorpattern");
-                // console.log("配色方案", colorpattern);
-                const colorSet = colordatabase[key = colorpattern];
-
-                mapping(newxiangmu, data, TargetN, gridArea, colorSet);
-
-                var endTime = +new Date();                
-                msg(newxiangmu + "绘制完成,用时" + ((endTime - beginTime) / 1000).toFixed(1) + "s");
-                console.log(newxiangmu + "绘制完成,用时" + ((endTime - beginTime) / 1000).toFixed(1) + "s");
-                finishlist.push(newxiangmu);
-                document.getElementById(newxiangmu).style.background = "green";
-            }
-            //如果有图层，删除
-            if (countourmap) { countourmap.remove() };
-            if (legend) { legend.remove() };
-
-            legend = L.control({ position: 'bottomright' });
-            var grades = figurectrol[newxiangmu]["breaks"];
-            var colors = figurectrol[newxiangmu]["colors"];
-            legend.onAdd = function (map) {
-                var div = L.DomUtil.create('div', 'info legend');
-                var labels = [];
-                var from, to;
-                for (var i = grades.length; i > 0; i--) {
-                    from = grades[i - 1];
-                    to = grades[i];
-                    labels.push(
-                        '<i style="background:' + colors[i - 1] + '"></i> ' +
-                        from + (to ? '&ndash;' + to : '+'));
-                }
-                div.innerHTML = labels.join('<br>');
-                return div;
-            };
-            countourmap = figurectrol[newxiangmu]["overlay"];
-            figurectrol[newxiangmu].legend = legend;
-
-            legend.addTo(map);
-            countourmap.addTo(map);
-        }
-        );
-
-        function mapping(newxiangmu, data, TargetN, gridArea, colorSet) {
-            // 定义训练参数
-            var model = "exponential";//可选'gaussian','spherical',一般使用 exponential 
-            var sigma2 = 0;
-            var alpha = 100;
-            //对数据集训练
-            var x = [], y = [], t = [], zlim = [];
-            for (var i = 0; i < data.length; i++) {
-                //选出坐标和数据均齐全的进入训练
-                if (data[i].lng != undefined && data[i].lat != undefined && data[i][newxiangmu] != undefined) {
-                    x.push(data[i].lng);
-                    y.push(data[i].lat);
-                    t.push(data[i][newxiangmu])
-                }
-            };
-            zlim[0] = Math.min.apply(null, t); zlim[1] = Math.max.apply(null, t);
-
-            var variogram = kriging.train(t, x, y, model, sigma2, alpha);
-            console.log(newxiangmu + "训练结果:");
-            console.log(variogram);
-
-            //网格插值模式，对在区域内的格点进行插值，格点精度300个
-            // var grid = kriging.grid(gridArea, variogram, (xrange[1] - xrange[0]) / 500, (yrange[1] - yrange[0]) / 500);
-            // console.log(newxiangmu + "插值grid:");
-            // console.log(grid);
-
-            var countourSet = autobreak(zlim[0], zlim[1], TargetN);
-            var breaks = countourSet.breaks;
-            // console.log("自动生成的breaks段数", countourSet.levelnum);
-            console.log("自动生成的breaks序列", breaks);
-
-            var interpcolor = interp1(colorSet, countourSet);
-            //RGB颜色转换为16进制，存入colors
-            var colors = [];
-            for (var i = 0; i < interpcolor[0].length; i++) { colors.push(colorRGB2Hex(interpcolor[0][i], interpcolor[1][i], interpcolor[2][i])) };
-            // console.log("映射颜色序列", colors);
-            colors.shift();
-            // console.log("映射颜色序列", colors);
-            //将得到的格网grid，按颜色带渲染至canvas上
-            mycanvas.width = 1000; mycanvas.height = 1000;
-            // var colorcanvas = kriging.plot(mycanvas, grid, [xrange[0], xrange[1]], [yrange[0], yrange[1]], colors, breaks);
-            var colorcanvas = kriging.pixel_Grid_drawImage(gridArea, mycanvas, variogram, xrange, yrange, colors, breaks);
-            var Img = mycanvas.toDataURL("image/png");//将canvas转换成image的URL
-            var imageBounds = [[yrange[0], xrange[0]], [yrange[1], xrange[1]]];
-            var opacity1 = $('#opacity').val();
-            var newmap = L.imageOverlay(Img, imageBounds, { opacity: opacity1 });//将image映射到leaflet图层
-            newmap.options.layerId = newxiangmu; // 给图层（组）绑定自定义id,在options参数里添加
-            // layerControl2.addOverlay(newmap, newxiangmu);
-            figurectrol[newxiangmu] = new Object();
-            figurectrol[newxiangmu].overlay = newmap;
-            figurectrol[newxiangmu].overlayId = newmap._leaflet_id;
-            figurectrol[newxiangmu].breaks = breaks;
-            figurectrol[newxiangmu].colors = colors;
-
-            // console.log("newmap", newmap);
-            // console.log("图层组", layerControl);
-            // console.log("图层", layerControl._layers);
-            // console.log("maplayer",map._layers);
-        }
-        //=-----------------------------------------------------------------------------------------结束
-        function impexcel(obj) {
-            if (!obj.files) { return; }
-            var f = obj.files[0];
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var da = e.target.result;
-                var wb = XLSX.read(da, { type: 'binary' });
-                var strdata = JSON.stringify(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]));
-                data = JSON.parse(strdata);
-                xiangmu = getkey(data);//调用函数，提取项目名称的数组
-                console.log("data");
-                console.log(data);
-                console.log("item");
-                console.log(xiangmu);
-                if (xiangmu[0] != "site" || xiangmu[1] != "lng" || xiangmu[2] != "lat") {
-                    alert("表格内容不合规则，首行的前三个单元格应依次为字符串site、lng和lat，对应数据列为站名、经度和纬度");
-                    return
-                };
-                for (var i = 0; i < data.length; i++) {
-                    for (var key in data[i]) {
-                        // console.log(key+':'+data[i][key]);
-                        num = data[i][key];
-                        if (Number(num) + '' !== NaN + '') {
-                            // console.log('是纯数字')
-                            data[i][key] = Number(num);
-                        } else {
-                            if (key !== "site") {
-                                console.log(i + "行" + key + '不是纯数字,请整理原始数据后重试');
-                            }
-                        }
-                    }
-                }
-                draw_menu();
-                msg("数据载入完成");
-            }
-            reader.readAsBinaryString(f);
-            showHide('showsetting');
-        }
-        //------------------提取json中的所有属性名称，进入数组,形成名称列表
-        function getkey(json) {
-            var s = [];
-            for (var keys in json[0]) {
-                s.push(keys);
-            }
-            return s
-        }
-
-        //-------------------------------------------------绘制散点图
-        function drawsite() {
+        //--------------------------------------------------------------------------------Map绘制
+        //-------------------绘制点位图----------------------------- 
+        function draw_CircleMarker() {
             var siteData = coord2shuzu('textarea');
-            var sitename = $("#NewlayerName").val() + "-点";
-            // console.log(siteData);
+            var layername = $("#NewlayerName").val();
+
+            var sites = L.featureGroup();
+            for (var i = 1; i < siteData.length; i++) {
+                var attribute = Object();
+                for (var j = 0; j < siteData[i].length; j++) { attribute[siteData[0][j]] = siteData[i][j] };
+                var marker0 = L.circleMarker([siteData[i][2], siteData[i][1]], {
+                    featureType: "CircleMarker",
+                    name: siteData[i][0],
+                    attribute: attribute,
+                    radius: 8,
+                    color: "#FFFFFF",
+                    fillColor: "#F44334",//#F44334#27ae60
+                    weight: 1.5,
+                    fillOpacity: 1
+                }).addTo(sites)
+                marker0.on('click', (e) => { popupA(e) });
+            };
+            sites.addTo(map);
+            sites.options.name = layername + "-点";
+            sites.options.type = "featureGroupOverlay";
+            layerControl2.addOverlay(sites, layername + "-点");
+            map.fitBounds(sites.getBounds());
+        };
+        //-------------------绘制点位图----------------------------- 
+        function draw_Site() {
+            var siteData = coord2shuzu('textarea');
+            var sitename = $("#NewlayerName").val();
             let icon = L.icon({
-                iconUrl: 'contourmap/icon/位置2(4).png',//marker图片地址
-                iconSize: [50, 50],//marker宽高
-                iconAnchor: [25, 50],//marker中心点位置
+                iconUrl: 'contourmap/icon2/pin-m+7e7e7e@2x.png',
+                iconSize: [30,],//marker宽高
+                iconAnchor: [15, 35],//marker中心点位置
                 popupAnchor: [0, -50]
             });
             var sites = L.featureGroup();
-            var sitesLabel = L.featureGroup();
-            // var layers = L.featureGroup().addTo(map);
-            for (var i = 0; i < siteData.length; i++) {
-                L.marker([siteData[i][2], siteData[i][1]], { icon: icon, data: "dt" }).bindPopup(siteData[i][0]).addTo(sites);
-                // L.circleMarker([siteData[i][2], siteData[i][1]], {radius : 5}).bindPopup(siteData[i][0]).addTo(sites);
-                let markerIcon = L.divIcon({
-                    html: siteData[i][0],//marker标注
-                    className: 'my-div-icon',
-                    iconAnchor: [-25, 70]//文字标注相对位置
-                });
-                L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon }).addTo(sitesLabel);
+            for (var i = 1; i < siteData.length; i++) {
+                var attribute = Object();
+                for (var j = 0; j < siteData[i].length; j++) { attribute[siteData[0][j]] = siteData[i][j] }
+                // console.log(JSON.stringify(attribute));
+                var marker0 = L.marker([siteData[i][2], siteData[i][1]], { icon: icon, name: siteData[i][0], attribute: attribute }).addTo(sites);
+                marker0.on('click', (e) => { popupA(e) });
             };
             sites.addTo(map);
-            sitesLabel.addTo(map);
-            layerControl.addOverlay(sites, sitename);
-            layerControl.addOverlay(sitesLabel, sitename + "-标注");
+            sites.options.name = sitename + "-点";
+            sites.options.type = "featureGroupOverlay";
+            layerControl2.addOverlay(sites, sitename + "-点");
             map.fitBounds(sites.getBounds());
-            // map.setView([siteData[0][2], siteData[0][1]],10);
         };
+        //-------------------绘制点文字----------------------------- 
+        function draw_Site_Text() {
+            var siteData = coord2shuzu('textarea');
+            var sitename = $("#NewlayerName").val();
+            var textcolor = $("#textcolor").val();
+            var textheight = $("#textheight").val();
+            var sitesLabel = L.featureGroup();
 
-        //-------------------------------------------------绘制多边形
-        function drawpolygon() {
-            var siteData = coord2shuzu('textarea');
-            var sitename = $("#NewlayerName").val() + "-面";
-            // console.log(siteData);
-            var latlngs = [];
-            for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
-            var polygon = L.polygon(latlngs, { color: 'green', weight: 1, fillOpacity: 0.2 }).addTo(map);
-            console.log(polygon);
-            // polygon.bindPopup(sitename+'<button>Details</button>');
-            polygon.bindPopup(sitename);
-            // polygon.bindPopup(sitename+'<br><img src="contourmap/icon/详情.png" onclick=msg("详情")  style="height:20px;display: inline-block;"/>详情');
-            // polygon.bindPopup(sitename);
-            layerControl.addOverlay(polygon, sitename);
-            map.fitBounds(polygon.getBounds());
+            for (var i = 1; i < siteData.length; i++) {
+                var name = siteData[i][0];
+                let markerIcon = L.divIcon({
+                    html: getIconHtml(name, textheight, textcolor),
+                    name: name,
+                    textheight: textheight,
+                    textcolor: textcolor,
+                    className: 'icondiv',
+                    iconSize: [textheight * name.length, textheight],//marker宽高
+                    iconAnchor: [0, 0]//文字标注相对位置
+                    // iconAnchor: [textheight / 2 * nLength, 0]//文字标注相对位置
+                });
+
+                var markers = L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon, type: "markerdivIcon" })
+                    .addTo(sitesLabel);
+
+                markers.on('click', (e) => {
+                    var iconOptions = e.target.options.icon.options;
+                    var popupHtml = '<h3>名称: <input id="iconname" type="text" value="' + iconOptions.name + '" style="height:30px;" /></h3>' +
+                        '<h3>颜色: <input id="iconcolor" type="color" value="' + iconOptions.textcolor + '" style="width:170px;" /></h3>' +
+                        '<h3>字号: <input id="iconheight" type="text" value="' + iconOptions.textheight + '" style="height:20px;" /></h3>'
+                    popup.setContent(popupHtml).setLatLng(e.latlng).addTo(map);
+                    $("#iconname,#iconcolor,#iconheight").change(function () {
+                        iconOptions.name = $("#iconname").val();
+                        iconOptions.textcolor = $("#iconcolor").val();
+                        iconOptions.textheight = $("#iconheight").val();
+                        iconOptions.iconSize = [iconOptions.textheight * iconOptions.name.length, iconOptions.textheight];
+                        iconOptions.html = getIconHtml(iconOptions.name, iconOptions.textheight, iconOptions.textcolor);
+                        map.removeLayer(e.target);
+                        map.addLayer(e.target);
+                    });
+                });
+            };
+            sitesLabel.addTo(map);
+            layerControl2.addOverlay(sitesLabel, sitename + "-文字标注");
+            sitesLabel.options.name = sitename + "-点";
+            map.fitBounds(sitesLabel.getBounds());
         };
-        function drawpolyline() {
+        function getIconHtml(name, textheight, textcolor) {
+            var nLength = name.length;
+            return '<div class="stroke" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px;">' + name + '</div>' +
+                '<div class="stroke-front" style="width:' + textheight * nLength + 'px; font-size:' + textheight + 'px; color: ' + textcolor + ';">' + name + '</div>'
+        }
+        //-------------------绘制多段线-----------------------------        
+        function draw_Polyline_in_Map() {
             var siteData = coord2shuzu('textarea');
-            var sitename = $("#NewlayerName").val() + "-线";
-            // console.log(siteData);
+            var sitename = $("#NewlayerName").val();
+            var edgecolor = $("#edgecolor").val();
+
             var latlngs = [];
-            for (var i = 0; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
-            var polyline = L.polyline(latlngs, { color: 'blue', weight: 1.5 }).addTo(map);
-            polyline.bindPopup(sitename);
-            layerControl.addOverlay(polyline, sitename);
+            for (var i = 1; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
+            var polyline = L.polyline(latlngs, { color: "#FF1493", weight: 3, name: sitename, type: "polyline" }).addTo(map);
+            polyline.on('click', (e) => { popupA(e) });
+            layerControl2.addOverlay(polyline, sitename + "-线");
             map.fitBounds(polyline.getBounds());
         };
-        //--------------------------------------------------------------------绘制行政区域边界——来自高德
+        //-------------------绘制多边形----------------------------- 
+        function draw_Polygon_in_Map() {
+            var siteData = coord2shuzu('textarea');
+            var sitename = $("#NewlayerName").val();
+            var edgecolor = $("#edgecolor").val();
+
+            var latlngs = [];
+            for (var i = 1; i < siteData.length; i++) { latlngs.push([siteData[i][2], siteData[i][1]]) };
+            var polygon = L.polygon(latlngs, {
+                color: edgecolor, weight: 1, fillOpacity: 0.2,
+                name: sitename,
+                type: "polygon"
+            }).addTo(map);
+            polygon.on('click', (e) => { popupA(e) });
+            layerControl2.addOverlay(polygon, sitename + "-面");
+            map.fitBounds(polygon.getBounds());
+        };
+        //--------------------------------------------------------------------------------Map绘制
+
+        //-----------------------------------------------------------------------------Canvas绘制
+        //-------------------Canvas绘制 点位 及标注-----------------------------
+        function draw_Site_in_Canvas() {
+            // var siteData = coord2shuzu('textarea');
+            // var sitename = $("#NewlayerName").val();
+            // var sites = L.featureGroup();
+            // for (var i = 0; i < siteData.length; i++) {
+            //     var c = L.circleMarker([siteData[i][2], siteData[i][1]], {
+            //         radius: 3,
+            //         text: siteData[i][0],
+            //         textStyle: {
+            //             stroke: true,
+            //             color: '#3388ff',
+            //             font: "15px 'Microsoft Yahei'",
+            //             offsetX: 100,
+            //             offsetY: 100,
+            //         }
+            //     }).addTo(sites);
+            // };
+            // sites.addTo(map);
+            // layerControl2.addOverlay(sites, sitename + "-Canvas点");
+            // map.fitBounds(sites.getBounds());
+        };
+
+        //-------------------------------------------------------------绘制行政区域边界来自高德
         function drawrigon() {
             var address = $("#rigon").val();
-            // var linkurl="https://restapi.amap.com/v3/config/district?key=2b2bb467194aa9e72e495eafa99bb0c4&keywords="+address+"&subdistrict=0&extensions=base"
-            // $.getJSON(linkurl, function (json2) {
-            //     adcode=json2.districts[0].adcode;
-            //     console.log(json2);
-            //     console.log(address,adcode);
-            // });
             var opts = {
                 subdistrict: 0,   //获取边界不需要返回下级行政区
                 extensions: 'all',  //返回行政区边界坐标组等具体信息
@@ -501,31 +410,60 @@
                     }
                 }
                 polygons.addTo(map);
+                layerControl2.addOverlay(polygons, address);
                 map.fitBounds(polygons.getBounds());
             });
             showHide('showsetting');
         };
-        //---------------------------------------------------------------------生成左侧选项卡
-        function draw_menu() {
-            // var $selected = $("#select");
-            var obj = '';
-            // $selected.empty();//清空内容
-            for (var i = 3; i < xiangmu.length; i++) {//此处3是指排除site、lng、lat3个
-                obj += "<option class=\"opt\" id= '" + xiangmu[i] + "' value='" + xiangmu[i] + "'>" + xiangmu[i] + "</option>";
-            }
-            $("#select").append(obj) //option字符串写入select标签中
-            $("#select").show();
-        };
 
-        //----------------------------------------------------------------------------显示设置窗口
+        //------------------------------------------------------------------父元素随子元素拖动
+        dragFatherBySon('showsetting', 'showsettingTitle');
+        dragFatherBySon('showtools', 'showtoolsTitle');
+        dragFatherBySon('select', 'select');
+        //跟随拖动
+        function dragFatherBySon(fatherID, SonID) {
+            var popupfather = document.getElementById(fatherID);
+            var popupson = document.getElementById(SonID);
+            popupson.onmousedown = function (event) {
+                var event = event || window.event;
+                var x = event.clientX - popupfather.offsetLeft;
+                var y = event.clientY - popupfather.offsetTop;
+                this.style.cursor = "move";
+                document.onmousemove = function (event) {
+                    var event = event || window.event;
+                    popupfather.style.left = event.clientX - x + "px";
+                    popupfather.style.top = event.clientY - y + "px";
+                    window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+                }
+            }
+            popupson.onmouseup = function () {
+                document.onmousemove = null;
+                this.style.cursor = "default";
+            }
+        }
+        //---------------------------------------------------------------------------显示开关
         function showHide(idname) {
             var obj = document.getElementById(idname);
             if (obj.style.display == "none") { obj.style.display = "block" }
             else { obj.style.display = "none" }
         };
-
-
-
+        //---------------------------------------------------------------------------消息弹窗
+        function msg(text) {
+            $("#ShowDiv").show();
+            $("#ShowDiv").html(text);
+            $('#ShowDiv').delay(3000).slideUp();
+        };
+        //-------------------------------------------------------------------------字符转数组
+        function coord2shuzu(id) {
+            var text1 = document.getElementById(id).value;
+            text1 = text1.trim();//去除字符串最前和最后的空白
+            var yyy = text1.split(/[\n]/); //按行分割
+            var shuju = [] //行内分割，写入新数组
+            for (var i = 0; i < yyy.length; i++) {
+                shuju[i] = yyy[i].split(/,|，|\s+/);
+            };
+            return shuju;
+        }
     </script>
 </body>
 
