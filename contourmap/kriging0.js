@@ -527,7 +527,7 @@ kriging.contour = function (grid_metedate, breaks) {
 	var n = grid_metedate.n;
 	var m = grid_metedate.m;
 	//像素坐标系的等值面
-	var _contours = d3_contours()
+	var _contours = d3.contours()
 		.size([n, m])
 		.thresholds(breaks)
 		(grid);
