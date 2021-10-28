@@ -53,32 +53,32 @@
     </div>
 
     <h2>自动颜色图例等值面填充(auto colorlegend contour map fill)</h2>
-<div style="border-style:solid; border-width:1px; border-color:#000;padding: 10px;">
-    <p>
-        选择预设颜色方案 (choose a default color pattern):
-        <select id="colorpattern"
-            style="height: 30px;width: 100px;font-size: 18px; background-color: cyan;">
-            <option value="bgyr" selected="selected">bgyr</option>
-            <option value="jet">jet</option>
-            <option value="cool">cool</option>
-        </select>
-    </p>
+    <div style="border-style:solid; border-width:1px; border-color:#000;padding: 10px;">
+        <p>
+            选择预设颜色方案 (choose a default color pattern):
+            <select id="colorpattern" style="height: 30px;width: 100px;font-size: 18px; background-color: cyan;">
+                <option value="bgyr" selected="selected">bgyr</option>
+                <option value="jet">jet</option>
+                <option value="cool">cool</option>
+                <option value="terr">terr</option>
+            </select>
+        </p>
 
-    <p>
-        基于autobreaks通过线性插值得到的颜色 (Color sequence obtained according to linear interpolation based on autobreaks):
-    </p>
-    <div id="interp color" style="height: 20px;"></div>
-    <br>
+        <p>
+            基于autobreaks通过线性插值得到的颜色 (Color sequence obtained according to linear interpolation based on autobreaks):
+        </p>
+        <div id="interp color" style="height: 20px;"></div>
+        <br>
 
-    <p>
-        通过线性插值得到的十六进制颜色列表 (Hexadecimal color list obtained according to linear interpolation):
-    </p>
-    <div id="list" style=" word-wrap: break-word; word-break: normal;">
+        <p>
+            通过线性插值得到的十六进制颜色列表 (Hexadecimal color list obtained according to linear interpolation):
+        </p>
+        <div id="list" style=" word-wrap: break-word; word-break: normal;">
+        </div>
+
+        <p>颜色列表的线性填充结果 (Linear filling based on the final color list):</p>
+        <div id="corlrbox" style="height:40px; width: 95%;"></div>
     </div>
-
-    <p>颜色列表的线性填充结果 (Linear filling based on the final color list):</p>
-    <div id="corlrbox" style="height:40px; width: 95%;"></div>
-</div>
 </body>
 
 <script>
@@ -99,30 +99,51 @@
         var obj = document.getElementById("colorpattern");
         var colorpattern = obj.options[obj.selectedIndex].value;
         console.log(colorpattern);
-
         var colorSet = colordatabase[colorpattern];
         console.log(colorSet);
-        var interpcolor = interp1(colorSet, countourSet);
-        // console.log("RGB颜色插值结果", interpcolor);
+        if (colorpattern == "terr") {
+            console.log(colorSet);
+            for (var i = 0; i < colorSet.length; i++) {
+                // console.log(colorSet[i].weight);
+                if (i < 5) { colorSet[i].weight = 100 * (((0 - Tvaluemin) / 4) * i) / (Tvaluemax - Tvaluemin) };
+                if (i == 5) { colorSet[i].weight = 100 * (0.001 - Tvaluemin) / (Tvaluemax - Tvaluemin) };
+                if (i > 5) { colorSet[i].weight = 100 - 100 * (((Tvaluemax - 0.001) / 6) * (11 - i)) / (Tvaluemax - Tvaluemin) };
+            }
+            console.log("new", colorSet);
+            var colorclr = "ColorMap 3 0 12 2" + "\n"
+            for (var i = 0; i < colorSet.length; i++) {
+                colorclr += colorSet[i].weight + "  " + colorSet[i].r + "  " + colorSet[i].g + "  " + colorSet[i].b + "  255"+"\n"
+            }
+            colorclr += "0 100" + "\n" + "100 0"
+            // var colorclr="ColorMap 3 0 5 2"+"\n"
+            // document.getElementById("text").innerText = colorclr;
+            console.log(colorclr);
 
-        var finalcolorlist = [];
-        var hux = new Array();
-        for (var i = 0; i < interpcolor[0].length; i++) {
-            finalcolorlist.push(colorRGB2Hex(interpcolor[0][i], interpcolor[1][i], interpcolor[2][i]));
-            hux[i] = '"' + colorRGB2Hex(interpcolor[0][i], interpcolor[1][i], interpcolor[2][i]) + '"';
-        };
-        var finalcolorlist2 = "[" + hux.join() + "]";
-        console.log("最终16进制颜色序列-数组", finalcolorlist);
-        console.log("最终16进制颜色序列-字符", finalcolorlist2);
-        document.getElementById("corlrbox").style.background = "linear-gradient(90deg, " + finalcolorlist + ")";
-        var div = document.getElementById("interp color");
-        var labels = "";
-        var from, to;
-        for (var i = 0; i < finalcolorlist.length; i++) {
-            labels += '<i style="background:' + finalcolorlist[i] + '"></i>';
+        } else {
+
+
+            var interpcolor = interp1(colorSet, countourSet);
+            // console.log("RGB颜色插值结果", interpcolor);
+
+            var finalcolorlist = [];
+            var hux = new Array();
+            for (var i = 0; i < interpcolor[0].length; i++) {
+                finalcolorlist.push(colorRGB2Hex(interpcolor[0][i], interpcolor[1][i], interpcolor[2][i]));
+                hux[i] = '"' + colorRGB2Hex(interpcolor[0][i], interpcolor[1][i], interpcolor[2][i]) + '"';
+            };
+            var finalcolorlist2 = "[" + hux.join() + "]";
+            console.log("最终16进制颜色序列-数组", finalcolorlist);
+            console.log("最终16进制颜色序列-字符", finalcolorlist2);
+            document.getElementById("corlrbox").style.background = "linear-gradient(90deg, " + finalcolorlist + ")";
+            var div = document.getElementById("interp color");
+            var labels = "";
+            var from, to;
+            for (var i = 0; i < finalcolorlist.length; i++) {
+                labels += '<i style="background:' + finalcolorlist[i] + '"></i>';
+            }
+            div.innerHTML = labels;
+            document.getElementById("list").innerText = finalcolorlist2;
         }
-        div.innerHTML = labels;
-        document.getElementById("list").innerText = finalcolorlist2;
     }
 
     function rand() {
