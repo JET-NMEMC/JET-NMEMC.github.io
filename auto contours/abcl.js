@@ -172,3 +172,17 @@ colordatabase.div_greenred = [
     { r: 255, g: 255, b: 180, weight: 50 },
     { r: 165, g: 0, b: 40, weight: 100 }
 ];
+colordatabase.terr = [
+    { r: 155, g: 0, b: 255, weight: 0 },
+    { r: 71, g: 82, b: 255, weight: 1 },
+    { r: 0, g: 150, b: 255, weight: 1 },
+    { r: 137, g: 209, b: 255, weight: 1 },
+    { r: 255, g: 255, b: 255, weight: 1 },//0
+    { r: 40, g: 93, b: 12, weight: 1 },//0.1
+    { r: 230, g: 187, b: 95, weight: 1 },
+    { r: 165, g: 150, b: 26, weight: 1 },
+    { r: 150, g: 100, b: 0, weight: 1 },
+    { r: 175, g: 110, b: 110, weight: 1 },
+    { r: 210, g: 210, b: 210, weight: 1 },
+    { r: 255, g: 255, b: 255, weight: 100 }
+];
