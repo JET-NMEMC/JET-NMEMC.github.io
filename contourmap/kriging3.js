@@ -495,20 +495,24 @@ kriging.grid = function (polygons, variogram, x_width, y_width) {
 		a[1] = Math.ceil(((lxlim[1] - ((lxlim[1] - xlim[1]) % x_width)) - xlim[0]) / x_width);
 		b[0] = Math.floor(((lylim[0] - ((lylim[0] - ylim[0]) % y_width)) - ylim[0]) / y_width);
 		b[1] = Math.ceil(((lylim[1] - ((lylim[1] - ylim[1]) % y_width)) - ylim[0]) / y_width);
-		for (j = a[0]; j < a[1]; j++) {
+		console.log(a,b);
+		for (var j = a[0], ll = 0; j < a[1]; j++) {
 			A[j] = [];
-			for (k = b[0]; k < b[1]; k++) {
+			for (var k = b[0]; k < b[1]; k++, ll++) {
 				xtarget = xlim[0] + j * x_width;
 				ytarget = ylim[0] + k * y_width;
 				if (polygons[i].pip(xtarget, ytarget)) {
 					var sdf = kriging.predict(xtarget, ytarget, variogram);
 					A[j][k] = sdf;
 					B[(j-1)*x+k]=sdf;
+					// B[ll] = sdf;
 				}
-				else{
+				else {
 					B[(j-1)*x+k]=null;
+					// B[ll]=null;
 				}
-				// B[(j-1)*x+k]=kriging.predict(xtarget, ytarget, variogram);
+				// B[(j - 1) * x + k] = kriging.predict(xtarget, ytarget, variogram);
+				// B[ll] = kriging.predict(xtarget, ytarget, variogram);
 			}
 		}
 	}
@@ -534,46 +538,46 @@ kriging.getVectorContour = function (gridInfo, breaks) {
 		.thresholds(breaks)
 		(gridInfo.grid2);
 	//像素坐标系换算地理坐标系
-	console.log("_contours",_contours);
+	console.log("_contours", _contours);
 	let dataset = {
-		"type" : "FeatureCollection",
-		"features" : []
+		"type": "FeatureCollection",
+		"features": []
 	};
-	for(let i=0;i<_contours.length;i++){
+	for (let i = 0; i < _contours.length; i++) {
 		const contour = _contours[i];
-		if(contour.type==='MultiPolygon'){
+		if (contour.type === 'MultiPolygon') {
 			contour.coordinates.forEach(polygon => {
 				let geom = {
-					"type" : "Polygon",
-					"coordinates" : []
+					"type": "Polygon",
+					"coordinates": []
 				};
 				//坐标转换，图形为空去除
-				geom.coordinates=polygon_pixel2geos(polygon,gridInfo);
-				if(geom.coordinates.length>0){
+				geom.coordinates = polygon_pixel2geos(polygon, gridInfo);
+				if (geom.coordinates.length > 0) {
 					dataset.features.push({
-						"type" : "Feature",
-						"properties" : {
-							"value" : contour.value
+						"type": "Feature",
+						"properties": {
+							"value": contour.value
 						},
-						"geometry" :geom
+						"geometry": geom
 					});
 				}
 			});
 		}
-		else if(contour.type==='Polygon'){
+		else if (contour.type === 'Polygon') {
 			let geom = {
-				"type" : "Polygon",
-				"coordinates" : []
+				"type": "Polygon",
+				"coordinates": []
 			};
 			//坐标转换，图形为空去除
-			geom.coordinates=polygon_pixel2geos(contour.coordinates,gridInfo);
-			if(geom.coordinates.length>0){
+			geom.coordinates = polygon_pixel2geos(contour.coordinates, gridInfo);
+			if (geom.coordinates.length > 0) {
 				dataset.features.push({
-					"type" : "Feature",
-					"properties" : {
-						"value" : contour.value
+					"type": "Feature",
+					"properties": {
+						"value": contour.value
 					},
-					"geometry" :geom
+					"geometry": geom
 				});
 			}
 		}
@@ -581,24 +585,24 @@ kriging.getVectorContour = function (gridInfo, breaks) {
 	return dataset;
 };
 //像素坐标转地理坐标
-function polygon_pixel2geos(polygon,gridInfo){
+function polygon_pixel2geos(polygon, gridInfo) {
 	//polygon分内环和外环
 	const _polygon = polygon.map((ring) => {
 		const _ring = ring.map(function (coor) {
 			//像素坐标转地理坐标 ，像素坐标y方向从上到下递增，纬度是y从上到下递减
-			const lon = gridInfo.xlim[0] + coor[1]*gridInfo.x_width;
+			const lon = gridInfo.xlim[0] + coor[1] * gridInfo.x_width;
 			let lat;
 			//格网自上向下走
-			if(gridInfo.y_width<0)
-				lat=gridInfo.ylim[1] + coor[0]*gridInfo.y_width;
+			if (gridInfo.y_width < 0)
+				lat = gridInfo.ylim[1] + coor[0] * gridInfo.y_width;
 			//格网自下向上走
 			else
-				lat=gridInfo.ylim[0] + coor[0]*gridInfo.y_width;
-	
-			return [lon,lat];
+				lat = gridInfo.ylim[0] + coor[0] * gridInfo.y_width;
+
+			return [lon, lat];
 		});
 		return _ring;
-	});	
+	});
 	return _polygon;
 }
 // Plotting on the DOM
@@ -691,7 +695,7 @@ kriging.pixel_Grid_drawImage = function (polygons, canvas, variogram, xrange, yr
 					ctx.fillStyle = "#000000"
 				}
 			}
-			else{
+			else {
 				continue
 			}
 
