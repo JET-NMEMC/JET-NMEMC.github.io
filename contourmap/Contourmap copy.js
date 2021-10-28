@@ -340,7 +340,7 @@ function autobreak(Tvaluemin, Tvaluemax, TargetN) {
   var percentage = (100 * (Tvaluemax - Tvaluemin) / (levelMax - levelMin)).toFixed(1);
   var breaks = [];
   for (var jj = 0; jj < levelnum + 1; jj++) {
-    breaks.push(Number((levelMin + jj * DX).toFixed(nnn)));
+    breaks.push(Number(levelMin + jj * DX).toFixed(nnn));
     // breaks[jj] = Number((levelMin + jj * DX).toFixed(nnn));
   }
   return {
