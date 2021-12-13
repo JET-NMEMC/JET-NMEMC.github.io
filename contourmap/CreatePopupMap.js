@@ -146,7 +146,7 @@ function MyPopup(layer, featuretype) {
                     coordtext2.push(coord[i].lng.toFixed(9) + "&emsp;" + coord[i].lat.toFixed(9));
                     coordoutput.push([coord[i].lng.toFixed(9) + " " + coord[i].lat.toFixed(9)]);
                 };
-                if (coord.length <= 5) {
+                if (coord.length <= 10) {
                     coordtext = coordtext0 + coordtext1 + coordtext2.join("<br>") + "</div>";
                 } else {
                     coordtext = coordtext0 + '数据量超过10个，不显示</div><br>' +
