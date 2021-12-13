@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- <textarea name="" id="text" cols="30" rows="10"></textarea> -->
+    <h2>基于调和常数的潮位预报系统</h2>
+    <div>
+
+        <p>开始日期 <input type="date" name="" id="t1" value="2021-12-01"> <input type="number" name="" id="h1" value="0"> 时
+        </p>
+        <p>结束日期 <input type="date" name="" id="t2" value="2021-12-02"> <input type="number" name="" id="h2" value="0"> 时
+        </p>
+        <p>时间步长 <input type="number" name="" id="s0" value="60"> 分钟</p>
+        <button onclick="run()">预报潮位</button>
+    </div>
+    <div id="text"></div>
+    <script src="TidePredict/tide-predictor.js"></script>
+    <script>
+        function run() {
+            // var time_0 = new Date("2021-12-12 00:00");
+            // var time_1 = new Date("2021-12-14 00:00");
+            var time_0 = new Date(document.getElementById('t1').value + ' 00:00');
+            var time_1 = new Date(document.getElementById('t2').value + ' 00:00');
+            // var time_0 = new Date("2021-12-12 00:00 GMT+0800");
+            // var time_1 = new Date("2021-12-14 00:00 GMT+0800");
+            var time_step = document.getElementById('s0').value;
+            var phaseKey = 'phase_local';
+            // var phaseKey = 'phase_GMT';
+            console.log("time start:", time_0);
+            console.log("time  end :", time_1);
+            var text0 = [];
+
+            var constituents = [
+                {
+                    "name": "M2",
+                    "amplitude": 0.5,
+                    "phase_local": 270.1,
+                },
+                {
+                    "name": "S2",
+                    "amplitude": 0.204,
+                    "phase_local": 258.5,
+                },
+                {
+                    "name": "K1",
+                    "amplitude": 0.332,
+                    "phase_local": 86.6,
+                },
+                {
+                    "name": "O1",
+                    "amplitude": 0.213,
+                    "phase_local": 80.2,
+                }
+            ];
+
+            var time_j = time_0;
+
+            while (time_j <= time_1) {
+                const waterLevel = tidePredictor(constituents
+                    , {
+                        phaseKey: phaseKey,
+                    }
+                ).getWaterLevelAtTime({
+                    time: time_j,
+                });
+                console.log(waterLevel.time, waterLevel.level);
+                text0.push(waterLevel.time + ' ' + waterLevel.level);
+
+                time_j.setMinutes(time_j.getMinutes() + time_step)
+            };
+            // console.log(text0);
+            document.getElementById('text').innerHTML = text0.join('<br>');
+
+        }
+    </script>
+</body>
+
+</html>
