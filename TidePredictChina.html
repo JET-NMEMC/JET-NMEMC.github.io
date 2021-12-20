@@ -21,15 +21,15 @@
         <p>结束日期 <input type="date" name="" id="t2" value="2021-12-02"> <input type="number" name="" id="h2" value="0"> 时
         </p>
         <p>时间步长 <input type="number" name="" id="s0" value="30"> 分钟</p>
-        <p>潮位站名 <input type="text" name="" id="site" value="大长山岛"></p>
+        <p>潮位站名 <input type="text" name="" id="site" value="青岛"></p>
         <p>
             <label style="color: blue;">分潮&emsp;</label>
             <label style="color: blue;"> 振幅(m)&emsp;</label>
             <label style="color: blue;">迟角(°)</label>
             <br>
-            <textarea id="canshu" cols="25"rows="8" style="resize: none;">M2	1.31	265&#10;S2	0.43	321&#10;K1	0.34	342&#10;O1	0.24	304</textarea>
+            <textarea id="canshu" cols="25"rows="8" style="resize: none;">M2	1.25	136&#10;S2	0.40	183&#10;K1	0.27	356&#10;O1	0.21	293</textarea>
         </p>
-        <button onclick="run()">预报潮位</button>        
+        <button onclick="run()">预报潮位</button>
     </div>
 
     <div id="graphdiv" style="width: 50%;"></div>
@@ -82,7 +82,7 @@
                 textstr,
                 {
                     // legend: 'always',
-                    title: document.getElementById('site').value+'潮位预测曲线',
+                    title: document.getElementById('site').value+'潮位预报曲线 |'+' 时区：-0800 (东8区) | 潮高基准面：平均海平面',
                     // showRoller: true,
                     // rollPeriod: 14,
                     // customBars: true,
