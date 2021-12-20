@@ -62,6 +62,7 @@
     <script>
         var geojsondata;
         var scalelatlng;
+        var scalelength;
         var no = 0;
         var vectormap = L.layerGroup();
 
@@ -107,6 +108,7 @@
                 var lat = point0.geometry.coordinates[1];
                 var fangxiang = point0.properties["方向"];
                 var changdu = point0.properties["长度"];
+                scalelength = changdu;
 
                 var arrowOptions = {
                     distanceUnit: 'km',
@@ -122,13 +124,14 @@
 
                 var arrowData = {
                     latlng: L.latLng(lat, lng),
-                    degree: fangxiang,
+                    degree: Number(fangxiang) + 180,
                     distance: changdu,
                     title: "Demo"
                 };
 
                 var arrow = new L.Arrow(arrowData, arrowOptions);
                 arrow.addTo(vectormap);
+                arrow.bindPopup('Length:' + changdu + ' | Direction:' + fangxiang)
 
             }
 
@@ -136,7 +139,11 @@
             var lng0 = $("#比例经度").val();
             var lat0 = $("#比例纬度").val();
             var fangxiang0 = 270;
+            if (no == 0) {
+                $("#比例长度").val(scalelength);
+            }
             var changdu0 = $("#比例长度").val();
+
 
             var arrowOptions = {
                 distanceUnit: 'km',
@@ -167,12 +174,13 @@
             // console.log(vectormap);
             if (no == 0) {
                 map.setView(L.latLng(lat, lng), 10);
-            } else {
                 map.panTo(L.latLng(lat, lng));
+            } else {
             }
             // 
 
             i = 1;
+            no = no + 1
         }
 
 
@@ -203,8 +211,7 @@
             return datas;
         }
 
-        var $eleBtn1 = $("#shili");
-        $eleBtn1.click(function(){  
+        $("#shili").click(function () {
             window.open("https://jet-nmemc.github.io/arrow/arrow.csv");
         });
 
