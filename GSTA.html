@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="GSTA/demo.css" />
+    <script src="https://npmcdn.com/csv2geojson@latest/csv2geojson.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+</head>
+
+<body>
+    <!-- <canvas id="myCanvas" style="float: left; width: 800px; height: 600px; border-width: 1px; z-index: 100;"></canvas> -->
+    <div id="map"></div>
+    <div style="position: absolute; padding: 10px; background-color: cornsilk;">
+        <div><button id="shili" style="width: 100%;">示例数据</button></div>
+        <br>
+        <div>
+            <input type="file" id="kmlFileInput" accept=".csv,.xlsx" onchange="geojsondata=readCSVFile(this)"
+                style="display: none" />
+            <input style="width: 100%;" type="button" onclick="document.getElementById('kmlFileInput').click()"
+                value="选择CSV" />
+            <input style="width: 100%;" type="button" onclick="sta()"
+                value="运行STA" />
+        </div>
+        <br>
+        <div>
+            线型颜色 <input style="width: 62px;" type="color" name="" id="线色" value="#ffffff">
+        </div>
+        <div>
+            线型宽度 <input style="width: 60px;" type="text" name="" id="线宽" value="1">
+        </div>
+        <div>
+            箭头大小 <input style="width: 60px;" type="text" name="" id="箭头" value="1">
+        </div>
+        <div>
+            缩放比例 <input style="width: 60px;" type="text" name="" id="比例" value="1">
+        </div>
+        <div>
+            <br><button style="width: 100%;" onclick="clic()">开始绘制</button><br>
+        </div>
+        <br>
+
+    </div>
+
+    <script src="GSTA/demoMap.js"></script>
+    <script src="GSTA/leaflet-arrows.js"></script>
+
+    <script>
+        var geojsondata;
+        var scalelatlng;
+        var scalelength;
+        var no = 0;
+        var vectormap = L.layerGroup();
+
+        function sta(){
+            console.log(geojsondata);
+
+        }
+
+
+
+
+
+        function clic() {
+            // console.log(JSON.stringify(geojsondata));            
+            var xiankuan = $("#线宽").val();
+            var xianse = $("#线色").val();
+            var arrowsize = $("#箭头").val();
+            var arrowscale = $("#比例").val();
+
+            vectormap.clearLayers();
+
+
+            for (i = 0; i < geojsondata.features.length; i++) {
+                var point0 = geojsondata.features[i];
+                var lng = point0.geometry.coordinates[0];
+                var lat = point0.geometry.coordinates[1];
+                var fangxiang = point0.properties["方向"];
+                var changdu = point0.properties["长度"];
+                scalelength = changdu;
+
+                var arrowOptions = {
+                    distanceUnit: 'km',
+                    isWindDegree: true,
+                    stretchFactor: arrowscale,
+                    // popupContent: function (data) {
+                    //     return "<h3>" + data.title + "</h3>";
+                    // },
+                    arrowheadLength: arrowsize,
+                    color: xianse,
+                    weight: xiankuan, // the width of the arrow
+                };
+
+                var arrowData = {
+                    latlng: L.latLng(lat, lng),
+                    degree: Number(fangxiang) + 180,
+                    distance: changdu,
+                    title: "Demo"
+                };
+
+                var arrow = new L.Arrow(arrowData, arrowOptions);
+                arrow.addTo(vectormap);
+                arrow.bindPopup('Length:' + changdu + ' | Direction:' + fangxiang)
+
+            }
+
+            vectormap.addTo(map);
+            // console.log(vectormap);
+            if (no == 0) {
+                map.setView(L.latLng(lat, lng), 10);
+                map.panTo(L.latLng(lat, lng));
+            } else {
+            }
+
+            i = 1;
+            no = no + 1
+        }
+
+
+
+        function readCSVFile(obj) {
+            var reader = new FileReader();
+            reader.readAsText(obj.files[0], "GB2312");
+            reader.onload = function () {
+                // console.log(this.result);
+                csv2geojson.csv2geojson(this.result, function (err, data) {
+                    geojsondata = data;
+                });
+            }
+        }
+
+
+
+        $("#shili").click(function () {
+            window.open("https://jet-nmemc.github.io/arrow/arrow.csv");
+        });
+
+        function csvToObject(csvString) {
+            var csvarry = csvString.split("\r\n");
+            var datas = [];
+            var headers = csvarry[0].split(",");
+            for (var i = 1; i < csvarry.length; i++) {
+                var data = {};
+                var temp = csvarry[i].split(",");
+                for (var j = 0; j < temp.length; j++) {
+                    data[headers[j]] = temp[j];
+                }
+                datas.push(data);
+            }
+            return datas;
+        }
+
+
+    </script>
+
+
+
+</body>
+
+</html>
