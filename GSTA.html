@@ -24,8 +24,7 @@
                 style="display: none" />
             <input style="width: 100%;" type="button" onclick="document.getElementById('kmlFileInput').click()"
                 value="选择CSV" />
-            <input style="width: 100%;" type="button" onclick="sta()"
-                value="运行STA" />
+            <input style="width: 100%;" type="button" onclick="sta()" value="运行STA" />
         </div>
         <br>
         <div>
@@ -57,10 +56,137 @@
         var no = 0;
         var vectormap = L.layerGroup();
 
-        function sta(){
+        function sta() {
             console.log(geojsondata);
+            const N = geojsondata.features.length;
+            const DC = 0.08;
+            const A = 1;
+            var CBP, FBN, FPN, CPP
+            CBP = true; //CB+
+            FBN = true; //FB-
+            FPN = true; //FP-
+            CPP = true; //CP+
+            const SMOTH = true;
+            var X = [], Y = [], MD = [], SRT = [], SK = [], NUM = [], NUM2 = [];
+            var SNP = [], SEP = [], VL = [], BITA = [], SNPP = [], SEPP = [];
+            var L = [];
+            for (i = 0; i < N; i++) {
+                X[i] = Number(geojsondata.features[i].geometry.coordinates[0]);
+                Y[i] = Number(geojsondata.features[i].geometry.coordinates[1]);
+                MD[i] = Number(geojsondata.features[i].properties['Mz']);
+                SRT[i] = Number(geojsondata.features[i].properties['SRT']);
+                SK[i] = Number(geojsondata.features[i].properties['SK']);
+
+                SNP[i] = 0;
+                SEP[i] = 0;
+                X[i] = A * X[i];
+            }
+            console.log(X)
+            for (i = 0; i < N; i++) {
+                nums = 0
+                nums2 = 0
+                for (j = i + 1; j < N; j++) {
+                    DXY = Math.sqrt((X[i] - X[j]) * (X[i] - X[j]) + (Y[i] - Y[j]) * (Y[i] - Y[j]))
+                    if (DXY < DC) {
+                        nums = nums + 1
+                        //'CB+：更粗 (Corse)、更好分选 (Better) 和更正 (+) 偏度
+                        if (CBP && MD[i] > MD[j] && SRT[i] > SRT[j] && SK[i] < SK[j]) {
+                            SNP[i] = SNP[i] + VECTOR(X[i], X[j], Y[i], Y[j], A).NP
+                            SEP[i] = SEP[i] + VECTOR(X[i], X[j], Y[i], Y[j], A).EP
+                            nums2 = nums2 + 1
+                        }
+                        // 'FB -：更细 (Fine)、更好分选 (Better) 和更负 (-) 偏度
+                        if (FBN && MD[i] < MD[j] && SRT[i] > SRT[j] && SK[i] > SK[j]) {
+                            SNP[i] = SNP[i] + VECTOR(X[i], X[j], Y[i], Y[j], A).NP
+                            SEP[i] = SEP[i] + VECTOR(X[i], X[j], Y[i], Y[j], A).EP
+                            nums2 = nums2 + 1
+                        }
+                        //'FP -：更细 (Corse)、更差分选 (Poor) 和更负 (-) 偏度
+                        if (FPN && MD[i] < MD[j] && SRT[i] < SRT[j] && SK[i] > SK[j]) {
+                            SNP[j] = SNP[j] + VECTOR(X[j], X[i], Y[j], Y[i], A).NP
+                            SEP[j] = SEP[j] + VECTOR(X[j], X[i], Y[j], Y[i], A).EP
+                            nums2 = nums2 + 1
+                        }
+                        // 'CP+：更粗 (Corse)、更差分选 (Poor) 和更正 (+) 偏度
+                        if (CPP && MD[i] > MD[j] && SRT[i] < SRT[j] && SK[i] < SK[j]) {
+                            SNP[j] = SNP[j] + VECTOR(X[j], X[i], Y[j], Y[i], A).NP
+                            SEP[j] = SEP[j] + VECTOR(X[j], X[i], Y[j], Y[i], A).EP
+                            nums2 = nums2 + 1
+                        }
+                    }
+                }
+                NUM[i] = nums
+                NUM2[i] = nums2
+            }
+            console.log('NUM', NUM)
+            console.log('NUM2', NUM2)
+            console.log('SNP', SNP)
+            console.log('SEP', SEP)
+            //--------------------------------
+            switch (SMOTH) {
+                case true:
+                    console.log('true')
+                    for (i = 0; i < N; i++) {
+                        L[i] = 0
+                        SNPP[i] = 0
+                        SEPP[i] = 0
+                        for (j = 0; j < N; j++) {
+                            DXY = Math.sqrt((X[i] - X[j]) * (X[i] - X[j]) + (Y[i] - Y[j]) * (Y[i] - Y[j]))
+                            // '这里需要注意，没有把自身加上
+                            if (DXY == 0 || DXY > DC) {
+                            } else {
+                                SNPP[i] = SNPP[i] + SNP[j]
+                                SEPP[i] = SEPP[i] + SEP[j]
+                                L[i] = L[i] + 1
+                            }
+                        }
+                    }
+                    for (i = 0; i < N; i++) {
+                        SNPP[i] = SNPP[i] / (L[i] + 1)
+                        SEPP[i] = SEPP[i] / (L[i] + 1)
+                        VL[i] = Math.sqrt(SNPP[i] * SNPP[i] + SEPP[i] * SEPP[i])
+                        if (SEPP[i] == 0 && SNPP[i] == 0) {
+                            BITA[i] = 0
+                        }
+                        else {
+                            BITA[i] = Math.atan2(SEPP[i], SNPP[i]) * 180 / 3.1416
+                            if (BITA[i] < 0) {
+                                BITA[i] = BITA[i] + 360
+                            }
+                        }
+                    }
+                    break;
+                case false:
+                    代码块
+                    break;
+                default:
+                    默认代码块
+            }
+            console.log('SNPP', SNPP)
+            console.log('SEPP', SEPP)
+            console.log('BITA', BITA)
+            console.log('VL', VL)
 
         }
+
+        function VECTOR(XX2, XX1, YY2, YY1, A) {
+            var ALPHA
+            if (YY1 = YY2) {
+                ALPHA = 0
+            } else {
+                ALPHA = Math.atan2((XX1 - XX2) / A, (YY1 - YY2))
+            }
+            var EP = Math.sin(ALPHA)
+            var NP = Math.cos(ALPHA)
+            return {
+                EP: EP,
+                NP: NP
+            }
+
+        }
+
+
+
 
 
 
