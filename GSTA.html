@@ -316,6 +316,7 @@
             return datas;
         }
 
+        
         var p0 = {
             lng: 1.11,
             lat: 1
@@ -324,7 +325,7 @@
             lng: 4,
             lat: 4
         };
-        var L = [
+        var LineArr = [
             {
                 lng: 0.5,
                 lat: 0.5
@@ -338,7 +339,7 @@
                 lat: 3
             },
         ]
-        // console.log(segmentsIntr(p0, p1, L, 'lng', 'lat'));
+        // console.log(segmentsIntr(p0, p1, LineArr, 'lng', 'lat'));
 
         function segmentsIntr(a, b, e, x, y) {
             if (a[x] == undefined) {
@@ -362,6 +363,7 @@
             }
             return 'false'
         }
+
 
 
     </script>
