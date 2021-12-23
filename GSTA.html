@@ -316,6 +316,53 @@
             return datas;
         }
 
+        var p0 = {
+            lng: 1.11,
+            lat: 1
+        };
+        var p1 = {
+            lng: 4,
+            lat: 4
+        };
+        var L = [
+            {
+                lng: 0.5,
+                lat: 0.5
+            },
+            {
+                lng: 1,
+                lat: 0.5
+            },
+            {
+                lng: 2,
+                lat: 3
+            },
+        ]
+        // console.log(segmentsIntr(p0, p1, L, 'lng', 'lat'));
+
+        function segmentsIntr(a, b, e, x, y) {
+            if (a[x] == undefined) {
+                return 'wrong'
+            };
+            for (i = 0; i < e.length - 1; i++) {
+                console.log(i);
+                var c = e[i];
+                var d = e[i + 1];
+                var area_abc = (a[x] - c[x]) * (b[y] - c[y]) - (a[y] - c[y]) * (b[x] - c[x]);
+                var area_abd = (a[x] - d[x]) * (b[y] - d[y]) - (a[y] - d[y]) * (b[x] - d[x]);
+                var area_cda = (c[x] - a[x]) * (d[y] - a[y]) - (c[y] - a[y]) * (d[x] - a[x]);
+                var area_cdb = area_cda + area_abc - area_abd;
+                if (area_cda * area_cdb < 0 && area_abc * area_abd < 0) {
+                    //计算交点坐标 
+                    var t = area_cda / (area_abd - area_abc);
+                    var dx = t * (b[x] - a[x]),
+                        dy = t * (b[y] - a[y]);
+                    return { x: a[x] + dx, y: a[y] + dy };
+                }
+            }
+            return 'false'
+        }
+
 
     </script>
 
