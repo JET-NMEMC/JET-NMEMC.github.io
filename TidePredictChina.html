@@ -12,7 +12,7 @@
 
 <body>
     <!-- <textarea name="" id="text" cols="30" rows="10"></textarea> -->
-    <h2>基于调和常数的潮位预报系统</h2>
+    <h2>潮位预报系统</h2>
     <!-- <div id="text" style="float: right; width:15%; top: 20px;"></div> -->
     <textarea  id="text" cols="30" rows="40" style="float: right; width:250px; height:100%; top: 0px; resize: none;"></textarea>
     <div style="width: 600px;">
@@ -68,14 +68,12 @@
                 text0.push(formatDateTime(waterLevel.time) + ' ' + waterLevel.level.toFixed(2));
                 textstr = textstr + formatDateTime(waterLevel.time) + ',' + waterLevel.level.toFixed(4) + '\n';
                 time_j.setMinutes(time_j.getMinutes() + time_step)
-                // time_j = new Date(time_j.setMinutes(time_j.getMinutes() + time_step));
             };
 
-            // document.getElementById('text').innerHTML = text0.join('<br>');
+
             textstr = "Date,WaterLevel\n" + textstr;
             console.log(textstr);
             document.getElementById('text').innerHTML =textstr;
-            // document.getElementById('text').innerHTML = text0.join('\n \t');
 
             var g = new Dygraph(
                 document.getElementById("graphdiv"),  // containing div
