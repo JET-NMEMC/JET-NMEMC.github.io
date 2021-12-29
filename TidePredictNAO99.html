@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,12 +10,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <link rel="stylesheet" href="TidePredict/index.css">
-
-
 </head>
-
 <body>
-
     <div id="map" class="map"></div>
     <textarea id="text" cols="30" rows="40"
         style="position: absolute; width:200px; height:99%; right: 0px; resize: none;"></textarea>
@@ -43,9 +38,8 @@
         <button onclick="run()">预报潮位</button>
     </div>
     <p>
-
     <div id="graphdiv"
-        style="position: absolute ;width: 700px; opacity: 0.7; height: 250px;background-color: cornsilk;"></div>
+        style="position: absolute; width: 700px; opacity: 0.7; height: 250px; background-color: cornsilk;"></div>
     </p>
     <script>
         var consituate = {};
@@ -54,9 +48,9 @@
         // console.log(cstlist)
     </script>
     <script src="TidePredict/list.js"></script>
-
     <script src="TidePredict/tide-predictor.js"></script>
     <script>
+        //-------------------------设置地图
         var map = L.map('map', { zoomControl: false, }).setView([31.59, 120.29], 7);
         L.tileLayer('http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}', {
             maxZoom: 12,
@@ -64,10 +58,12 @@
             pane: 'overlayPane'
         }).addTo(map);
 
+        //-------------------------设置时间
         var now = new Date();
         document.getElementById('t1').value = format(now, "yyyy-MM-dd");
         document.getElementById('t2').value = format(new Date(now.getTime() + 1000 * 60 * 60 * 24), "yyyy-MM-dd");
 
+        //-----------------------调和曲线并出图
         function run() {
             // var time_0 = new Date("2021-12-12 00:00");
             // var time_1 = new Date("2021-12-14 00:00");
@@ -96,9 +92,7 @@
                 time_j.setMinutes(time_j.getMinutes() + time_step)
             };
 
-
             textstr = "Date,WaterLevel\n" + textstr;
-            // console.log(textstr);
             document.getElementById('text').innerHTML = textstr;
 
             var g = new Dygraph(
@@ -114,14 +108,13 @@
                     xlabel: '时刻 (t)',
                 }
             );
-
         }
+
+        var poline = L.polyline([[20, 110], [20, 165], [65, 165], [65, 110], [20, 110]]).addTo(map);
         var marker = L.marker([document.getElementById('lat').value, document.getElementById('lng').value]).addTo(map)
 
+        //----------------------点击事件
         map.on('click', function (e) {
-            // console.log(marker._latlng)
-            // var marker = L.marker(e.latlng).addTo(map)
-            // console.log(e.latlng)
             lat = e.latlng.lat
             lng = e.latlng.lng
             marker._latlng.lat = lat
@@ -132,10 +125,8 @@
             document.getElementById('lat').value = lat.toFixed(6)
             document.getElementById('lng').value = lng.toFixed(5)
             document.getElementById('site').value = '标记位置'
-            // console.log(consituate);
-            // lat = 36.05175696
-            // lng = 120.370916448
 
+            // console.log(consituate);
             var seek = seeknear(lng, lat, consituate, cstlist);
             console.log(seek);
 
@@ -146,8 +137,7 @@
             document.getElementById("canshu").innerHTML = res.join('\n');
             run()
         });
-
-
+        //------------寻找最近的可用的数据位置，并返回该位置的调和常数
         function seeknear(lng, lat, obj, list) {
             var xmin = 110;
             var xmax = 165; //55 经度
@@ -178,13 +168,10 @@
             }
             console.log(nearA, nearB);
 
-
             var outarr = [];
             for (var i = 0; i < list.length; i++) {
-                // console.log(obj[list[i]])
                 var am0 = obj[list[i]].amplitude[nearA][nearB] / 1000;
                 var ph0 = obj[list[i]].Phase[nearA][nearB] / 10;
-
                 if (ph0 - 120 < 0) {
                     ph0 = Number((ph0 - 120 + 360).toFixed(1))
                 } else {
@@ -196,7 +183,7 @@
             return outarr
         }
 
-
+        //------------------------------------------格式化时间
         var formatDateTime = function (date) {
             var y = date.getFullYear();
             var m = date.getMonth() + 1;
