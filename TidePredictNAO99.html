@@ -16,7 +16,7 @@
 <body>
     <div id="map" class="map"></div>
     <textarea id="text" cols="30" rows="40"
-        style="position: absolute; width:200px; height:99%; right: 0px; resize: none;"></textarea>
+        style="position: absolute; width:250px; height:99%; right: 0px; resize: none;"></textarea>
     <div style="width: 280px; border:1px solid black;background-color: rgb(240, 232, 231);">
         <h2>潮位预报系统</h2>
         <p>开始日期 <input type="date" id="t1" value="2021-12-01">
@@ -25,7 +25,7 @@
         <p>结束日期 <input type="date" id="t2" value="2021-12-02">
             <input type="number" style="width:30px;" id="h2" value="0"> 时
         </p>
-        <p>时间步长 <input type="number" style="width:130px;" id="s0" value="30"> 分钟</p>
+        <p>时间步长 <input type="number" style="width:130px;" id="s0" oninput="value=value.replace(/[^\d]/g,'')" value="30"> 分钟</p>
         <p>潮位站名 <input type="text" style="width:130px;" id="site" value="青岛"></p>
         <p>坐标经度 <input type="text" style="width:130px;" id="lng" value="120.37091"></p>
         <p>坐标纬度 <input type="text" style="width:130px;" id="lat" value="36.051757"></p>
@@ -37,7 +37,8 @@
             <textarea id="canshu" cols="25" rows="8"
                 style="resize: none;">M2	1.25	136&#10;S2	0.40	183&#10;K1	0.27	356&#10;O1	0.21	293</textarea>
         </p>
-        <button onclick="run()">预报潮位</button>
+        <button style="height: 30px; width: 80px;" onclick="run()">预报潮位</button>
+        <button style="height: 30px; width: 80px;" onclick="export_csv(textstr, 'tideHeight')">导出潮位</button>
     </div>
     <p>
     <div id="graphdiv"
