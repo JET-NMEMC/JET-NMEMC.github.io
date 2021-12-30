@@ -2,7 +2,7 @@ var consituate = {};
 // var cstlist = ["k1_j", "o1_j", "m2_j", "s2_j", "2n2_j", "j1_j", "k2_j", "l2_j", "m1_j", "mu2_j", "n2_j", "nu2_j", "oo1_j", "p1_j", "q1_j", "t2_j"];
 var cstlist = ["O1", "K1", "M2", "S2", "2N2", "J1", "K2", "L2", "M1", "MU2", "N2", "NU2", "OO1", "P1", "Q1", "T2"];
 var cstlist2 = ["MF", "MM", "MSF", "MSM", "MTM", "SA", "SSA"];
-
+var textstr
 for (var i = 0; i < cstlist.length; i++) {
     document.write('<script src="TidePredict/omap/' + cstlist[i] + '.js" type="text/javascript"></script>');
 }
@@ -38,7 +38,7 @@ function run() {
     console.log("time  end :", time_1);
 
     var text0 = [];
-    var textstr = '';
+    textstr = '';
     var constituents = tableStringToArr('name amplitude	phase\n' + document.getElementById('canshu').value).objArr;
 
     var time_j = time_0;
@@ -47,12 +47,13 @@ function run() {
         var waterLevel = tidePredictor(constituents, { phaseKey: phaseKey }).getWaterLevelAtTime({
             time: time_j,
         });
-        text0.push(formatDateTime(waterLevel.time) + ' ' + waterLevel.level.toFixed(2));
-        textstr = textstr + formatDateTime(waterLevel.time) + ',' + waterLevel.level.toFixed(4) + '\n';
+        text0.push(formatDateTime(waterLevel.time) + ',' + waterLevel.level.toFixed(3));
+        // textstr = textstr + formatDateTime(waterLevel.time) + '\t' + waterLevel.level.toFixed(4) + '\n';
         time_j.setMinutes(time_j.getMinutes() + time_step)
     };
+    textstr = text0.join('\n');
 
-    textstr = "Date,WaterLevel\n" + textstr;
+    textstr = "DateTime,WaterLevel(m)\n" + textstr;
     document.getElementById('text').innerHTML = textstr;
 
     var g = new Dygraph(
@@ -86,9 +87,9 @@ map.on('click', function (e) {
     document.getElementById('lng').value = lng.toFixed(5)
     document.getElementById('site').value = '标记位置'
 
-    console.log(consituate);
+    // console.log(consituate);
     var seek = seeknear(lng, lat, consituate, cstlist);
-    console.log(seek);
+    // console.log(seek);
 
     var res = [];
     for (var i = 0; i < seek.length; i++) {
@@ -104,13 +105,13 @@ map.on('click', function (e) {
         for (var i = 0; i < seek2.length; i++) {
             res2[i] = seek2[i].join("\t")
         }
-        document.getElementById("canshu").innerHTML = res.join('\n') + '\n' + res2.join('\n');
+        document.getElementById("canshu").value = res.join('\n') + '\n' + res2.join('\n');
 
     } else {
-        document.getElementById("canshu").innerHTML = res.join('\n');
+        document.getElementById("canshu").value = res.join('\n');
 
     }
-    run()
+    run();
 });
 //------------寻找最近的可用的数据位置，并返回该位置的调和常数
 function seeknear(lng, lat, obj, list) {
@@ -125,23 +126,25 @@ function seeknear(lng, lat, obj, list) {
 
     var a = (ymax - lat) / dy;
     var b = (lng - xmin) / dx;
-    Ia = parseInt(a);
-    Ib = parseInt(b);
-    console.log(Ia, Ib);
+    Ia = Math.round(a);
+    Ib = Math.round(b);
     var nearA = Ia;
     var nearB = Ib;
+
     ds = 25;
-    for (var i = -5; i < 6; i++) {
-        for (var j = -5; j < 6; j++) {
+    for (var i = -3; i < 4; i++) {
+        for (var j = -3; j < 4; j++) {
             dd = Math.abs((a - Ia + i) * (b - Ib + j));
-            if (dd < ds && obj[list[1]].amplitude[Ia + i][Ib + j] != undefined) {
+            if (Ia + i >= 0 && Ib + j >= 0 && dd < ds && obj[list[1]].amplitude[Ia + i][Ib + j] != undefined) {
                 ds = dd;
                 nearA = Ia + i;
                 nearB = Ib + j
             }
         }
     }
-    console.log(nearA, nearB);
+    // console.log(a, Ia, b, Ib);
+    // console.log(nearA, nearB);
+    // console.log(mn2latlng(nearA, nearB))
 
     var outarr = [];
     for (var i = 0; i < list.length; i++) {
@@ -166,6 +169,19 @@ function seeknear(lng, lat, obj, list) {
     }
 
     return outarr
+}
+
+//[nearA][nearB]--[540][660]--[lat][lng]--[行号][列号]--[0][0]代表65N,110E
+function mn2latlng(m, n) {
+    var xmin = 110;
+    var xmax = 165; //55 经度
+    var ymin = 20;
+    var ymax = 65; //45 纬度
+    var dx = 1 / 12;
+    var dy = 1 / 12;
+    var mmax = 541; //纬度
+    var nmax = 661; //经度
+    return ((ymax - m * dy) + ',' + (n * dx + xmin))
 }
 
 //------------寻找最近的可用的数据位置，并返回该位置的调和常数
@@ -292,5 +308,17 @@ function tableStringToArr(text) {
         objArr: shuju2,
         lieName: lieName
     };
+}
+
+
+function export_csv(data, name) {
+    // “\ufeff” BOM头
+    var uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(data);
+    var downloadLink = document.createElement("a");
+    downloadLink.href = uri;
+    downloadLink.download = (name + ".csv") || "temp.csv";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 }
 
