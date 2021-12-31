@@ -17,14 +17,20 @@
 <body>
     <div id="map"></div>
     <div style="position: absolute; padding: 10px; background-color: cornsilk;">
-        <div><button id="shili" style="width: 100%;">example</button></div>
+        <div><button id="shili" style="width: 100%;">Demo data</button></div>
         <br>
         <div>
-            <input type="file" id="kmlFileInput" accept=".csv,.xlsx" onchange="geojsondata=readCSVFile(this)"
+            <input type="file" id="kmlFileInput" accept=".csv,.xlsx,.txt" onchange="geojsondata=readCSVFile(this)"
                 style="display: none" />
             <input style="width: 100%;" type="button" onclick="document.getElementById('kmlFileInput').click()"
                 value="Choose CSV" />
 
+            <!-- <h4>GRID SETTING</h4>
+            <input style="width: 100%;" type="button" onclick="re_inter_geojson(geojsondata)" value="克里金插值" />
+            <P>
+                NX: <input style="width: 60px;" type="text" id="NX" value="40"><br>
+                NY: <input style="width: 60px;" type="text" id="NY" value="20">
+            </P> -->
             <h4>MODEL SETTING</h4>
 
             <form action="" method="get">
@@ -65,6 +71,9 @@
 
     <script src="GSTA/demoMap.js"></script>
     <script src="GSTA/leaflet-arrows.js"></script>
+    <script src="GSTA/kriging0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+    <script src="GSTA/hull.js"></script>
 
     <script>
         var geojsondata;
@@ -74,17 +83,71 @@
             reader.readAsText(obj.files[0], "GB2312");
             reader.onload = function () {
                 csv2geojson.csv2geojson(this.result, function (err, data) {
-                    geojsondata = data;
+                    geojsondata = data
                 });
             }
         }
 
-        var scalelength;
-        var no = 0;
+        function gethull(geojs) {
+            var latlngs = [];
+            geojs.features.forEach(function (element) {
+                latlngs.push([element.geometry.coordinates[1], element.geometry.coordinates[0]])
+            });
+            var outlinecoord = hull(latlngs, 0.2);
+            var outline = L.polyline(outlinecoord).addTo(map);
+        }
+
+        function re_inter_geojson(geojs) {
+            gethull(geojs);
+            var lng = [], lat = [], prop = { Mz: [], SRT: [], SK: [] };
+            var latlngs = [];
+            geojs.features.forEach(function (element) {
+                lng.push(element.geometry.coordinates[0]);
+                lat.push(element.geometry.coordinates[1]);
+                prop['Mz'].push(element.properties['Mz']);
+                prop['SK'].push(element.properties['SK']);
+                prop['SRT'].push(element.properties['SRT'])
+            });
+            var lngmin = Math.min.apply(null, lng);
+            var lngmax = Math.max.apply(null, lng);
+            var latmin = Math.min.apply(null, lat);
+            var latmax = Math.max.apply(null, lat);
+
+            var model = "exponential";
+            var sigma2 = 0, alpha = 100;
+            var fitModel1 = kriging.train(prop['Mz'], lng, lat, model, sigma2, alpha);
+            var fitModel2 = kriging.train(prop['SK'], lng, lat, model, sigma2, alpha);
+            var fitModel3 = kriging.train(prop['SRT'], lng, lat, model, sigma2, alpha);
+            var nx = 40;
+            var ny = 20;
+            var dx = (lngmax - lngmin) / nx;
+            var dy = (latmax - latmin) / ny;
+            var point = [];
+            for (var i = 0; i <= nx; i++) {
+                var x0 = lngmin + i * dx;
+                for (var j = 0; j <= ny; j++) {
+                    var y0 = latmin + j * dy;
+                    var tnew1 = kriging.predict(x0, y0, fitModel1).toFixed(4);
+                    var tnew2 = kriging.predict(x0, y0, fitModel2).toFixed(4);
+                    var tnew3 = kriging.predict(x0, y0, fitModel3).toFixed(4);
+                    point.push(x0.toFixed(6) + ',' + y0.toFixed(6) + ',' + tnew1 + ',' + tnew2 + ',' + tnew3)
+                }
+            };
+            // console.log(point);
+            var newjsstr = 'lng,lat,Mz,SRT,SK\n' + point.join('\n');
+            var newjsobj;
+            csv2geojson.csv2geojson(newjsstr, function (err, data) {
+                newjsobj = data;
+            });
+            // return newjsobj
+            geojsondata = newjsobj
+        }
+
+        // var no = 0;
         var vectormap = L.featureGroup();
 
         function sta() {
-
+            console.log(geojsondata);
             const N = geojsondata.features.length;
             const DC = $('#DC').val();
             const A = $('#A').val();
@@ -227,9 +290,10 @@
             for (i = 0; i < N; i++) {
                 geojsondata.features[i].properties['长度'] = VL[i];
                 geojsondata.features[i].properties['方向'] = BITA[i];
-                output.push(VL[i] + ',' + BITA[i])
+                output.push(X[i] / A + ',' + Y[i] + ',' + VL[i] + ',' + BITA[i])
             }
-            console.log('output', output);
+            var outputstr = output.join('\n')
+            // console.log('output \n', outputstr);
             clic()
         }
 
@@ -263,7 +327,6 @@
                 var lat = point0.geometry.coordinates[1];
                 var fangxiang = point0.properties["方向"];
                 var changdu = point0.properties["长度"];
-                scalelength = changdu;
 
                 var arrowOptions = {
                     distanceUnit: 'km',
@@ -294,7 +357,7 @@
             // } else {
             //     map.panTo(L.latLng(lat, lng));
             // }
-            no = no + 1
+            // no = no + 1
         }
 
         $("#shili").click(function () {
@@ -316,7 +379,7 @@
             return datas;
         }
 
-        
+
         var p0 = {
             lng: 1.11,
             lat: 1
