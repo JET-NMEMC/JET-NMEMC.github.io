@@ -17,7 +17,7 @@
 <body>
     <div id="map"></div>
     <div style="position: absolute; padding: 10px; background-color: cornsilk;">
-        <div><button id="shili" style="width: 100%;">example</button></div>
+        <div><button id="shili" style="width: 100%;">Demo data</button></div>
         <br>
         <div>
             <input type="file" id="kmlFileInput" accept=".csv,.xlsx,.txt" onchange="geojsondata=readCSVFile(this)"
@@ -72,6 +72,8 @@
     <script src="GSTA/demoMap.js"></script>
     <script src="GSTA/leaflet-arrows.js"></script>
     <script src="GSTA/kriging0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+    <script src="GSTA/hull.js"></script>
 
     <script>
         var geojsondata;
@@ -86,15 +88,25 @@
             }
         }
 
+        function gethull(geojs) {
+            var latlngs = [];
+            geojs.features.forEach(function (element) {
+                latlngs.push([element.geometry.coordinates[1], element.geometry.coordinates[0]])
+            });
+            var outlinecoord = hull(latlngs, 0.2);
+            var outline = L.polyline(outlinecoord).addTo(map);
+        }
+
         function re_inter_geojson(geojs) {
+            gethull(geojs);
             var lng = [], lat = [], prop = { Mz: [], SRT: [], SK: [] };
+            var latlngs = [];
             geojs.features.forEach(function (element) {
                 lng.push(element.geometry.coordinates[0]);
                 lat.push(element.geometry.coordinates[1]);
                 prop['Mz'].push(element.properties['Mz']);
                 prop['SK'].push(element.properties['SK']);
-                prop['SRT'].push(element.properties['SRT']);
-                // newdata.lat.push(element.geometry.coordinates[1]);
+                prop['SRT'].push(element.properties['SRT'])
             });
             var lngmin = Math.min.apply(null, lng);
             var lngmax = Math.max.apply(null, lng);
