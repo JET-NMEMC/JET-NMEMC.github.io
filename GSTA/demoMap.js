@@ -43,11 +43,11 @@ function initDemoMap() {
   });
   //--------------------------------------------------------------------------------------------------主程序
   var baseLayers = {
-    "Esri影像": Esri_WorldImagery,
-    "天地图影像": tianditu_img,
-    //   "谷歌影像":GoogleImage,
+    "Esri": Esri_WorldImagery,
+    // "天地图影像": tianditu_img,
+    "Google": GoogleImage,
     "OpenStreet": OpenStreetMap_Mapnik,
-    "JawgStreet": Jawg_Streets,
+    // "JawgStreet": Jawg_Streets,
   };
 
   var tianditu_矢量注记 = L.tileLayer("http://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
@@ -65,7 +65,7 @@ function initDemoMap() {
     zoomControl: false
   });
 
-  var layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
+  var layerControl = L.control.layers(baseLayers).addTo(map);
   map.setView([37, 117], 4);
   return {
     map: map,
