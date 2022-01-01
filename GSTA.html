@@ -25,17 +25,18 @@
             <input style="width: 100%;" type="button" onclick="document.getElementById('kmlFileInput').click()"
                 value="Choose CSV" />
 
-            <!-- <h4>GRID SETTING</h4>
-            <input style="width: 100%;" type="button" onclick="re_inter_geojson(geojsondata)" value="克里金插值" />
+            <h4>GRID SETTING (Optional)</h4>
             <P>
-                NX: <input style="width: 60px;" type="text" id="NX" value="40"><br>
+                NX: <input style="width: 60px;" type="text" id="NX" value="40">
                 NY: <input style="width: 60px;" type="text" id="NY" value="20">
-            </P> -->
-            <h4>MODEL SETTING</h4>
+            </P>
+            <input style="width: 100%;" type="button" onclick="re_inter_geojson2(geojsondata)"
+                value="IDW Resampling" />
 
+            <h4>MODEL SETTING</h4>
             <form action="" method="get">
                 <P>
-                    DC: <input style="width: 60px;" type="text" id="DC" value="0.08"><br>
+                    DC: <input style="width: 60px;" type="text" id="DC" value="0.08">
                     AA: <input style="width: 60px;" type="text" id="A" value="0.8">
                 </P>
                 type:<br>
@@ -46,7 +47,9 @@
                     value="no" />No
             </form>
             <p>
-                <input style="width: 100%;" type="button" onclick="sta()" value="RUN STA" />
+                <input style="width: 100%;" type="button" onclick="sta(geojsondata)" value="RUN STA" />
+                <br><br>
+                <input style="width: 100%;" type="button" onclick="sta(newgeojsondata)" value="RUN STA GRID" />
             </p>
         </div>
         <h4>VECTOR STYLE</h4>
@@ -74,9 +77,32 @@
     <script src="GSTA/kriging0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
     <script src="GSTA/hull.js"></script>
+    <script src="GSTA/leaflet-idw.js"></script>
 
     <script>
         var geojsondata;
+        var newgeojsondata;
+
+
+
+        function gethull(geojs) {
+            var latlngs = [];
+            geojs.features.forEach(function (element) {
+                latlngs.push([element.geometry.coordinates[1], element.geometry.coordinates[0]])
+            });
+            var outlinecoord = hull(latlngs, 0.2);
+            var outline = L.polyline(outlinecoord).addTo(map);
+        }
+
+        //计算一个点是否在多边形里,参数:点,多边形数组
+        function PointInPoly(pt, poly) {
+            for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+                ((poly[i][1] <= pt[1] && pt[1] < poly[j][1]) || (poly[j][1] <= pt[1] && pt[1] < poly[i][1]))
+                    && (pt[0] < (poly[j][0] - poly[i][0]) * (pt[1] - poly[i][1]) / (poly[j][1] - poly[i][1]) + poly[i][0])
+                    && (c = !c);
+            return c;
+        }
+        //------------------------------------------main p
         //read csv data to geojsondata
         function readCSVFile(obj) {
             var reader = new FileReader();
@@ -88,26 +114,28 @@
             }
         }
 
-        function gethull(geojs) {
-            var latlngs = [];
-            geojs.features.forEach(function (element) {
-                latlngs.push([element.geometry.coordinates[1], element.geometry.coordinates[0]])
-            });
-            var outlinecoord = hull(latlngs, 0.2);
-            var outline = L.polyline(outlinecoord).addTo(map);
-        }
-
         function re_inter_geojson(geojs) {
             gethull(geojs);
             var lng = [], lat = [], prop = { Mz: [], SRT: [], SK: [] };
+            var lnglats = [];
             var latlngs = [];
+            var idwdata = [];
             geojs.features.forEach(function (element) {
                 lng.push(element.geometry.coordinates[0]);
                 lat.push(element.geometry.coordinates[1]);
                 prop['Mz'].push(element.properties['Mz']);
                 prop['SK'].push(element.properties['SK']);
-                prop['SRT'].push(element.properties['SRT'])
+                prop['SRT'].push(element.properties['SRT']);
+                lnglats.push([element.geometry.coordinates[0], element.geometry.coordinates[1]])
+                idwdata.push([element.geometry.coordinates[1], element.geometry.coordinates[0], element.properties['Mz']])
+                // latlngs.push([element.geometry.coordinates[1], element.geometry.coordinates[0]])
             });
+            // var edge = L.featureGroup();
+            // var outline = L.polyline(hull(latlngs, 0.2)).addTo(edge);
+            // layerControl.addOverlay(edge, "edge");
+            var outlinecoord = hull(lnglats, 0.2);
+            // var idw = L.idwLayer(idwdata, { opacity: 0.3, cellSize: 50, exp: 2 }).addTo(map);
+
             var lngmin = Math.min.apply(null, lng);
             var lngmax = Math.max.apply(null, lng);
             var latmin = Math.min.apply(null, lat);
@@ -118,8 +146,8 @@
             var fitModel1 = kriging.train(prop['Mz'], lng, lat, model, sigma2, alpha);
             var fitModel2 = kriging.train(prop['SK'], lng, lat, model, sigma2, alpha);
             var fitModel3 = kriging.train(prop['SRT'], lng, lat, model, sigma2, alpha);
-            var nx = 40;
-            var ny = 20;
+            var nx = $("#NX").value;
+            var ny = $("#NY").value;
             var dx = (lngmax - lngmin) / nx;
             var dy = (latmax - latmin) / ny;
             var point = [];
@@ -127,10 +155,12 @@
                 var x0 = lngmin + i * dx;
                 for (var j = 0; j <= ny; j++) {
                     var y0 = latmin + j * dy;
-                    var tnew1 = kriging.predict(x0, y0, fitModel1).toFixed(4);
-                    var tnew2 = kriging.predict(x0, y0, fitModel2).toFixed(4);
-                    var tnew3 = kriging.predict(x0, y0, fitModel3).toFixed(4);
-                    point.push(x0.toFixed(6) + ',' + y0.toFixed(6) + ',' + tnew1 + ',' + tnew2 + ',' + tnew3)
+                    if (PointInPoly([x0, y0], outlinecoord)) {
+                        var tnew1 = kriging.predict(x0, y0, fitModel1).toFixed(4);
+                        var tnew2 = kriging.predict(x0, y0, fitModel2).toFixed(4);
+                        var tnew3 = kriging.predict(x0, y0, fitModel3).toFixed(4);
+                        point.push(x0.toFixed(6) + ',' + y0.toFixed(6) + ',' + tnew1 + ',' + tnew2 + ',' + tnew3)
+                    }
                 }
             };
             // console.log(point);
@@ -140,15 +170,87 @@
                 newjsobj = data;
             });
             // return newjsobj
-            geojsondata = newjsobj
+            newgeojsondata = newjsobj
         }
+        function re_inter_geojson2(geojs) {
+            if (geojs==undefined){
+                alert('please Choose a csv file first, try again')
+                return
+            };
+            console.log('input geojson:', geojs)
+            gethull(geojs);
+            var lng = [], lat = [], prop = { Mz: [], SRT: [], SK: [] };
+            var lnglats = [];
+            var latlngs = [];
+
+            var idwdatas1 = [], idwdatas2 = [], idwdatas3 = [];
+            geojs.features.forEach(function (element) {
+                idwdatas1.push({ "x": element.geometry.coordinates[0], "y": element.geometry.coordinates[1], "v": element.properties['Mz'] });
+                idwdatas2.push({ "x": element.geometry.coordinates[0], "y": element.geometry.coordinates[1], "v": element.properties['SRT'] });
+                idwdatas3.push({ "x": element.geometry.coordinates[0], "y": element.geometry.coordinates[1], "v": element.properties['SK'] });
+                lng.push(element.geometry.coordinates[0]);
+                lat.push(element.geometry.coordinates[1]);
+                lnglats.push([element.geometry.coordinates[0], element.geometry.coordinates[1]])
+                // prop['Mz'].push(element.properties['Mz']);
+                // prop['SK'].push(element.properties['SK']);
+                // prop['SRT'].push(element.properties['SRT']);
+
+            });
+            var outlinecoord = hull(lnglats, 0.2);
+
+            var lngmin = Math.min.apply(null, lng);
+            var lngmax = Math.max.apply(null, lng);
+            var latmin = Math.min.apply(null, lat);
+            var latmax = Math.max.apply(null, lat);
+
+            var nx = $("#NX").val();
+            var ny = $("#NY").val();
+            var dx = (lngmax - lngmin) / nx;
+            var dy = (latmax - latmin) / ny;
+
+            var idwresult1 = [], idwresult2 = [], idwresult3 = [];
+            for (var i = 0; i <= nx; i++) {
+                var x0 = lngmin + i * dx;
+                for (var j = 0; j <= ny; j++) {
+                    var y0 = latmin + j * dy;
+                    if (PointInPoly([x0, y0], outlinecoord)) {
+                        idwresult1.push({ "x": x0, "y": y0 });
+                        idwresult2.push({ "x": x0, "y": y0 });
+                        idwresult3.push({ "x": x0, "y": y0 });
+                    }
+                }
+            };
+            //返回idw计算结果
+            idwresult1 = idwcomputer(idwdatas1, idwresult1);
+            idwresult2 = idwcomputer(idwdatas2, idwresult2);
+            idwresult3 = idwcomputer(idwdatas3, idwresult3);
+
+            var point = [];
+            for (var i = 0; i < idwresult1.length; i++) {
+                point.push([idwresult1[i].x, idwresult1[i].y, idwresult1[i].v, idwresult2[i].v, idwresult3[i].v])
+            }
+            // console.log(point);
+            var newjsstr = 'lng,lat,Mz,SRT,SK\n' + point.join('\n');
+            var newjsobj;
+            csv2geojson.csv2geojson(newjsstr, function (err, data) {
+                newjsobj = data;
+            });
+            // return newjsobj
+            newgeojsondata = newjsobj;
+            console.log('ouput geojson:', newgeojsondata)
+        }
+        //----------------------------------------------------------------
 
         // var no = 0;
         var vectormap = L.featureGroup();
 
-        function sta() {
-            console.log(geojsondata);
-            const N = geojsondata.features.length;
+        function sta(geojs) {
+            if (geojs==undefined){
+                alert('No correct data entry, please Choose a csv file and resample to grid first, try again')
+                return
+            };
+            console.log(geojs);
+            const N = geojs.features.length;
             const DC = $('#DC').val();
             const A = $('#A').val();
             const SMOTH = $("input[name='SMOTH']:checked").val() == 'yes';
@@ -165,11 +267,11 @@
             var L = [];
 
             for (i = 0; i < N; i++) {
-                X[i] = Number(geojsondata.features[i].geometry.coordinates[0]);
-                Y[i] = Number(geojsondata.features[i].geometry.coordinates[1]);
-                MD[i] = Number(geojsondata.features[i].properties['Mz']);
-                SRT[i] = Number(geojsondata.features[i].properties['SRT']);
-                SK[i] = Number(geojsondata.features[i].properties['SK']);
+                X[i] = Number(geojs.features[i].geometry.coordinates[0]);
+                Y[i] = Number(geojs.features[i].geometry.coordinates[1]);
+                MD[i] = Number(geojs.features[i].properties['Mz']);
+                SRT[i] = Number(geojs.features[i].properties['SRT']);
+                SK[i] = Number(geojs.features[i].properties['SK']);
 
                 SNP[i] = 0;
                 SEP[i] = 0;
@@ -288,13 +390,13 @@
 
             var output = []
             for (i = 0; i < N; i++) {
-                geojsondata.features[i].properties['长度'] = VL[i];
-                geojsondata.features[i].properties['方向'] = BITA[i];
+                geojs.features[i].properties['长度'] = VL[i];
+                geojs.features[i].properties['方向'] = BITA[i];
                 output.push(X[i] / A + ',' + Y[i] + ',' + VL[i] + ',' + BITA[i])
             }
             var outputstr = output.join('\n')
             // console.log('output \n', outputstr);
-            clic()
+            clic(geojs)
         }
 
         function VECTOR(XX2, XX1, YY2, YY1, A) {
@@ -312,7 +414,7 @@
             }
         }
 
-        function clic() {
+        function clic(geojs) {
 
             var xiankuan = $("#线宽").val();
             var xianse = $("#线色").val();
@@ -321,8 +423,8 @@
 
             vectormap.clearLayers();
 
-            for (i = 0; i < geojsondata.features.length; i++) {
-                var point0 = geojsondata.features[i];
+            for (i = 0; i < geojs.features.length; i++) {
+                var point0 = geojs.features[i];
                 var lng = point0.geometry.coordinates[0];
                 var lat = point0.geometry.coordinates[1];
                 var fangxiang = point0.properties["方向"];
@@ -425,6 +527,47 @@
                 }
             }
             return 'false'
+        }
+
+        //-------------------------idw算法-------------------------------------
+        //输入datas=[[x:0,y:0,v:0],[x:0,y:0,v:0],[x:0,y:0,v:0]]
+        //输入result=[[x:0,y:0,v:0],[x:0,y:0,v:0],[x:0,y:0,v:0]]
+        function idwcomputer(datas, result) {
+            if (datas.lenght < 3) return result;
+            var m0 = datas.length;
+            var m1 = result.length;
+
+            //距离列表
+            var r = [];
+
+            for (var i = 0; i < m1; i++) {
+                for (var j = 0; j < m0; j++) {
+                    var tmpDis = Math.sqrt(Math.pow(result[i].x - datas[j].x, 2) + Math.pow(result[i].y - datas[j].y, 2));
+                    r.push(tmpDis);
+                }
+            }
+
+            //插值函数
+            for (var i = 0; i < m1; i++) {
+                //查找重复
+                var ifFind = false;
+                for (var j = m0 * i; j < m0 * i + m0; j++) {
+                    if (Math.abs(r[j]) < 0.0001) {
+                        result[i].v = datas[j - m0 * i].v;
+                        ifFind = true;
+                        break;
+                    }
+                }
+                if (ifFind) continue;
+                var numerator = 0;
+                var denominator = 0;
+                for (var j = m0 * i; j < m0 * i + m0; j++) {
+                    numerator += datas[j - m0 * i].v / (r[j] * r[j]);
+                    denominator += 1 / (r[j] * r[j]);
+                }
+                result[i].v = numerator / denominator;
+            }
+            return result
         }
 
 
