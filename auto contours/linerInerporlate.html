@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="GoogleCharts.js"></script>
+
+<body>
+    <p>
+        <input type="file" id="selectdatafile1" accept=".csv" style="display: none" />
+        <input type="button" onclick="document.getElementById('selectdatafile1').click()" value="选择标准数据"
+            class="navbar-button" />
+    </p>
+    <p>
+        <input type="file" id="selectdatafile2" accept=".csv" style="display: none" />
+        <input type="button" onclick="document.getElementById('selectdatafile2').click()" value="选择监测数据"
+            class="navbar-button" />
+    </p>
+    <P>
+        <input type="button" onclick="CAL()" value="运行" class="navbar-button" />
+    </P>
+    <div id="chart" style="width: 800px; height: 500px;"></div>
+</body>
+<script>
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+    // google.charts.setOnLoadCallback(drawChart);
+
+    // console.log('var Xs = [1, 2, 3, 4];var Ys = [10, 20, 20, 40];Lineinterp(Xs, Ys, -1)')
+    var Xs = [0.1, 0.2, 0.3, 0.4];
+    var Ys = [4, 3, 2, 1];
+
+    var BZ, SJ;
+
+    $('#selectdatafile1').on('change', function () {
+        readFileAsText(this.files[0], function (e) {
+            var dataP = tableStringToArr(e.target.result);
+            BZ = dataP
+        })
+    });
+    $('#selectdatafile2').on('change', function () {
+        readFileAsText(this.files[0], function (e) {
+            var dataP = tableStringToArr2(e.target.result);
+            SJ = dataP
+        })
+    });
+    function CAL() {
+        console.log(BZ)
+        console.log(SJ)
+        var LieName = SJ.lieName;
+        var LieType = SJ.lieType;
+        var objArr = SJ.objArr;
+
+        var objArr2 = JSON.parse(JSON.stringify(objArr));
+        var itms = [];
+        for (var i = 0; i < LieName.length; i++) {
+            if (LieType[i] == '数据') {
+                var itm = LieName[i];
+                // console.log('数据项目', itm);
+                itms.push(itm);
+                var BZgrade = BZ.objArr.map(item => { return item['等级'] })
+                var BZvalue = BZ.objArr.map(item => { return item[itm] })
+                objArr2.forEach(element => {
+                    var newgrade = Lineinterp(BZvalue, BZgrade, element[itm]);
+                    element[itm] = newgrade >= 6 ? 6 : Math.round(newgrade * 100) / 100;
+                });
+            }
+        }
+        console.log('所有项目', itms);
+        console.log(objArr)
+        console.log(objArr2)
+
+        // drawChart()
+        var chartdata = [["Element", "Index", { role: "style" }]];
+        for (var key in objArr2[0]) {
+            if (itms.includes(key)) {
+                var d0 = objArr2[3][key];
+                chartdata.push([key, d0, getcolor(d0)
+                ])
+            }
+        };
+        console.log(chartdata)
+        drawChart(chartdata)
+
+    }
+
+    function drawChart(chartdata) {
+        var data = google.visualization.arrayToDataTable(chartdata);
+
+        var options = {
+            title: "污染量级指数",
+            width: 1200,
+            height: 400,
+            bar: { groupWidth: "61.8%" },
+            legend: { position: "none" },
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById("chart"));
+        chart.draw(data, options);
+    }
+
+    function getcolor(x) {
+        return x < 1 ? '#0080FF' :
+            x <= 2 ? '#00BB00' :
+                x <= 3 ? '#FFD700' :
+                    x <= 4 ? '#FF7F50' :
+                        x <= 5 ? '#EA0000' :
+                            '#921AFF'
+
+    }
+
+    function readFileAsText(file, onLoadCallback) {
+        var reader = new FileReader();
+        reader.onload = onLoadCallback;
+        reader.readAsText(file, "utf-8");
+    }
+
+    function Lineinterp(Xs, Ys, X) {
+        if (Xs.length != Ys.length) {
+            return ('wrong data')
+        }
+        var n = Xs.length;
+        if (n < 3) {
+            return ('too short')
+        }
+        if (X <= Xs[0]) {
+            return Ys[0] - ((Ys[1] - Ys[0]) / (Xs[1] - Xs[0])) * (Xs[0] - X)
+        } else if (X > Xs[n - 1]) {
+            return Ys[n - 1] + ((Ys[n - 1] - Ys[n - 2]) / (Xs[n - 1] - Xs[n - 2])) * (X - Xs[n - 1])
+        } else {
+            for (var i = 0; i < n - 1; i++) {
+                if (X > Xs[i] && X <= Xs[i + 1]) {
+                    return Ys[i] + (Ys[i + 1] - Ys[i]) / (Xs[i + 1] - Xs[i]) * (X - Xs[i])
+                }
+            }
+        }
+    }
+
+    function tableStringToArr(text) {
+        text = text.trim();//去除首尾空白
+        var yyy = text.split(/[\n]/); //按行分割
+        var shuju = [];
+        for (var i = 0; i < yyy.length; i++) {
+            shuju[i] = yyy[i].trim().split(/,|，|\s+/);//去除首尾空白后，行内逗号、空格分割
+        };
+        var shuju2 = []; var shuliang = 0;
+        for (var i = 1; i < shuju.length; i++) {
+            var Obj = {};
+            for (var j = 0; j < shuju[0].length; j++) {
+                Obj[shuju[0][j]] = Number(shuju[i][j]) + '' !== NaN + '' ? Number(shuju[i][j]) : shuju[i][j];
+            }
+            shuju2.push(Obj); shuliang += shuju[i].length;
+        };
+        if (shuliang !== (shuju.length - 1) * shuju[0].length) { alert("非法字符，可能是空格或者逗号，检查后再试") };
+        var lieName = []; for (var key in shuju2[0]) { lieName.push(key) };
+        return { tableArr: shuju, objArr: shuju2, lieName: lieName };
+    }
+    function tableStringToArr2(text) {
+        text = text.trim();//去除首尾空白
+        var yyy = text.split(/[\n]/); //按行分割
+        var shuju = [];
+
+        for (var i = 0; i < yyy.length; i++) {
+            shuju[i] = yyy[i].trim().split(/,|，|\s+/);//去除首尾空白后，行内逗号、空格分割
+        };
+        var objArr = []; var shuliang = 0;
+        for (var i = 2; i < shuju.length; i++) {
+            var Obj = {};
+            for (var j = 0; j < shuju[0].length; j++) {
+                Obj[shuju[0][j]] = Number(shuju[i][j]) + '' !== NaN + '' ? Number(shuju[i][j]) : shuju[i][j];
+            }
+            objArr.push(Obj); shuliang += shuju[i].length;
+        };
+        if (shuliang !== (shuju.length - 2) * shuju[0].length) { alert("非法字符，可能是空格或者逗号，检查后再试") };
+        var lieName = []; var lieType = [];
+        for (var key in objArr[0]) { lieName.push(key) };
+        for (var j = 0; j < shuju[0].length; j++) {
+            lieType.push(shuju[1][j])
+        }
+
+        return { tableArr: shuju, objArr: objArr, lieName: lieName, lieType: lieType };
+    }
+
+</script>
+
+</html>
