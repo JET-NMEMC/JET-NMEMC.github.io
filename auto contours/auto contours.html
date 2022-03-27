@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="自动 轴刻度 颜色比例尺 auto level contour breaks colorlegend">
+    <title>auto level</title>
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script> -->
+    <script src="auto contours/abcl.js"></script>
+    <style>
+        i {
+            /* position: relative; */
+            width: 30px;
+            height: 24px;
+            float: left;
+            margin-right: 8px;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>自动等差刻度等值线(auto level/contour/breaks)</h2>
+    <!-- <p><a href="index.html">返回主页</a></p> -->
+    <div style="border-style:solid; border-width:1px; border-color:#000;padding: 10px;">
+        输入:一个最小值(value
+        MIN)、最大值(valueMAX)，以及你想要的分段数量(TargetNm)。输出:最合适的等差序列，为了使用方便美观，以1,2,3,5及他们与10的整数次幂(含负整数)的乘积为步长,依次判断并选出与计划分段数量(TargetNm)最为符合和接近的步长，据此形成等差序列。大多数情况下，最终生成的分段个数会在你想得到的个数上下波动，但一定是最适宜的。
+        <p>
+            Input: a minimum value (value MIN), maximum value (value MAX), and the number of segments you want
+            (TargetNm). Output: The most suitable arithmetic sequence. For ease of use and beauty, take 1,
+            2, 3, 5 and their product with integer powers of 10 (including negative integers) as potential step(default
+            range:1×10^-8~5×10^8). Judge them in turn and select the step that is
+            closest fitted to the planned segment number (TargetNm) . Accordingly, an arithmetic sequence is formed. In
+            most cases, the number of final generated segments will fluctuate up and down the number you want, but it
+            should be the most appropriate.
+        </p>
+        <p>
+            <button onclick=rand()>random</button>
+            value MIN:<input type="text" value="-1.25" id="Tvaluemin" placeholder="输入你的数据的最小值">
+            value MAX:<input type="text" value="3.65" id="Tvaluemax" placeholder="输入你的数据的最大值">
+            TargetNm:<input type="text" value="10" id="TargetN" placeholder="请输入计划分段数量(整数)">
+        </p>
+        <p>
+            <span style="color: fuchsia;">点击这里 (Click here)</span> <button onclick=main()
+                style="height: 30px;width: 100px;font-size: 18px; background-color: cyan;">generate</button>
+        </p>
+        生成的等差刻度(arithmetic breaks):
+        <p>
+        <div id="text" style="height: 20px;"></div>
+        </p>
+
+    </div>
+
+    <h2>自动颜色图例等值面填充(auto colorlegend contour map fill)</h2>
+    <div style="border-style:solid; border-width:1px; border-color:#000;padding: 10px;">
+        <p>
+            选择预设颜色方案 (choose a default color pattern):
+            <select id="colorpattern" style="height: 30px;width: 100px;font-size: 18px; background-color: cyan;">
+                <option value="bgyr" selected="selected">bgyr</option>
+                <option value="jet">jet</option>
+                <option value="cool">cool</option>
+                <option value="terr">terr</option>
+            </select>
+        </p>
+
+        <p>
+            基于autobreaks通过线性插值得到的颜色 (Color sequence obtained according to linear interpolation based on autobreaks):
+        </p>
+        <div id="interp color" style="height: 20px;"></div>
+        <br>
+
+        <p>
+            通过线性插值得到的十六进制颜色列表 (Hexadecimal color list obtained according to linear interpolation):
+        </p>
+        <div id="list" style=" word-wrap: break-word; word-break: normal;">
+        </div>
+
+        <p>颜色列表的线性填充结果 (Linear filling based on the final color list):</p>
+        <div id="corlrbox" style="height:40px; width: 95%;"></div>
+    </div>
+</body>
+
+<script>
+    function main() {
+        var TargetN = document.getElementById("TargetN").value;
+        var Tvaluemin = document.getElementById("Tvaluemin").value;
+        var Tvaluemax = document.getElementById("Tvaluemax").value;
+
+        var countourSet = autobreak(Tvaluemin, Tvaluemax, TargetN);
+        console.log("自动生成的色斑比例尺序列", countourSet);
+        // var levelmin=countourSet.levelMin;
+        // var levelmax=countourSet.levelMax;
+        // var levelnum=countourSet.levelnum;
+        // var step=countourSet.step;
+        var breaks = countourSet.breaks;
+        document.getElementById("text").innerText = countourSet.breaks.join(" / ");
+
+        var obj = document.getElementById("colorpattern");
+        var colorpattern = obj.options[obj.selectedIndex].value;
+        console.log(colorpattern);
+        var colorSet = colordatabase[colorpattern];
+        console.log(colorSet);
+        if (colorpattern == "terr") {
+            console.log(colorSet);
+            for (var i = 0; i < colorSet.length; i++) {
+                // console.log(colorSet[i].weight);
+                if (i < 5) { colorSet[i].weight = 100 * (((0 - Tvaluemin) / 4) * i) / (Tvaluemax - Tvaluemin) };
+                if (i == 5) { colorSet[i].weight = 100 * (0.001 - Tvaluemin) / (Tvaluemax - Tvaluemin) };
+                if (i > 5) { colorSet[i].weight = 100 - 100 * (((Tvaluemax - 0.001) / 6) * (11 - i)) / (Tvaluemax - Tvaluemin) };
+            }
+            console.log("new", colorSet);
+            var colorclr = "ColorMap 3 0 12 2" + "\n"
+            for (var i = 0; i < colorSet.length; i++) {
+                colorclr += colorSet[i].weight + "  " + colorSet[i].r + "  " + colorSet[i].g + "  " + colorSet[i].b + "  255"+"\n"
+            }
+            colorclr += "0 100" + "\n" + "100 0"
+            // var colorclr="ColorMap 3 0 5 2"+"\n"
+            // document.getElementById("text").innerText = colorclr;
+            console.log(colorclr);
+
+        } else {
+
+
+            var interpcolor = interp1(colorSet, countourSet);
+            // console.log("RGB颜色插值结果", interpcolor);
+
+            var finalcolorlist = [];
+            var hux = new Array();
+            for (var i = 0; i < interpcolor[0].length; i++) {
+                finalcolorlist.push(colorRGB2Hex(interpcolor[0][i], interpcolor[1][i], interpcolor[2][i]));
+                hux[i] = '"' + colorRGB2Hex(interpcolor[0][i], interpcolor[1][i], interpcolor[2][i]) + '"';
+            };
+            var finalcolorlist2 = "[" + hux.join() + "]";
+            console.log("最终16进制颜色序列-数组", finalcolorlist);
+            console.log("最终16进制颜色序列-字符", finalcolorlist2);
+            document.getElementById("corlrbox").style.background = "linear-gradient(90deg, " + finalcolorlist + ")";
+            var div = document.getElementById("interp color");
+            var labels = "";
+            var from, to;
+            for (var i = 0; i < finalcolorlist.length; i++) {
+                labels += '<i style="background:' + finalcolorlist[i] + '"></i>';
+            }
+            div.innerHTML = labels;
+            document.getElementById("list").innerText = finalcolorlist2;
+        }
+    }
+
+    function rand() {
+        var a = 10 * (1 - 2 * Math.random());
+        var b = 50 * (1 - 2 * Math.random());
+        var vmax, vmin;
+        console.log(a, b);
+        if (a > b) { vmax = a; vmin = b } else { vmax = b; vmin = a };
+        document.getElementById("Tvaluemin").value = vmin.toFixed(5);
+        document.getElementById("Tvaluemax").value = vmax.toFixed(5);
+    }
+
+</script>
+
+</html>
