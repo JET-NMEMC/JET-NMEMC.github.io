@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>水质分级指数</title>
 </head>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 <script type="text/javascript" src="GoogleCharts.js"></script>
@@ -52,39 +52,46 @@
     function CAL() {
         console.log(BZ)
         console.log(SJ)
-        var LieName = SJ.lieName;
-        var LieType = SJ.lieType;
+        var SJName = SJ.lieName;
+        var SJType = SJ.lieType;
         var objArr = SJ.objArr;
+        var BZName = BZ.lieName;
 
         var objArr2 = JSON.parse(JSON.stringify(objArr));
-        var itms = [];
-        for (var i = 0; i < LieName.length; i++) {
-            if (LieType[i] == '数据') {
-                var itm = LieName[i];
-                // console.log('数据项目', itm);
-                itms.push(itm);
-                var BZgrade = BZ.objArr.map(item => { return item['等级'] })
-                var BZvalue = BZ.objArr.map(item => { return item[itm] })
-                objArr2.forEach(element => {
-                    var newgrade = Lineinterp(BZvalue, BZgrade, element[itm]);
-                    element[itm] = newgrade >= 6 ? 6 : Math.round(newgrade * 100) / 100;
-                });
+        var itmsright = [];
+        var itmswrong = [];
+        for (var i = 0; i < SJName.length; i++) {
+            if (SJType[i] == '数据') {
+                var itm = SJName[i];
+                if (BZName.includes(itm)) {
+                    itmsright.push(itm);
+                    var BZgrade = BZ.objArr.map(item => { return item['等级'] })
+                    var BZvalue = BZ.objArr.map(item => { return item[itm] })
+                    objArr2.forEach(element => {
+                        var newgrade = Lineinterp(BZvalue, BZgrade, element[itm]);
+                        element[itm] = newgrade >= 6 ? 6 : Math.round(newgrade * 100) / 100;
+                    });
+                } else {
+                    itmswrong.push(itm);
+                }
             }
         }
-        console.log('所有项目', itms);
+        console.log('找到了标准的项目', itmsright);
+        console.log('未找到标准的项目', itmswrong);
         console.log(objArr)
         console.log(objArr2)
 
         // drawChart()
         var chartdata = [["Element", "Index", { role: "style" }]];
         for (var key in objArr2[0]) {
-            if (itms.includes(key)) {
-                var d0 = objArr2[3][key];
-                chartdata.push([key, d0, getcolor(d0)
+            if (itmsright.includes(key)) {
+                var V_index = objArr2[0][key];
+                // var V_true = objArr[0][key];
+                chartdata.push([key, V_index, getcolor(V_index)
                 ])
             }
         };
-        console.log(chartdata)
+        // console.log(chartdata)
         drawChart(chartdata)
 
     }
@@ -93,7 +100,7 @@
         var data = google.visualization.arrayToDataTable(chartdata);
 
         var options = {
-            title: "污染量级指数",
+            title: "水质分级指数",
             width: 1200,
             height: 400,
             bar: { groupWidth: "61.8%" },
@@ -104,16 +111,15 @@
     }
 
     function getcolor(x) {
-        return
-        x < 1 ? '#0080FF' :
+        return x < 1 ? '#00BB00' :
             x <= 2 ? '#00BB00' :
                 x <= 3 ? '#FFD700' :
-                    x <= 4 ?  '#FFD700': 
+                    x <= 4 ? '#FFD700' :
                         x <= 5 ? '#EA0000' :
                             '#921AFF'
 
     }
-//#FF7F50
+    //'#0080FF'#FF7F50
     function readFileAsText(file, onLoadCallback) {
         var reader = new FileReader();
         reader.onload = onLoadCallback;
