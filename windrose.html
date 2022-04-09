@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="https://jscdn.com.cn/highcharts/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* css 代码  */
+    </style>
+    <script src="windrose/highcharts.js"></script>
+    <script src="https://cdn.highcharts.com.cn/highcharts/highcharts-more.js"></script>
+    <script src="https://cdn.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://cdn.highcharts.com.cn/highcharts/modules/data.js"></script>
+    <!-- <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script> -->
+</head>
+
+<body>
+    <h2>风浪玫瑰图</h2>
+    <div>
+        <textarea id="csv" rows="8" cols="80">Direction,1 m/s,1-2 m/s,2-4 m/s,4-6 m/s,6-8 m/s,8-10 m/s,10 m/s
+        N,1.81,1.78,0.16,0.00,0.00,0.00,0.00
+        NNE,0.62,1.09,0.00,0.00,0.00,0.00,0.00
+        NE,0.82,0.82,0.07,0.00,0.00,0.00,0.00
+        ENE,0.59,1.22,0.07,0.00,0.00,0.00,0.00
+        E,0.62,2.20,0.49,0.00,0.00,0.00,0.00
+        ESE,1.22,2.01,1.55,0.30,0.13,0.00,0.00
+        SE,1.61,3.06,2.37,2.14,1.74,0.39,0.13
+        SSE,2.04,3.42,1.97,0.86,0.53,0.49,0.00
+        S,2.66,4.74,0.43,0.00,0.00,0.00,0.00
+        SSW,2.96,4.14,0.26,0.00,0.00,0.00,0.00
+        SW,2.53,4.01,1.22,0.49,0.13,0.00,0.00
+        WSW,1.97,2.66,1.97,0.79,0.30,0.00,0.00
+        W,1.64,1.71,0.92,1.45,0.26,0.10,0.00
+        WNW,1.32,2.40,0.99,1.61,0.33,0.00,0.00
+        NW,1.58,4.28,1.28,0.76,0.66,0.69,0.03
+        NNW,1.51,5.00,1.32,0.13,0.23,0.13,0.07
+    </textarea>
+    </div>
+    <button onclick="run()">绘制</button>
+    <div id="container" style="min-width: 620px; max-width: 600px; height: 600px; margin: 0 auto"></div>
+    <script>
+        window.onload = run();
+        //https://api.highcharts.com.cn/legacy#xAxis.labels
+        function run() {
+            var text = document.getElementById('csv').innerHTML;
+            var datainput = tableStringToArr(text);
+            console.log(datainput)
+            // 使用数据功能模块进行数据解析
+            var chart = Highcharts.chart('container', {
+                // data: {
+                //     // table: 'freq',
+                //     csv: document.getElementById('csv').innerHTML,
+                //     startRow: 1,
+                //     endRow: 17,
+                //     endColumn: 7
+                // },
+                data: {
+                    columns: datainput.tableArr2
+                },
+                // colors:["#4242f4", "#42c5f4", "#42f4ce", "#42f456", "#adf442", "#f4e242", "#f4a142", "#f44242"],
+                colors:["#42c5f4", "#42f4ce", "#42f456", "#adf442", "#f4e242", "#f4a142", "#f44242"],
+                chart: {
+                    polar: true,
+                    type: 'column'
+                },
+                title: {
+                    text: ''
+                },
+                // subtitle: {
+                //     text: '数据来源: or.water.usgs.gov'
+                // },
+                pane: {
+                    size: '85%'
+                },
+                legend: {
+                    align: 'right',
+                    verticalAlign: 'top',
+                    y: 100,
+                    layout: 'vertical',
+                    itemStyle: { "color": "#333333", "cursor": "pointer", "fontSize": "12px", "fontWeight": "bold" } //图例样式
+                },
+                xAxis: {
+                    tickmarkPlacement: 'on',
+                    labels: {
+                        style:{ "color": "#666666", "cursor": "default", "fontSize": "16px" } //方向样式
+                    },
+                },
+                yAxis: {
+                    min: 0,
+                    endOnTick: false,
+                    showLastLabel: true,
+                    title: {
+                        text: 'F (%)',
+                        style:{ "color": "#666666", "cursor": "default", "fontSize": "16px" } //F(%)样式
+                    },
+                    labels: {
+                        formatter: function () {
+                            return this.value + '%';
+                        },
+                        style:{ "color": "#666666", "cursor": "default", "fontSize": "16px" } //10%样式
+                    },
+                    reversedStacks: false
+                },
+                tooltip: {
+                    valueSuffix: '%'
+                },
+                plotOptions: {
+                    series: {
+                        stacking: 'normal',
+                        shadow: false,
+                        groupPadding: 0,
+                        pointPlacement: 'on'
+                    }
+                }
+            });
+            console.log(chart.data)
+        }
+
+
+        //---------------------------------字符串转json数组、json对象
+        function tableStringToArr(text) {
+            text = text.trim();//去除首尾空白
+            var yyy = text.split(/[\n]/); //按行分割
+            var shuju = [];
+            for (var i = 0; i < yyy.length; i++) {
+                // shuju[i] = yyy[i].trim().split(/,|，|\s+/);//去除首尾空白后，行内逗号、空格分割
+                shuju[i] = yyy[i].trim().split(/,|，/);//去除首尾空白后，行内逗号分割
+            };
+            var shuju_ni = shuju[0].map(function (col, i) {
+                return shuju.map(function (row) {
+                    return row[i];
+                })
+            });
+            var shuju2 = []; var shuliang = 0;
+            for (var i = 1; i < shuju.length; i++) {
+                var Obj = {};
+                for (var j = 0; j < shuju[0].length; j++) {
+                    Obj[shuju[0][j]] = Number(shuju[i][j]) + '' !== NaN + '' ? Number(shuju[i][j]) : shuju[i][j];
+                }
+                shuju2.push(Obj); shuliang += shuju[i].length;
+            };
+            if (shuliang !== (shuju.length - 1) * shuju[0].length) { alert("监测到非法字符，可能是空格或者逗号，请检查数据后再试") };
+            var lieName = [];
+            for (var key in shuju2[0]) { lieName.push(key) };
+            return {
+                tableArr: shuju,
+                tableArr2: shuju_ni,
+                objArr: shuju2,
+                lieName: lieName
+            };
+        }
+    </script>
+</body>
+
+</html>
