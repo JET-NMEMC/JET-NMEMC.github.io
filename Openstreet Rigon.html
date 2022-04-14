@@ -69,7 +69,7 @@
             accessToken: 'DGEPTrYpfvrfrjgNGAF1tziKZBqDBXP1ukNpvd7PEQ8tf6cvdMBI4Md4JetBfC7B'
         });
         var warm = L.tileLayer("https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetWarm/MapServer/tile/{z}/{y}/{x}", {
-            corrdType:"gcj02",
+            corrdType: "gcj02",
             attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
         });
 
@@ -77,7 +77,7 @@
             "Esri影像": Esri_WorldImagery,
             "OpenStreet": OpenStreetMap_HOT,
             "Jawg_Sunny": Jawg_Sunny,
-            "Geoq暖色":warm,
+            "Geoq暖色": warm,
         };
         var map = L.map("map", {
             layers: [Esri_WorldImagery],
@@ -90,9 +90,21 @@
         // L.marker([39.905530,116.391305]).addTo(map).bindPopup('<p>我是WGS84坐标下，天安门广场国旗所在位置</p>').openPopup();
         map.setView([38, 120.5], 7);
 
+        if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
+            var lc = L.control.locate({
+                position: 'bottomleft',
+                locateOptions: {
+                    maxZoom: 17,
+                    enableHighAccuracy: true,
+                },
+                follow: true,
+                icon: 'fa fa-location-arrow',// 图标类，fa-location-arrow 或 fa-map-marker
+                cacheLocation: true,
+                onLocationError: function (err) { alert(err.message) },  // define an error callback function
+                onLocationFound: function (e) { console.log('定位成功=====>', e) },
+            }).addTo(map);
+        };
     </script>
-    <script src="Openstreet Rigon/openstreetrigon.js"></script>
-    <!-- <script src="Openstreet Rigon/leaflet.mapCorrection.js"></script> -->
     <script>
 
         function run() {
