@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../test/css/demo.css" type="text/css">
+    <link rel="stylesheet" href="../test/css/metroStyle.css" type="text/css">
+    <!-- <link rel="stylesheet" href="../test/css/zTreeStyle.css" type="text/css"> -->
+    <script type="text/javascript" src="../test/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="../test/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="../test/js/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="../test/js/jquery.ztree.exedit.js"></script>
+    <style type="text/css">
+        div#rMenu {
+            position: absolute;
+            visibility: hidden;
+            top: 0;
+            background-color: #555;
+            text-align: left;
+            padding: 2px;
+        }
+        div#rMenu ul li {
+            margin: 1px 0;
+            padding: 0 5px;
+            cursor: pointer;
+            list-style: none outside none;
+            background-color: #DFDFDF;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Metro 风格</h1>
+    <div class="content_wrap">
+        <div class="zTreeDemoBackground left">
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+        <div class="right">
+        </div>
+    </div>
+    <div id="rMenu">
+        <ul>
+            <li id="m_add" onclick="addTreeNode();">增加节点</li>
+            <li id="m_del" onclick="removeTreeNode();">删除节点</li>
+            <li id="m_check" onclick="checkTreeNode(true);">Check节点</li>
+            <li id="m_unCheck" onclick="checkTreeNode(false);">unCheck节点</li>
+            <li id="m_reset" onclick="resetTree();">恢复zTree</li>
+        </ul>
+    </div>
+</body>
+<script>
+    var setting = {
+        view: {
+            addHoverDom: addHoverDom,
+            removeHoverDom: removeHoverDom,
+            selectedMulti: false
+        },
+        check: {
+            enable: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        edit: {
+            enable: true,
+            drag: {
+                isCopy: false,//拖动时复制
+                isMove: true, //拖动时移动
+                prev: true,
+                inner: false,//拖动时可移入内部
+                next: true
+            }
+        },
+        callback: {
+            onRightClick: OnRightClick
+        }
+    };
+
+    var zNodes = [
+        { id: 1, pId: 0, name: "父节点1", open: true },
+        { id: 11, pId: 1, name: "父节点11" },
+        { id: 111, pId: 11, name: "叶子节点111" },
+        { id: 112, pId: 11, name: "叶子节点112" },
+        { id: 113, pId: 11, name: "叶子节点113" },
+        { id: 114, pId: 11, name: "叶子节点114" },
+        { id: 12, pId: 1, name: "父节点12" },
+        { id: 121, pId: 12, name: "叶子节点121" },
+        { id: 122, pId: 12, name: "叶子节点122" },
+        { id: 123, pId: 12, name: "叶子节点123" },
+        { id: 124, pId: 12, name: "叶子节点124" },
+        { id: 13, pId: 1, name: "父节点13", isParent: true },
+        { id: 2, pId: 0, name: "父节点2" },
+        { id: 21, pId: 2, name: "父节点21", open: true },
+        { id: 211, pId: 21, name: "叶子节点211" },
+        { id: 212, pId: 21, name: "叶子节点212" },
+        { id: 213, pId: 21, name: "叶子节点213" },
+        { id: 214, pId: 21, name: "叶子节点214" },
+        { id: 22, pId: 2, name: "父节点22" },
+        { id: 221, pId: 22, name: "叶子节点221" },
+        { id: 222, pId: 22, name: "叶子节点222" },
+        { id: 223, pId: 22, name: "叶子节点223" },
+        { id: 224, pId: 22, name: "叶子节点224" },
+        { id: 23, pId: 2, name: "父节点23" },
+        { id: 231, pId: 23, name: "叶子节点231" },
+        { id: 232, pId: 23, name: "叶子节点232" },
+        { id: 233, pId: 23, name: "叶子节点233" },
+        { id: 234, pId: 23, name: "叶子节点234" },
+        { id: 3, pId: 0, name: "父节点3", isParent: true }
+    ];
+
+    // $(document).ready(function () {
+    //     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    // });
+
+    var zTree, rMenu;
+    $(document).ready(function () {
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+        zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        rMenu = $("#rMenu");
+    });
+
+    var newCount = 1;
+    function addHoverDom(treeId, treeNode) {
+        var sObj = $("#" + treeNode.tId + "_span");
+        if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+        var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+            + "' title='add node' onfocus='this.blur();'></span>";
+        sObj.after(addStr);
+        var btn = $("#addBtn_" + treeNode.tId);
+        if (btn) btn.bind("click", function () {
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+            zTree.addNodes(treeNode, { id: (100 + newCount), pId: treeNode.id, name: "new node" + (newCount++) });
+            return false;
+        });
+    };
+    function removeHoverDom(treeId, treeNode) {
+        $("#addBtn_" + treeNode.tId).unbind().remove();
+    };
+
+    function OnRightClick(event, treeId, treeNode) {
+        if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+            zTree.cancelSelectedNode();
+            showRMenu("root", event.clientX, event.clientY);
+        } else if (treeNode && !treeNode.noR) {
+            zTree.selectNode(treeNode);
+            showRMenu("node", event.clientX, event.clientY);
+        }
+    }
+
+    function showRMenu(type, x, y) {
+        $("#rMenu ul").show();
+        if (type == "root") {
+            $("#m_del").hide();
+            $("#m_check").hide();
+            $("#m_unCheck").hide();
+        } else {
+            $("#m_del").show();
+            $("#m_check").show();
+            $("#m_unCheck").show();
+        }
+
+        y += document.body.scrollTop;
+        x += document.body.scrollLeft;
+        rMenu.css({ "top": y + "px", "left": x + "px", "visibility": "visible" });
+
+        $("body").bind("mousedown", onBodyMouseDown);
+    }
+    function hideRMenu() {
+        if (rMenu) rMenu.css({ "visibility": "hidden" });
+        $("body").unbind("mousedown", onBodyMouseDown);
+    }
+    function onBodyMouseDown(event) {
+        if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length > 0)) {
+            rMenu.css({ "visibility": "hidden" });
+        }
+    }
+    var addCount = 1;
+    function addTreeNode() {
+        hideRMenu();
+        var newNode = { name: "增加" + (addCount++) };
+        if (zTree.getSelectedNodes()[0]) {
+            newNode.checked = zTree.getSelectedNodes()[0].checked;
+            zTree.addNodes(zTree.getSelectedNodes()[0], newNode);
+        } else {
+            zTree.addNodes(null, newNode);
+        }
+    }
+    function removeTreeNode() {
+        hideRMenu();
+        var nodes = zTree.getSelectedNodes();
+        if (nodes && nodes.length > 0) {
+            if (nodes[0].children && nodes[0].children.length > 0) {
+                var msg = "要删除的节点是父节点，如果删除将连同子节点一起删掉。\n\n请确认!";
+                if (confirm(msg) == true) {
+                    zTree.removeNode(nodes[0]);
+                }
+            } else {
+                zTree.removeNode(nodes[0]);
+            }
+        }
+    }
+    function checkTreeNode(checked) {
+        var nodes = zTree.getSelectedNodes();
+        if (nodes && nodes.length > 0) {
+            zTree.checkNode(nodes[0], checked, true);
+        }
+        hideRMenu();
+    }
+    function resetTree() {
+        hideRMenu();
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    }
+</script>
+
+</html>
