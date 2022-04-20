@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="http://cdn.jsdelivr.net/jquery/2.0.0/jquery-2.0.0.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <canvas id="canvas" width="600px" height="500px"></canvas>
+    </div>
+    <script>
+        // https://wangxiaoting.blog.csdn.net/article/details/104421637?spm=1001.2101.3001.6650.6&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-6.pc_relevant_paycolumn_v3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-6.pc_relevant_paycolumn_v3&utm_relevant_index=12
+        var canvas = document.getElementById('canvas')
+        console.log(canvas)
+        var context = canvas.getContext('2d');
+
+
+        class Vector {
+            constructor(x, y) {
+                this.x = x
+                this.y = y
+            }
+            scale(n) {
+                this.x *= n
+                this.y *= n
+                return this
+            }
+            mag() {
+                return Math.sqrt(this.x * this.x + this.y * this.y);
+            }
+            normalize() {
+                var m = this.mag()
+                if (m != 0 && m != 1) { this.scale(1 / m) }
+                return this
+            }
+            add(other) {
+                this.x += other.x
+                this.y += other.y
+                return this
+            }
+            sub(other) {
+                this.x -= other.x
+                this.y -= other.y
+                return this
+            }
+            static add(one, other) {
+                return new Vector(one.x + other.x, one.y + other.y)
+            }
+            static sub(one, other) {
+                return new Vector(one.x - other.x, one.y - other.y)
+            }
+            static dist(one, other) {
+                var dx = one.x - other.x
+                var dy = one.y - other.y
+                return Math.sqrt(dx * dx + dy * dy)
+            }
+        }
+        // a = f.scale(1 / ball.m)v.add(a)ball.p.add(v)
+
+        function gravity(sun, earth) {
+            var dist = Vector.dist(sun.p, earth.p)
+            var f = sun.m * earth.m / (dist * dist)
+            var vec = Vector.sub(sun.p, earth.p)
+            return vec.normalize().scale(f)
+        }
+
+        class Ball {
+            constructor() {
+                this.p = new Vector(0, 0)
+                this.m = 0
+                this.radius = 20
+                // this.color = 'white'
+                this.color = 'green'
+            }
+            draw(context) {
+                context.save()
+                context.translate(this.p.x, this.p.y)
+                context.beginPath()
+                context.arc(0, 0, this.radius, 0, 2 * Math.PI)
+                context.fillStyle = this.color
+                context.fill()
+                context.restore()
+            }
+        }
+
+        var sun = new Ball()
+        sun.radius = 20
+        sun.color = 'red'
+        sun.p = new Vector(canvas.width / 2, canvas.height / 2)
+        sun.m = 300
+
+        var earth = new Ball()
+        earth.radius = 3
+        earth.color = 'aqua'
+        earth.p = new Vector(canvas.width / 2 + 100, canvas.height / 2 + 80)
+        earth.m = 1
+
+        var v = new Vector(-0.8, 1).scale(1);
+        // var v = new Vector(-0.3, 1).scale(2.2);
+
+
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame)
+            context.clearRect(0, 0, canvas.width, canvas.height)
+            var g = gravity(sun, earth)
+            var a = g.scale(1 / earth.m)
+            v.add(a)
+            earth.p.add(v)
+            earth.draw(context)
+            sun.draw(context)
+        }
+        )()
+
+
+
+        function str() {
+            fx = f * Math.cos(angle)
+            fy = f * Math.sin(angle)
+            ax = fx / ball.m
+            ay = fy / ball.m
+            vx += ax
+            vy += ay
+            ball.x += vx
+            ball.y += vy
+        }
+
+
+
+    </script>
+
+
+
+
+</body>
+
+</html>
