@@ -1,0 +1,190 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <script src="https://docs.opencv.org/3.4.0/opencv.js"></script>
+    <style type="text/css">
+        * {
+            /* margin: 0;
+            padding: 0; */
+            box-sizing: border-box;
+        }
+
+        canvas {
+            border-width: 1px;
+            border-color: #000000;
+            border-style: solid;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mainDiv"></div>
+    <div>
+        <input type="file" accept="image/*" />
+    </div>
+    <canvas id="canvas"></canvas>
+    <script>
+        // // const canvas = document.creatElement('canvas');
+        // const canvas = document.getElementById("mycanvas");
+        // const ctx = canvas.getContext('2d');
+        // //将图片加载到canvas中
+        // const image = new Image();
+        // image.src = '223.png'+ '?' + new Date().getTime();
+        // // image.setAttribute('crossOrigin', '');
+        // image.onload = () => {
+        //     ctx.drawImage(image, 0, 0);
+        //     //获取像素矩阵 
+        //     ctx.getImageData(0, 0, canvas.width, canvas.height);
+        // }
+        //创建画布
+        window.onload = (event) => {
+            main()
+        }
+        function main() {
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+
+            const inputFile = document.querySelector("input[type=file]");
+            inputFile.onchange = (event) => {
+                const files = event.target.files;
+                if (files.length > 0) {
+                    const file = files[0]; // First file
+                    // console.log(file);
+
+                    const image = new Image();
+                    image.src = URL.createObjectURL(file);
+                    image.onload = function (event) {
+                        // console.log(event, this);
+                        URL.revokeObjectURL(this.src);
+
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+
+                        ctx.drawImage(image, 0, 0);
+                        // var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        // console.log(imgData)
+                        // let src0 = cv.matFromImageData(imgData);
+                        // console.log('src0', src0)
+
+
+                        let src = cv.imread("canvas");
+                        console.log('image width: ' + src.cols + '\n' +
+                            'image height: ' + src.rows + '\n' +
+                            'image size: ' + src.size().width + '*' + src.size().height + '\n' +
+                            'image depth: ' + src.depth() + '\n' +
+                            'image channels ' + src.channels() + '\n' +
+                            'image type: ' + src.type() + '\n');
+
+
+                        let pixel = src.ucharPtr(1, 1);
+                        let R = pixel[0];
+                        let G = pixel[1];
+                        let B = pixel[2];
+                        let A = pixel[3];
+                        console.log("(" + R + "," + G + "," + B + ")")
+
+                        src.delete();
+
+                    }
+                }
+
+
+
+            }
+        }
+
+
+
+
+
+        /**
+        * 
+        * 返回的 lambda 在 [380, 645] 之间
+        *
+        * @param   Number  r       红色色值
+        * @param   Number  g       绿色色值
+        * @param   Number  b       蓝色色值
+        */
+        function colorToLambda(r, g, b) {
+            r /= 255, g /= 255, b /= 255
+            var lambda;
+            if (g == 0.0 && b == 1.0) {
+                lambda = -1.0 * (440.0 - 380.0) * r + 440.0
+            }
+            if (r == 0.0 && b == 1.0) {
+                lambda = (490.0 - 440.0) * g + 440.0
+            }
+            if (r == 0.0 && g == 1.0) {
+                lambda = -1.0 * (510.0 - 490.0) * b + 510.0
+            }
+            if (g == 1.0 && b == 0) {
+                lambda = (580.0 - 510.0) * r + 510.0
+            }
+            if (r == 1.0 && b == 0) {
+                lambda = -1.0 * (645.0 - 580.0) * g + 645.0
+            }
+            return Math.round(lambda * 100) / 100; //保留两位小数
+
+
+        }
+        /**
+        * 
+        * 返回的 r, g, b 在 [0, 255] 之间
+        *
+        * @param   Number  lambda       波长
+        */
+        function lambdaToColor(lambda) {
+            var r, g, b, alpha; // double
+            if (lambda < 380.0 || lambda > 645.0) {
+                alert("wrong lambda")
+                return
+            }
+            if (lambda >= 380.0 && lambda < 440.0) {
+                r = -1.0 * (lambda - 440.0) / (440.0 - 380.0);
+                g = 0.0;
+                b = 1.0;
+            } else if (lambda >= 440.0 && lambda < 490.0) {
+                r = 0.0;
+                g = (lambda - 440.0) / (490.0 - 440.0);
+                b = 1.0;
+            } else if (lambda >= 490.0 && lambda < 510.0) {
+                r = 0.0;
+                g = 1.0;
+                b = -1.0 * (lambda - 510.0) / (510.0 - 490.0);
+            } else if (lambda >= 510.0 && lambda < 580.0) {
+                r = (lambda - 510.0) / (580.0 - 510.0);
+                g = 1.0;
+                b = 0.0;
+            } else if (lambda >= 580.0 && lambda <= 645.0) {
+                r = 1.0;
+                g = -1.0 * (lambda - 645.0) / (645.0 - 580.0);
+                b = 0.0;
+            } else {
+                r = 0.0;
+                g = 0.0;
+                b = 0.0;
+            }
+            return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+        }
+
+        var arrHtml = [];
+        for (var i = 380.0; i <= 645.0; i += 1) {
+            var lambda = i; // double
+            // var gamma = 0.8; // double
+            var intensityMax = 255.0; // double
+            var res = lambdaToColor(lambda);
+            var rgba = 'rgba(' + res.r + ', ' + res.g + ', ' + res.b + ')';
+            console.log('Lambda:' + lambda + ', ' + rgba);
+
+            console.log(colorToLambda(res.r, res.g, res.b));
+
+
+            // arrHtml.push('<div style="background-color:' + rgba + '; width:1px;height:200px;display:inline-block;"></div>');
+        }
+        // document.getElementById('mainDiv').innerHTML = arrHtml.join('');
+    </script>
+</body>
+
+</html>
