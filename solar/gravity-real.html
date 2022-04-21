@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div>
+    <div style="border: 1px solid black;">
         <canvas id="canvas" width="600px" height="500px"></canvas>
     </div>
     <script>
@@ -89,18 +89,18 @@
         }
 
         var sun = new Ball()
-        sun.radius = 20
-        sun.color = 'red'
-        sun.p = new Vector(canvas.width / 2, canvas.height / 2)
+        sun.radius = 20;
+        sun.color = 'red';
+        sun.p = new Vector(canvas.width / 2, canvas.height / 2);
         sun.m = 300
 
         var earth = new Ball()
-        earth.radius = 3
-        earth.color = 'aqua'
-        earth.p = new Vector(canvas.width / 2 + 100, canvas.height / 2 + 80)
+        earth.radius = 10;
+        earth.color = 'blue';
+        earth.p = new Vector(canvas.width / 2 + 100, canvas.height / 2)
         earth.m = 1
 
-        var v = new Vector(-0.8, 1).scale(1);
+        var v = new Vector(-1, 1).scale(1);
         // var v = new Vector(-0.3, 1).scale(2.2);
 
 
