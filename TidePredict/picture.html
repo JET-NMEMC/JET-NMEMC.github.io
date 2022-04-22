@@ -6,7 +6,7 @@
     <script src="https://docs.opencv.org/3.4.0/opencv.js"></script>
     <!-- <script src="require.js"></script> -->
     <script src="TPmain2.js"></script>
-    <script src="grid.js"></script>
+    <!-- <script src="grid.js"></script> -->
     <style type="text/css">
         * {
             /* margin: 0;
@@ -21,7 +21,7 @@
         }
     </style>
     <script>
-        
+
     </script>
 </head>
 
@@ -31,6 +31,7 @@
         <input type="file" accept="image/*" />
     </div>
     <canvas id="canvas"></canvas>
+    <canvas id="canvasOutput"></canvas>
 
     <script>
         console.log(consituate)
@@ -61,13 +62,13 @@
                         canvas.height = image.height;
                         ctx.drawImage(image, 0, 0);
 
-                        // var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        // console.log(imgData)
-                        // let src0 = cv.matFromImageData(imgData);
+                        var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        console.log('imgData', imgData)
+                        let src = cv.matFromImageData(imgData);
                         // console.log('src0', src0)
 
-                        let src = cv.imread("canvas");
-                        // console.log("src", src);
+                        // let src = cv.imread("canvas");
+                        console.log("src", src);
                         console.log('image width: ' + src.cols + '\n' +
                             'image height: ' + src.rows + '\n' +
                             'image size: ' + src.size().width + '*' + src.size().height + '\n' +
@@ -97,21 +98,16 @@
                         consituate[imageProp[0]][imageProp[1]] = imgdata_o;
                         console.log("consituate", consituate)
                     }
-
-                    // consituate[imageProp[0]].Phase = []
                 }
 
             }
         }
+
         function getvaluablenumber(vmin, vmax, r) {
             vmin = Number(vmin), vmax = Number(vmax), r = Number(r);
             var e = 0;
             while ((vmax - vmin) / r < 1) { r /= 10; e++ }
             return e
-        }
-
-        function createimg(){
-
         }
         /*
         * 返回的 lambda 在 [380, 645] 之间
@@ -138,7 +134,7 @@
             else if (r == 1.0 && b == 0) {
                 lambda = -1.0 * (645.0 - 580.0) * g + 645.0
             } else {
-                aleart("wrong color function");
+                alert("wrong color function");
             };
 
             if (vmin && vmax) {
@@ -185,8 +181,8 @@
             }
             return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
         }
-        
-        
+
+
         // run()
 
         // function run() {
@@ -210,25 +206,25 @@
 
         // var Grid = require('grid');
 
-// Creating grid from two-dimensional array
-// var grid = new Grid([
-//     [0, 1, 1, null],
-//     [2, 3, 5, 1],
-//     [1, 3, 2, 1]],
-//     0, 0, 30, 20);
+        // // Creating grid from two-dimensional array
+        // var grid = new Grid([
+        //     [0, 1, 1, null],
+        //     [2, 3, 5, 1],
+        //     [1, 3, 2, 1]],
+        //     0, 0, 30, 20);
 
-// console.log(grid.data[1][2]); // => 5
-// console.log(grid.rowCount()); // => 3
-// console.log(grid.columnCount()); // => 4
-// console.log(grid.blankedNodesCount()); // => 1
+        // console.log(grid.data[1][2]); // => 5
+        // console.log(grid.rowCount()); // => 3
+        // console.log(grid.columnCount()); // => 4
+        // console.log(grid.blankedNodesCount()); // => 1
 
-// // Writing to file
-// var grid = new Grid(consituate['M2'].amplitude)
-// grid.writeSync('./out.grd', Grid.BINARY);
+        // // Writing to file
+        // var grid = new Grid(consituate['M2'].amplitude)
+        // grid.writeSync('./out.grd', Grid.BINARY);
 
-// // Reading from file
-// var gridFromFile = new Grid().readSync('./input.grd'); // Chained method call
-// console.log(gridFromFile.format); // => 'DSBB' which is Grid.BINARY format constant
+        // // Reading from file
+        // var gridFromFile = new Grid().readSync('./input.grd'); // Chained method call
+        // console.log(gridFromFile.format); // => 'DSBB' which is Grid.BINARY format constant
     </script>
 </body>
 
