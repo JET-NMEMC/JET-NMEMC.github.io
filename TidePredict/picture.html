@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <script src="https://docs.opencv.org/3.4.0/opencv.js"></script>
+    <!-- <script src="require.js"></script> -->
+    <script src="TPmain2.js"></script>
+    <script src="grid.js"></script>
     <style type="text/css">
         * {
             /* margin: 0;
@@ -17,6 +20,9 @@
             border-style: solid;
         }
     </style>
+    <script>
+        
+    </script>
 </head>
 
 <body>
@@ -25,20 +31,10 @@
         <input type="file" accept="image/*" />
     </div>
     <canvas id="canvas"></canvas>
+
     <script>
-        // // const canvas = document.creatElement('canvas');
-        // const canvas = document.getElementById("mycanvas");
-        // const ctx = canvas.getContext('2d');
-        // //将图片加载到canvas中
-        // const image = new Image();
-        // image.src = '223.png'+ '?' + new Date().getTime();
-        // // image.setAttribute('crossOrigin', '');
-        // image.onload = () => {
-        //     ctx.drawImage(image, 0, 0);
-        //     //获取像素矩阵 
-        //     ctx.getImageData(0, 0, canvas.width, canvas.height);
-        // }
-        //创建画布
+        console.log(consituate)
+
         window.onload = (event) => {
             main()
         }
@@ -112,6 +108,10 @@
             var e = 0;
             while ((vmax - vmin) / r < 1) { r /= 10; e++ }
             return e
+        }
+
+        function createimg(){
+
         }
         /*
         * 返回的 lambda 在 [380, 645] 之间
@@ -187,28 +187,28 @@
         }
         
         
-        run()
+        // run()
 
-        function run() {
-            var arrHtml = [];
-            for (var i = 380.0; i <= 645.0; i += 0.25) {
-                var lambda = i; // double
-                // var gamma = 0.8; // double
-                var intensityMax = 255.0; // double
-                var res = lambdaToColor(lambda);
-                var rgba = 'rgba(' + res.r + ', ' + res.g + ', ' + res.b + ')';
+        // function run() {
+        //     var arrHtml = [];
+        //     for (var i = 380.0; i <= 645.0; i += 3) {
+        //         var lambda = i; // double
+        //         // var gamma = 0.8; // double
+        //         var intensityMax = 255.0; // double
+        //         var res = lambdaToColor(lambda);
+        //         var rgba = 'rgba(' + res.r + ', ' + res.g + ', ' + res.b + ')';
 
-                console.log('Lambda:' + lambda + ', ' + rgba);
-                console.log(colorToLambda(res.r, res.g, res.b, 1, 100, 2));
+        //         console.log('Lambda:' + lambda + ', ' + rgba);
+        //         console.log(colorToLambda(res.r, res.g, res.b, 1, 100, 2));
 
-                arrHtml.push('<div style="background-color:' + rgba + '; width:1px;height:200px;display:inline-block;"></div>');
-            }
-            document.getElementById('mainDiv').innerHTML = arrHtml.join('');
-        }
+        //         arrHtml.push('<div style="background-color:' + rgba + '; width:1px;height:200px;display:inline-block;"></div>');
+        //     }
+        //     document.getElementById('mainDiv').innerHTML = arrHtml.join('');
+        // }
 
 
 
-        var Grid = require('surfer-grid-file-format');
+        // var Grid = require('grid');
 
 // Creating grid from two-dimensional array
 // var grid = new Grid([
@@ -223,6 +223,7 @@
 // console.log(grid.blankedNodesCount()); // => 1
 
 // // Writing to file
+// var grid = new Grid(consituate['M2'].amplitude)
 // grid.writeSync('./out.grd', Grid.BINARY);
 
 // // Reading from file
