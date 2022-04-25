@@ -47,6 +47,6 @@ canvas {
 }
 #completion {
   display: inline-block;
-  width: 40ch;
+  width: 20ch;
   text-align: left;
 }
