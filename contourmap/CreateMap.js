@@ -16,6 +16,18 @@ function initDemoMap() {
         maxZoom: 18,
         attribution: "&copy; Esri"
     });
+    //Esri world TopoBathy 3D
+    // var Esri_worldTopoBathy = L.tileLayer(
+    //     "https://services.arcgisonline.com/arcgis/rest/services/WorldElevation3D/TopoBathy3D/ImageServer/tile/{z}/{y}/{x}", {
+    //     // maxZoom: 18,
+    //     attribution: "&copy; Esri"
+    // });
+    var Esri_worldTerrain = L.tileLayer(
+        "https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}", {
+        // maxZoom: 18,
+        attribution: "&copy; Esri"
+    });
+
     //geoq水系
     var HydroMap = L.tileLayer("https://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/WorldHydroMap/MapServer/tile/{z}/{y}/{x}", {
         corrdType: "gcj02",
@@ -72,7 +84,6 @@ function initDemoMap() {
         corrdType: "gcj02",
         attribution: "&copy; 船讯网",
     });
-
     // 船讯网海图 未名坐标
     // var haitu_chuanxun = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
     //     attribution: "&copy; 船讯网",
@@ -96,6 +107,8 @@ function initDemoMap() {
         // "海图船讯": haitu,
         "海图在线": haitu_chinaport,
         "海图YE": haitu_YE,
+        // "Esri地表": Esri_worldTopoBathy,
+        "Esri海洋": Esri_worldTerrain,
         "谷歌影像 火星": GoogleImage2,
         "高德影像 火星": gaode,
         "谷歌地图 火星": GoogleMap2,
@@ -104,12 +117,17 @@ function initDemoMap() {
     };
     //------------------------------定义复选图层-----------------------------
     var tianditu_矢量注记 = L.tileLayer("http://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+        corrdType: "wgs84",
     });
     var tianditu_地形注记 = L.tileLayer("http://t0.tianditu.gov.cn/cta_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cta&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+        corrdType: "wgs84",
     });
     var gaodeAnnotion = L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}', {
         corrdType: "gcj02",
         subdomains: ["1", "2", "3", "4"]
+    });
+    var esriAnnotion = L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}', {
+        corrdType: "wgs84",
     });
     // var tianditu_全球境界 = L.tileLayer("http://t0.tianditu.gov.cn/ibo_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ibo&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
     // });
@@ -117,13 +135,15 @@ function initDemoMap() {
     var overlayLayers = {
         "天地图矢量注记": tianditu_矢量注记,
         "天地图道路注记": tianditu_地形注记,
+        "esri海洋注记": esriAnnotion,
         "高德影像注记火星": gaodeAnnotion,
+
         // "天地图全球境界": tianditu_全球境界,
     }
     //----------------------------------------------------------------------地图设置
     var map = L.map("map", {
-        // layers: [Esri_WorldImagery],
-        layers: [warm],
+        layers: [Esri_WorldImagery],
+        // layers: [warm],
         zoomControl: false,
         attributionControl: false,
     });
