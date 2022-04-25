@@ -10,14 +10,14 @@
     <!-- <link rel="icon" type="image/png" href="splitearth_v12b.png"> -->
     <script src="https://cdn.bootcss.com/FileSaver.js/1.3.8/FileSaver.min.js"></script>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gdal3.js@2.1.0/dist/package/gdal3.js"
-        integrity="sha384-r9LuL3uWvWB90NwulendmLxfI6CPFkDSUiZ2qiUK7qCPhbK+JIQOD/pKp7NO+5Ys"
-        crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.8.0/proj4.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/geotiff"></script> -->
+    <!-- <script async src="https://cdn.jsdelivr.net/npm/geotiff"></script> -->
+    <!-- <script src="gdal3.js"></script> -->
+
     <script src="canvastotiff.js"></script>
     <script src="main.min.js"></script>
 </head>
-
 <!-- <body onload="app.main()"> -->
 
 <body>
@@ -28,10 +28,20 @@
     <button id="right">Right</button>
     <button id="zoomIn">Zoom In</button>
     <button id="zoomOut">Zoom Out</button>
+
+    <!-- onchange="setMapSource()" -->
+    <select id="select">
+        <option value="mapbox影像">mapbox影像</option>
+        <option value="arcgis影像">arcgis影像</option>
+        <option value="天地图影像">天地图影像</option>
+        <option value="Google影像">Google影像</option>
+        <option value="中国港海图">海图在线</option>
+    </select>
+
     <input type="number" name="" value="1" id="number" style="width: 50px;" onchange="change()">
-    <button onclick="chushihua()">初始化</button>
-    <button onclick="print()">打印</button>
-    <button onclick="download(canvas)">下载</button>
+    <button id="chushihua" onclick="chushihua()">初始化地图</button>
+    <button onclick="print()">打印参考</button>
+    <button onclick="download(canvas)">下载图像</button>
     <p></p>
     <div class="canvasLayers">
         <canvas id="rasterCanvas"></canvas>
@@ -47,54 +57,91 @@
         <input type="text" id="south" placeholder="South Latitude" value="38.6">
         <button id="bboxSet">Set Bounding Box</button>
         <!-- <input class="input-file" type="file" name="file" id="file" onChange="onFileChange" /> -->
-
     </p>
+
     <script>
+        var mapreday = true;
+        // var canvas = document.getElementById("vectorCanvas");
+        var canvas = document.getElementById("rasterCanvas");
+
+
+
         function change() {
             var mapclass = document.getElementById("number").value
             console.log(mapclass)
             // params.zoom = mapclass
         }
         function chushihua() {
+            // var params = {
+            //     endpoint: "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamhlbWJkIiwiYSI6ImNqcHpueHpyZjBlMjAzeG9kNG9oNzI2NTYifQ.K7fqhk2Z2YZ8NIV94M-5nA",
+            //     maxZoom: 20,
+            //     tileSize: 256,
+            //     width: 256 * 4 * 1,
+            //     height: 256 * 3 * 1,
+            //     center: [0.83, 0.38],
+            //     zoom: 6,
+            // };
+            setMapSource()
             var mapclass = document.getElementById("number").value
             params.width = 256 * 4 * mapclass
             params.height = 256 * 3 * mapclass
+            // 
             app.main()
+            // console.log(params)
+            document.getElementById("chushihua").disabled = true;
         }
-        
-        var canvas = document.getElementById("rasterCanvas");
-        // canvas.addEventListener()
+        function setMapSource() {
+            var seleOBJ = document.getElementById("select")
+            var source = seleOBJ.options[seleOBJ.selectedIndex].value
+            console.log(source)
+            switch (source) {
+                case 'mapbox影像':
+                    params.endpoint = "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamhlbWJkIiwiYSI6ImNqcHpueHpyZjBlMjAzeG9kNG9oNzI2NTYifQ.K7fqhk2Z2YZ8NIV94M-5nA"
+                    break;
+                case 'arcgis影像':
+                    params.endpoint = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                    break;
+                case '天地图影像':
+                    params.endpoint = "http://t0.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51"
+                    params.maxZoom = 18
+                    break;
+                case '中国港海图':
+                    params.endpoint = "http://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}"
+                    break;
+                case 'Google影像':
+                    params.endpoint = "http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+                    break;
+                default: //表达式和每个case后的值比较都是false
+                    params.endpoint = "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamhlbWJkIiwiYSI6ImNqcHpueHpyZjBlMjAzeG9kNG9oNzI2NTYifQ.K7fqhk2Z2YZ8NIV94M-5nA"
+            }
 
-        // initGdalJs({ path: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.1.0/dist/package', useWorker: false }).then((Gdal) => { });
-        // // JS
-        // var readimage
+        }
+        // const Gdal =  initGdalJs({ path: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.1.0/dist/package', useWorker: false })
+        //     console.log(Gdal)
         // function onFileChange({ target }) {
-        //     readimage = Gdal.open(target.file);
-        // }
-        // function onFileChange({ target }) {
-        //     async function (target) {
-        //         const Gdal = await initGdalJs();
-        //         const result = await Gdal.open(target.file).datasets[0];
-        //         const options = [
-        //             '-of', 'tiff',
-        //             '-t_srs', 'EPSG:4857'
-        //         ];
-        //         const filePath = await Gdal.gdalwarp(dataset, options);
-        //         console.log(result, filePath)
-        //     }
-        //     test(target)
-        // }
-
-        // async function () {
-        //     const Gdal = await initGdalJs();
-        //     const dataset = (await Gdal.open('./image.tiff')).datasets[0];
+        //     const dataset = (Gdal.open(target.file[0])).datasets[0];
         //     const options = [
-        //         '-of', 'tiff',
-        //         '-t_srs', 'EPSG:4857'
+        //         '-of', 'GTiff',
+        //         '-t_srs', 'EPSG:4326'
         //     ];
-        //     const filePath = await Gdal.gdalwarp(dataset, options);
+        //     const filePath = Gdal.gdalwarp(dataset, options);
+        //     const files =  Gdal.getOutputFiles();
+        //     files.forEach((fileInfo) => {
+        //         console.log(`file path: ${fileInfo.path}, file size: ${fileInfo.size}`);
+        //     });
         // }
-        // 
+        function pix2coord(x, y) {
+            var ww = 1024
+            var hh = 768
+            var minX = tile2long(app.params.xTile0, app.params.zoom)
+            var maxX = tile2long(app.params.xTile1, app.params.zoom)
+            var minY = tile2lat(app.params.yTile1, app.params.zoom)
+            var maxY = tile2lat(app.params.yTile0, app.params.zoom)
+            var lng = minX + x * (maxX - minX) / ww
+            var lat = maxY - y * (maxY - minY) / hh
+            return [lng, lat]
+
+        }
 
         function print() {
             console.log(app.params)
@@ -114,18 +161,33 @@
             var A = (CR - C) / numX //X方向上的象素分辨率
             var E = (FR - F) / numY //Y方向上的象素分辨率
 
+            var geoinfo = [A, D, B, E, C, F]
+
             console.log(A, D, B, E, C, F)
+            //生成txt带有bom的UTF8,arcgis无法识别
+            // var blob = new Blob([geoinfo.join("\n")], { type: "text/plain;charset=utf-8" });
+            // saveAs(blob, 'image' + app.params.zoom + ".tfw");
+            // let file = new File([geoinfo.join("\n")], 'image' + app.params.zoom + '.tfw', { type: 'text/plain;charset=utf-8' });
+            // saveAs(file);
+            const content = geoinfo.join("\n")
+            const blob = new Blob([content], { type: "text/plain;charset=utf-8" })
+            const objectURL = URL.createObjectURL(blob)
+            const anchor = document.createElement('a')
+            anchor.href = objectURL
+            anchor.download = 'image' + app.params.zoom + '.tfw'
+            anchor.click()
+            URL.revokeObjectURL(objectURL)
         }
 
         function download(canvas) {
-            console.log(app.params)
+            // console.log(app.params)
             // canvas.toBlob(function (blob) {
             //     saveAs(blob, 'image')
             // });
             CanvasToTIFF.toBlob(canvas, function (blob) {
                 // var url = URL.createObjectURL(blob);
                 // console.log(url)
-                saveAs(blob, 'image-level-'+ app.params.zoom)
+                saveAs(blob, 'image' + app.params.zoom)
             });
         }
 
@@ -153,7 +215,27 @@
         //     return (xy);
         // }
 
+        // canvas.onmousedown = function (c) {
+        //     let x1 = c.layerX
+        //     let y1 = c.layerY
+        //     let minx, maxx, miny, maxy
+        //     // let div = document.createElement("div")
+        //     //鼠标移动时
+        //     canvas.onmousemove = function (e) {
+        //         // e = e || window.event
+        //         let x2 = e.layerX
+        //         let y2 = e.layerY
+        //         minx = Math.min(x1, x2)
+        //         miny = Math.min(y1, y2)
+        //         maxx = Math.max(x1, x2)
+        //         maxy = Math.max(y1, y2)
+        //     }
 
+        //     canvas.onmouseup = function () {
+        //         canvas.onmousemove = null
+        //         console.log("不动了", minx, maxx, miny, maxy)
+        //     }
+        // }
     </script>
 
 </body>
