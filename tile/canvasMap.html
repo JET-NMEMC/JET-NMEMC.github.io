@@ -46,18 +46,14 @@
         <input type="text" id="north" placeholder="North Latitude" value="40">
         <input type="text" id="south" placeholder="South Latitude" value="38.6">
         <button id="bboxSet">Set Bounding Box</button>
-        <input class="input-file" type="file" name="file" id="file" onChange="onFileChange" />
+        <!-- <input class="input-file" type="file" name="file" id="file" onChange="onFileChange" /> -->
 
     </p>
     <script>
         function change() {
             var mapclass = document.getElementById("number").value
             console.log(mapclass)
-        //     // params.zoom = mapclass
-        //     params.width = params.width * mapclass
-        //     params.height = params.height * mapclass
-        //     // var app = {}
-        //     app.main()
+            // params.zoom = mapclass
         }
         function chushihua() {
             var mapclass = document.getElementById("number").value
@@ -69,14 +65,6 @@
         var canvas = document.getElementById("rasterCanvas");
         // canvas.addEventListener()
 
-        // Covert to TIFF using Object-URL (faster, smaller size)
-        // CanvasToTIFF.toObjectURL(canvas, function (url) {
-        //     var a = document.querySelector("a");
-        //     a.href = url;
-        //     a.innerHTML = "Right-click this link, select Save As to save the TIFF";
-        // })
-
-
         // initGdalJs({ path: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.1.0/dist/package', useWorker: false }).then((Gdal) => { });
         // // JS
         // var readimage
@@ -84,7 +72,7 @@
         //     readimage = Gdal.open(target.file);
         // }
         // function onFileChange({ target }) {
-        //     async function test(target) {
+        //     async function (target) {
         //         const Gdal = await initGdalJs();
         //         const result = await Gdal.open(target.file).datasets[0];
         //         const options = [
@@ -97,7 +85,7 @@
         //     test(target)
         // }
 
-        // async function test() {
+        // async function () {
         //     const Gdal = await initGdalJs();
         //     const dataset = (await Gdal.open('./image.tiff')).datasets[0];
         //     const options = [
@@ -106,7 +94,7 @@
         //     ];
         //     const filePath = await Gdal.gdalwarp(dataset, options);
         // }
-        // test()
+        // 
 
         function print() {
             console.log(app.params)
@@ -114,41 +102,30 @@
             var maxX = tile2long(app.params.xTile1, app.params.zoom)
             var minY = tile2lat(app.params.yTile1, app.params.zoom)
             var maxY = tile2lat(app.params.yTile0, app.params.zoom)
-
             var numX = app.params.width
             var numY = app.params.height
-
             console.log("经度范围", minX, maxX);
             console.log("纬度范围", minY, maxY);
-
             var D = 0, B = 0
-            // var A = (maxX - minX) / numX //X方向上的象素分辨率
-            // var E = (minY - maxY) / numY
             var C = proj4('EPSG:4326', 'EPSG:3857').forward([minX, maxY])[0]
             var F = proj4('EPSG:4326', 'EPSG:3857').forward([minX, maxY])[1]
             var CR = proj4('EPSG:4326', 'EPSG:3857').forward([maxX, minY])[0]
             var FR = proj4('EPSG:4326', 'EPSG:3857').forward([maxX, minY])[1]
             var A = (CR - C) / numX //X方向上的象素分辨率
-            var E = (FR - F) / numY
+            var E = (FR - F) / numY //Y方向上的象素分辨率
 
             console.log(A, D, B, E, C, F)
         }
 
-
-
-
         function download(canvas) {
-
+            console.log(app.params)
             // canvas.toBlob(function (blob) {
             //     saveAs(blob, 'image')
             // });
-
             CanvasToTIFF.toBlob(canvas, function (blob) {
-                // blob object can be converted to an objectURL and then
-                // set as source for images, or as download target:
-                var url = URL.createObjectURL(blob);
+                // var url = URL.createObjectURL(blob);
                 // console.log(url)
-                saveAs(blob, 'image')
+                saveAs(blob, 'image-level-'+ app.params.zoom)
             });
         }
 
