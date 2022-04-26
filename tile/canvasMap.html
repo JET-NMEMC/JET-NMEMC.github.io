@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -99,14 +99,14 @@
                     params.endpoint = "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamhlbWJkIiwiYSI6ImNqcHpueHpyZjBlMjAzeG9kNG9oNzI2NTYifQ.K7fqhk2Z2YZ8NIV94M-5nA"
                     break;
                 case 'arcgis影像':
-                    params.endpoint = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                    params.endpoint = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                     break;
                 case '天地图影像':
                     params.endpoint = "http://t0.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51"
                     params.maxZoom = 18
                     break;
                 case '中国港海图':
-                    params.endpoint = "http://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}"
+                    params.endpoint = "https://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}"
                     break;
                 case 'Google影像':
                     params.endpoint = "http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
