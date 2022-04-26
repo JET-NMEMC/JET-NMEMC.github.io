@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,6 @@
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.8.0/proj4.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/geotiff"></script> -->
-    <!-- <script async src="https://cdn.jsdelivr.net/npm/geotiff"></script> -->
     <!-- <script src="gdal3.js"></script> -->
 
     <script src="canvastotiff.js"></script>
@@ -39,16 +38,17 @@
     </select>
 
     <input type="number" name="" value="1" id="number" style="width: 50px;" onchange="change()">
-    <button id="chushihua" onclick="chushihua()">初始化地图</button>
-    <button onclick="print()">打印参考</button>
+    <button id="chushihua" onclick="chushihua(this)">点击！配置地图</button>
+    <button onclick="print()">下载参考</button>
     <button onclick="download(canvas)">下载图像</button>
-    <p></p>
+    <p>
     <div class="canvasLayers">
         <canvas id="rasterCanvas"></canvas>
         <canvas id="vectorCanvas"></canvas>
     </div>
-    <a href=""></a>
-    <div id="coordinates"></div>
+    </p>
+    <!-- <a href=""></a> -->
+    <!-- <div id="coordinates"></div> -->
     <p>
         Enter longitude and latitude in degrees for a bounding box:<br>
         <input type="text" id="west" placeholder="West Longitude" value="121">
@@ -60,36 +60,29 @@
     </p>
 
     <script>
-        var mapreday = true;
         // var canvas = document.getElementById("vectorCanvas");
         var canvas = document.getElementById("rasterCanvas");
 
+        function chushihua(e) {
+            setMapSource()
+            setMapSize()
+            app.main()
+            // console.log(params)
+            e.disabled = true;
+            e.innerText = '完成！配置地图';
+        }
 
+        function setMapSize() {
+            var mapclass = document.getElementById("number").value
+            params.width = 256 * 4 * mapclass
+            params.height = 256 * 3 * mapclass
+        }
 
         function change() {
             var mapclass = document.getElementById("number").value
             console.log(mapclass)
-            // params.zoom = mapclass
         }
-        function chushihua() {
-            // var params = {
-            //     endpoint: "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamhlbWJkIiwiYSI6ImNqcHpueHpyZjBlMjAzeG9kNG9oNzI2NTYifQ.K7fqhk2Z2YZ8NIV94M-5nA",
-            //     maxZoom: 20,
-            //     tileSize: 256,
-            //     width: 256 * 4 * 1,
-            //     height: 256 * 3 * 1,
-            //     center: [0.83, 0.38],
-            //     zoom: 6,
-            // };
-            setMapSource()
-            var mapclass = document.getElementById("number").value
-            params.width = 256 * 4 * mapclass
-            params.height = 256 * 3 * mapclass
-            // 
-            app.main()
-            // console.log(params)
-            document.getElementById("chushihua").disabled = true;
-        }
+
         function setMapSource() {
             var seleOBJ = document.getElementById("select")
             var source = seleOBJ.options[seleOBJ.selectedIndex].value
@@ -106,43 +99,30 @@
                     params.maxZoom = 18
                     break;
                 case '中国港海图':
-                    params.endpoint = "https://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}"
+                    params.endpoint = "http://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}"
                     break;
                 case 'Google影像':
                     params.endpoint = "http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
                     break;
-                default: //表达式和每个case后的值比较都是false
+                default:
                     params.endpoint = "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamhlbWJkIiwiYSI6ImNqcHpueHpyZjBlMjAzeG9kNG9oNzI2NTYifQ.K7fqhk2Z2YZ8NIV94M-5nA"
             }
-
-        }
-        // const Gdal =  initGdalJs({ path: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.1.0/dist/package', useWorker: false })
-        //     console.log(Gdal)
-        // function onFileChange({ target }) {
-        //     const dataset = (Gdal.open(target.file[0])).datasets[0];
-        //     const options = [
-        //         '-of', 'GTiff',
-        //         '-t_srs', 'EPSG:4326'
-        //     ];
-        //     const filePath = Gdal.gdalwarp(dataset, options);
-        //     const files =  Gdal.getOutputFiles();
-        //     files.forEach((fileInfo) => {
-        //         console.log(`file path: ${fileInfo.path}, file size: ${fileInfo.size}`);
-        //     });
-        // }
-        function pix2coord(x, y) {
-            var ww = 1024
-            var hh = 768
-            var minX = tile2long(app.params.xTile0, app.params.zoom)
-            var maxX = tile2long(app.params.xTile1, app.params.zoom)
-            var minY = tile2lat(app.params.yTile1, app.params.zoom)
-            var maxY = tile2lat(app.params.yTile0, app.params.zoom)
-            var lng = minX + x * (maxX - minX) / ww
-            var lat = maxY - y * (maxY - minY) / hh
-            return [lng, lat]
-
         }
 
+        //-----------------------------------下载影像图片
+        function download(canvas) {
+            // console.log(app.params)
+            // canvas.toBlob(function (blob) {
+            //     saveAs(blob, 'image')
+            // });
+            CanvasToTIFF.toBlob(canvas, function (blob) {
+                // var url = URL.createObjectURL(blob);
+                // console.log(url)
+                saveAs(blob, 'image' + app.params.zoom)
+            });
+        }
+
+        //-----------------------------------下载配准信息
         function print() {
             console.log(app.params)
             var minX = tile2long(app.params.xTile0, app.params.zoom)
@@ -160,9 +140,7 @@
             var FR = proj4('EPSG:4326', 'EPSG:3857').forward([maxX, minY])[1]
             var A = (CR - C) / numX //X方向上的象素分辨率
             var E = (FR - F) / numY //Y方向上的象素分辨率
-
             var geoinfo = [A, D, B, E, C, F]
-
             console.log(A, D, B, E, C, F)
             //生成txt带有bom的UTF8,arcgis无法识别
             // var blob = new Blob([geoinfo.join("\n")], { type: "text/plain;charset=utf-8" });
@@ -179,17 +157,6 @@
             URL.revokeObjectURL(objectURL)
         }
 
-        function download(canvas) {
-            // console.log(app.params)
-            // canvas.toBlob(function (blob) {
-            //     saveAs(blob, 'image')
-            // });
-            CanvasToTIFF.toBlob(canvas, function (blob) {
-                // var url = URL.createObjectURL(blob);
-                // console.log(url)
-                saveAs(blob, 'image' + app.params.zoom)
-            });
-        }
 
         function tile2long(x, z) {
             return (x / Math.pow(2, z) * 360 - 180);
@@ -199,6 +166,18 @@
             return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
         }
 
+
+        function pix2coord(x, y) {
+            var ww = 1024
+            var hh = 768
+            var minX = tile2long(app.params.xTile0, app.params.zoom)
+            var maxX = tile2long(app.params.xTile1, app.params.zoom)
+            var minY = tile2lat(app.params.yTile1, app.params.zoom)
+            var maxY = tile2lat(app.params.yTile0, app.params.zoom)
+            var lng = minX + x * (maxX - minX) / ww
+            var lat = maxY - y * (maxY - minY) / hh
+            return [lng, lat]
+        }
 
         // console.log('EPSG:4326', proj4.defs('EPSG:4326'))
         // console.log('EPSG:3857', proj4.defs('EPSG:3857'))
@@ -214,6 +193,8 @@
         //     xy[1] = y;
         //     return (xy);
         // }
+
+
 
         // canvas.onmousedown = function (c) {
         //     let x1 = c.layerX
@@ -235,6 +216,24 @@
         //         canvas.onmousemove = null
         //         console.log("不动了", minx, maxx, miny, maxy)
         //     }
+        // }
+
+
+
+
+        // const Gdal =  initGdalJs({ path: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.1.0/dist/package', useWorker: false })
+        //     console.log(Gdal)
+        // function onFileChange({ target }) {
+        //     const dataset = (Gdal.open(target.file[0])).datasets[0];
+        //     const options = [
+        //         '-of', 'GTiff',
+        //         '-t_srs', 'EPSG:4326'
+        //     ];
+        //     const filePath = Gdal.gdalwarp(dataset, options);
+        //     const files =  Gdal.getOutputFiles();
+        //     files.forEach((fileInfo) => {
+        //         console.log(`file path: ${fileInfo.path}, file size: ${fileInfo.size}`);
+        //     });
         // }
     </script>
 
