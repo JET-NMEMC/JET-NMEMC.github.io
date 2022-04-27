@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalman</title>
+    <!-- <script src="src/kalman-filter.min.js"></script> -->
+    <script src="src/kalman-filter.js"></script>
+</head>
+
+<body>
+
+
+
+    <script>
+
+        const { KalmanFilter } = kalmanFilter;
+
+        //-------------一维平滑
+        const observations1D = [0, 0.1, 0.5, 0.2, 3, 4, 2, 1, 2, 3, 5, 6];
+        var smoothresult1D = Smoothing1D(observations1D);
+        console.log(observations1D)
+        console.log(smoothresult1D)
+        //-------------一维平滑函数
+        function Smoothing1D(arr) {
+            const kFilter = new KalmanFilter();
+            const res = kFilter.filterAll(arr);
+            return res
+        }
+
+        //--------------二维平滑
+        const observations2D = [[0, 1], [0.1, 0.5], [0.2, 3], [4, 2], [1, 2]];
+        var smoothresult2D = Smoothing2D(observations2D);
+        console.log(observations2D)
+        console.log(smoothresult2D)
+        //-------------二维平滑函数
+        function Smoothing2D(arr) {
+            const kFilter = new KalmanFilter({
+                observation: 2,
+                // dynamic: 'constant-speed'
+            });
+            const res = kFilter.filterAll(arr)
+            return res
+        }
+
+        //-----------------------------------------------------------------
+        KF3D()
+        function KF3D() {
+            // dynamic.dimension是状态的大小
+            // dynamic.transition是定义系统动态的状态转移模型
+            // dynamic.covariance是转移模型的协方差矩阵
+            // dynamic.init用于初始状态（我们一般在上面设置一个很大的协方差）
+            const observations = [
+                [0.0261, 1.0027, 0.0146],
+                [0.1557, 0.9935, 0.0796],
+                [0.3477, 0.9375, 0.1733],
+                [0.4753, 0.8757, 0.2708],
+                [0.637, 0.7533, 0.4031],
+                [0.7685, 0.6609, 0.486],
+                [0.8649, 0.4849, 0.6161],
+                [0.942, 0.3488, 0.6762],
+                [0.9916, 0.1831, 0.7906],
+                [1.0022, 0.0275, 0.8997],
+                [0.9946, -0.1746, 1.013],
+                [0.9632, -0.3556, 1.1075],
+                [0.8938, -0.5207, 1.2156],
+                [0.7696, -0.6418, 1.2741],
+                [0.6238, -0.7435, 1.3743],
+                [0.511, -0.8949, 1.5074],
+                [0.3542, -0.9314, 1.6013],
+                [0.1477, -0.9717, 1.6874],
+                [-0.0172, -0.9792, 1.7969],
+                [-0.1534, -1.0084, 1.8957],
+                [-0.356, -0.9558, 1.9818],
+                [-0.4745, -0.8813, 2.0952],
+                [-0.6476, -0.791, 2.2219],
+                [-0.7913, -0.6367, 2.2938],
+                [-0.8412, -0.4885, 2.3932],
+                [-0.9178, -0.3583, 2.5038],
+                [-0.9737, -0.1897, 2.5944],
+                [-0.991, -0.0241, 2.6749],
+                [-0.9872, 0.1708, 2.8262],
+                [-0.951, 0.3607, 2.8759],
+                [-0.8548, 0.489, 3.0297],
+                [-0.7366, 0.6432, 3.117],
+                [-0.671, 0.7434, 3.1973],
+                [-0.4837, 0.8882, 3.2925],
+                [-0.3563, 0.954, 3.3817],
+                [-0.1559, 0.9882, 3.5218],
+                [0.0182, 1.0009, 3.6218],
+            ]
+            const timeStep = 0.1;
+            const huge = 1e8;
+
+
+            // const kFilter = new KalmanFilter()
+            const kFilter = new KalmanFilter({
+                observation: {
+                    dimension: 3
+                },
+                dynamic: {
+                    init: {
+                        // 我们在这里只使用随机猜测的值，这似乎是合理的
+                        mean: [[1], [1], [1], [0], [0], [0]],
+                        // 我们以巨大的协方差初始化动态模型，因为我们不知道在第一个模型之前我的模型对象在哪里
+                        covariance: [
+                            [huge, 0, 0, 0, 0, 0],
+                            [0, huge, 0, 0, 0, 0],
+                            [0, 0, huge, 0, 0, 0],
+                            [0, 0, 0, huge, 0, 0],
+                            [0, 0, 0, 0, huge, 0],
+                            [0, 0, 0, 0, 0, huge],
+                        ],
+                    },
+                    // Corresponds to (x, y, z, vx, vy, vz)
+                    dimension: 6,
+                    // 三D匀速模型: [ [Id , timeStep*Id], [0, Id]]
+                    transition: [
+                        [1, 0, 0, timeStep, 0, 0],
+                        [0, 1, 0, 0, timeStep, 0],
+                        [0, 0, 1, 0, 0, timeStep],
+                        [0, 0, 0, 1, 0, 0],
+                        [0, 0, 0, 0, 1, 0],
+                        [0, 0, 0, 0, 0, 1]
+                    ],
+                    // 独立变量的对角协方差,因为 timeStep = 0.1,,将速度方差考虑为 ~ timeStep^2 * positionVariance
+                    covariance: [1, 1, 1, 0.01, 0.01, 0.01]// equivalent to diag([1, 1, 1, 0.01, 0.01, 0.01])
+                }
+            });
+
+            let previousCorrected = null;
+            const results = [];
+            observations.forEach(observation => {
+                const predictedState = kFilter.predict({
+                    previousCorrected
+                });
+                console.log(predictedState)
+                const correctedState = kFilter.correct({
+                    predicted,
+                    observation
+                });
+
+                results.push(correctedState.mean);
+
+                // update the previousCorrected for next loop iteration
+                previousCorrected = correctedState
+            });
+
+            console.log(results);
+        }
+
+
+
+    </script>
+</body>
+
+</html>
