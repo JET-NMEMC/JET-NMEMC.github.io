@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        console.log(getspeed())
+        function getspeed() {
+            var Vt, Dt //船
+            var Vf, Df //水流
+            var Vc, Dc //航迹
+
+            Vt = 1.00, Dt = null;//船
+            Vf = 1.00, Df = 90.0;//水流
+            Vc = null, Dc = 45.0;//航迹
+
+            var A = angle_btw_2_Dir(Df, Dc).rad;
+            console.log("水流与航迹夹角", angle_btw_2_Dir(Df, Dc).angle);
+
+            sinA = Math.sin(A);
+            cosA = Math.cos(A);
+            sinB = (Vf * sinA) / Vt;
+            cosB = Math.sqrt(1 - sinB * sinB);
+            sinC = sinA * cosB + cosA * sinB;
+            Vc = Vt * sinC / sinA;
+            return Vc
+        }
+
+        function angle_btw_2_Dir(a, b) {
+            let cha = Math.max(a, b) - Math.min(a, b);
+            if (cha > 180) {
+                cha = 360 - cha
+            }
+            return {
+                angle: cha,
+                rad: Math.PI * cha / 180
+            }
+        }
+
+
+// 在三角形ABC中，由正弦定理得
+// BC/sin∠A=AC/sin∠B
+// 所以sin∠B=(AC*sin∠A)/BC=(2*根号3/2)/3=(根号3)/3
+// 所以
+// cos∠B=(根号6)/3
+// 所以sin∠C=sin(180度-∠A-∠B)=sin(∠A+∠B)=sinAcosB+cosAsinB
+// =(根号3/2)*(根号6/3)+1/2*(根号3/3)=(3倍根号2+根号3)/6
+// 所以三角形ABC内，由正弦定理得
+// AB/sinC=BC/sinA
+// 所以
+// AB=BC*sinC/sinA=[3*(3倍根号2+根号3)/6](根号3/2)
+// =1+根号6
+    </script>
+
+</body>
+
+</html>
