@@ -12,7 +12,7 @@ var templayer = mapStuff.templayer;
 function initDemoMap() {
     //Esri影像
     var Esri_WorldImagery = L.tileLayer(
-        "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 18,
         attribution: "&copy; Esri"
     });
