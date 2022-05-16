@@ -33,7 +33,7 @@ function getType(targetLayer) {
 }
 
 //-------------------------------------------------------------------------------------popup
-var popup = L.popup({ autoClose: true, offset: [0, -25], maxWidth: 600, minWidth: 180 });
+var popup = L.popup({ autoClose: true, offset: [0, -25], maxWidth: 600, minWidth: 190 });
 //---------------------创建图形时，写入popup方法----------
 map.on('pm:create', ({ layer }) => {
     console.log("-----事件触发 图形创建--------");
