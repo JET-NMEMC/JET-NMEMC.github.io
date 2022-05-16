@@ -27,17 +27,14 @@
 <head>
     <title>Web Gis</title>
     <meta charset="utf-8">
-    <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
-    <!-- <meta http-equiv='X-UA-Compatible' content='IE=Edge'> -->
     <link rel="stylesheet" href="contourmap/index.css" />
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <!-- <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script> -->
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
     <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
-    <!-- <script src="contourmap/L.LabelTextCollision.js"></script> -->
 
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
 
@@ -57,8 +54,8 @@
 <body>
     <div><canvas id="mycanvas" style="display: none;"></canvas></div>
     <div id="map" class="map"></div>
-    <button onclick="exportShp(map)" style="position: fixed; left:5px; bottom:60px;">导出</button>
-    <button onclick="exportTiff()" style="position: fixed; left:65px; bottom:60px;">Tiff</button>
+    <button onclick="exportShp(map)" style="position: fixed; left:5px; bottom:60px;">导出shp</button>
+    <!-- <button onclick="exportTiff()" style="position: fixed; left:65px; bottom:60px;">Tiff</button> -->
     <!-- <input type="file" id="selectdatafile2" accept=".csv,.xls,.xlsx" style="position: fixed; left:5px; bottom:100px;" /> -->
     <img src="contourmap/icon2/1-earthnet.png" width="40px" onclick="changemap()"
         style="position: fixed; left:5px; bottom:10px;">
@@ -146,7 +143,7 @@
     <script src="contourmap/Contourmap.js"></script>
     <script src="contourmap/CreateCoordMap.js"></script>
     <script src="contourmap/CreatePopupMap.js"></script>
-    <script src="contourmap/canvastotiff.min.js"></script>
+
     <script src="https://unpkg.com/leaflet-image@latest/leaflet-image.js"></script>
 
     <script>
@@ -204,20 +201,6 @@
             msg("导入json文件" + filename);
         }
 
-        function exportTiff() {
-            console.log(map)
-            // leafletImage(map, function (err, canvas) {
-            //     // now you have canvas
-            //     // example thing to do with that canvas:
-            //     var img = document.createElement('img');
-            //     var dimensions = map.getSize();
-            //     img.width = dimensions.x;
-            //     img.height = dimensions.y;
-            //     img.src = canvas.toDataURL();
-            //     document.getElementById('images').innerHTML = '';
-            //     document.getElementById('images').appendChild(img);
-            // });
-        }
         //--------------------------------------------------------------------------------Map绘制
         //-------------------绘制点位图----------------------------- 
         function draw_CircleMarker() {
