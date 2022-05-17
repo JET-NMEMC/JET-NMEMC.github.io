@@ -1,28 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh">
-<!-- <script>
-    //通过window.screen.width获取屏幕的宽度
-    console.log("当前设备分辨率" + window.screen.width + 'px', window.screen.height + 'px');
-    if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
-        machine = "mobile";
-        if (window.screen.width > window.screen.height) {
-            machineStyle = "hengping-mobile"
-            var offWidth = window.screen.height / 50;
-            document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px';
-            // console.log(offWidth + 'px');
-        }
-        else {
-            machineStyle = "shuping-mobile"
-            var offWidth = window.screen.height / 40;
-            document.getElementsByTagName("html")[0].style.fontSize = offWidth + 'px';
-            // console.log(offWidth + 'px');
-        }
-    } else {
-        machine = "computer";
-        machineStyle = "hengping-computer"
-    };
-    console.log(machineStyle);
-</script> -->
 
 <head>
     <title>Web Gis</title>
@@ -32,7 +9,7 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.min.js"></script>
     <!-- <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script> -->
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
 
     <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
@@ -142,10 +119,19 @@
     <script src="contourmap/Contourmap.js"></script>
     <script src="contourmap/CreateCoordMap.js"></script>
     <script src="contourmap/CreatePopupMap.js"></script>
+    <!-- <script src="contourmap/shapefile.js"></script> -->
+
 
     <!-- <script src="https://unpkg.com/leaflet-image@latest/leaflet-image.js"></script> -->
 
     <script>
+        // new Shapefile({
+        //     shp: "contourmap/files/澳门特别行政区.shp",
+        //     dbf: "contourmap/files/澳门特别行政区.dbf"
+        // }, function (data) {
+        //     // features = parser.read(data.geojson);
+        // });
+
         //----------------------------------------------------------------------------------------------主程序
         function exportShp(mapname) {
             var collection = {
