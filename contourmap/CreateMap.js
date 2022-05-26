@@ -16,6 +16,15 @@ function initDemoMap() {
         maxZoom: 18,
         attribution: "&copy; Esri"
     });
+
+    //MapBox影像
+    var MapBoxImagery = L.tileLayer(
+        // "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamhlbWJkIiwiYSI6ImNqcHpueHpyZjBlMjAzeG9kNG9oNzI2NTYifQ.K7fqhk2Z2YZ8NIV94M-5nA", {
+        "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png256?access_token=pk.eyJ1IjoiamV0emhhbmc2NjYiLCJhIjoiY2wybHR4aG1oMGF3dzNqbzMzNHB0MnFlaSJ9.XX7c6An8IZPI0muNhrTf9w", {
+        maxZoom: 18,
+        attribution: "&copy; MapBox"
+    });
+
     //Esri world TopoBathy 3D
     // var Esri_worldTopoBathy = L.tileLayer(
     //     "https://services.arcgisonline.com/arcgis/rest/services/WorldElevation3D/TopoBathy3D/ImageServer/tile/{z}/{y}/{x}", {
@@ -45,7 +54,7 @@ function initDemoMap() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
     //Jawg街道
-    var Jawg_Streets = L.tileLayer('https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
+    var Jawg_Streets = L.tileLayer('https://{s}.tile.jawg.io/jawg-terrain/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
         attribution: '<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 22,
         subdomains: 'abcd',
@@ -99,18 +108,17 @@ function initDemoMap() {
     });
     //--------------------------设置主图层--------------------------------
     var baseLayers = {
-        "Esri影像": Esri_WorldImagery,
-        "天地图影像": tianditu_img,
-        "谷歌影像": GoogleImage,
-        "OpenStreet": OpenStreetMap_Mapnik,
-        "JawgStreet": Jawg_Streets,
-        // "海图船讯": haitu,
+        "影像 Esri": Esri_WorldImagery,
+        "影像 Mapbox": MapBoxImagery,
+        "影像 天地图": tianditu_img,
+        "影像 谷歌": GoogleImage,
+        "影像 谷歌火星": GoogleImage2,
+        "影像 高德火星": gaode,
+        "Open Street": OpenStreetMap_Mapnik,
+        "Jawg Street": Jawg_Streets,
         "海图在线": haitu_chinaport,
-        "海图YE": haitu_YE,
-        // "Esri地表": Esri_worldTopoBathy,
-        "Esri海洋": Esri_worldTerrain,
-        "谷歌影像 火星": GoogleImage2,
-        "高德影像 火星": gaode,
+        "海图 YE": haitu_YE,
+        // "Esri海洋": Esri_worldTerrain,
         "谷歌地图 火星": GoogleMap2,
         "Geoq暖色 火星": warm,
         "Geoq水系 火星": HydroMap,
@@ -137,13 +145,11 @@ function initDemoMap() {
         "天地图道路注记": tianditu_地形注记,
         "esri海洋注记": esriAnnotion,
         "高德影像注记火星": gaodeAnnotion,
-
         // "天地图全球境界": tianditu_全球境界,
     }
     //----------------------------------------------------------------------地图设置
     var map = L.map("map", {
         layers: [Esri_WorldImagery],
-        // layers: [warm],
         zoomControl: false,
         attributionControl: false,
     });
@@ -218,12 +224,12 @@ if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
 
 // var layerControl2 = mapStuff.layerControl2;
 
-// var command = L.control({position: 'topleft'}); 
+// var command = L.control({position: 'topleft'});
 // command.onAdd = function (map) {
-//     var div = L.DomUtil.create('div','command'); 
-//     div.innerHTML = '<form><input id="command" type="checkBox"/>command</form>'; 
+//     var div = L.DomUtil.create('div','command');
+//     div.innerHTML = '<form><input id="command" type="checkBox"/>command</form>';
 //     return div;
-// }; 
+// };
 // command.addTo(map);
 
 
