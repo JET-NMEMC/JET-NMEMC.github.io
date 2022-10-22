@@ -1,8 +1,7 @@
 var consituate = {};
-// var cstlist = ["k1_j", "o1_j", "m2_j", "s2_j", "2n2_j", "j1_j", "k2_j", "l2_j", "m1_j", "mu2_j", "n2_j", "nu2_j", "oo1_j", "p1_j", "q1_j", "t2_j"];
 var cstlist = ["O1", "K1", "M2", "S2", "2N2", "J1", "K2", "L2", "M1", "MU2", "N2", "NU2", "OO1", "P1", "Q1", "T2"];
 var cstlist2 = ["MF", "MM", "MSF", "MSM", "MTM", "SA", "SSA"];
-var textstr
+var textstr;
 for (var i = 0; i < cstlist.length; i++) {
     document.write('<script src="TidePredict/omap/' + cstlist[i] + '.js" type="text/javascript"></script>');
 }
@@ -23,71 +22,43 @@ var now = new Date();
 document.getElementById('t1').value = format(now, "yyyy-MM-dd");
 document.getElementById('t2').value = format(new Date(now.getTime() + 1000 * 60 * 60 * 24), "yyyy-MM-dd");
 
-//-----------------------调和曲线并出图
-function run() {
-    // var time_0 = new Date("2021-12-12 00:00");
-    // var time_1 = new Date("2021-12-14 00:00");
-    var time_0 = new Date(document.getElementById('t1').value + ' 00:00');
-    var time_1 = new Date(document.getElementById('t2').value + ' 00:00');
-    // var time_0 = new Date("2021-12-12 00:00 GMT+0800");
-    // var time_1 = new Date("2021-12-14 00:00 GMT+0800");
-    var time_step = Number(document.getElementById('s0').value);
-    var phaseKey = 'phase';
-    // var phaseKey = 'phase_GMT';
-    console.log("time start:", time_0);
-    console.log("time  end :", time_1);
-
-    var text0 = [];
-    textstr = '';
-    var constituents = tableStringToArr('name amplitude	phase\n' + document.getElementById('canshu').value).objArr;
-
-    var time_j = time_0;
-
-    while (time_j <= time_1) {
-        var waterLevel = tidePredictor(constituents, { phaseKey: phaseKey }).getWaterLevelAtTime({
-            time: time_j,
-        });
-        text0.push(formatDateTime(waterLevel.time) + ',' + waterLevel.level.toFixed(3));
-        // textstr = textstr + formatDateTime(waterLevel.time) + '\t' + waterLevel.level.toFixed(4) + '\n';
-        time_j.setMinutes(time_j.getMinutes() + time_step)
-    };
-    textstr = text0.join('\n');
-
-    textstr = "DateTime,WaterLevel(m)\n" + textstr;
-    document.getElementById('text').innerHTML = textstr;
-
-    var g = new Dygraph(
-        document.getElementById("graphdiv"),  // containing div
-        textstr,
-        {
-            // legend: 'always',
-            title: document.getElementById('site').value + '潮位预报曲线 |' + ' 时区:-0800 (东8区) | 潮高基准面:平均海平面',
-            // showRoller: true,
-            // rollPeriod: 14,
-            // customBars: true,
-            ylabel: '潮汐高度 (m)',
-            xlabel: '时刻 (t)',
-        }
-    );
-}
-
 var poline = L.polyline([[20, 110], [20, 165], [65, 165], [65, 110], [20, 110]]).addTo(map);
-var marker = L.marker([document.getElementById('lat').value, document.getElementById('lng').value]).addTo(map)
+var marker = L.marker([document.getElementById('lat').value, document.getElementById('lng').value]).addTo(map);
 
-//----------------------点击事件
+
+//地图点击时，触发
 map.on('click', function (e) {
-    lat = e.latlng.lat
-    lng = e.latlng.lng
-    marker._latlng.lat = lat
-    marker._latlng.lng = lng
+    lat = e.latlng.lat;
+    lng = e.latlng.lng;
+    marker._latlng.lat = lat;
+    marker._latlng.lng = lng;
     map.removeLayer(marker);
     map.addLayer(marker);
 
-    document.getElementById('lat').value = lat.toFixed(6)
-    document.getElementById('lng').value = lng.toFixed(5)
-    document.getElementById('site').value = '标记位置'
+    document.getElementById('lat').value = lat.toFixed(8);
+    document.getElementById('lng').value = lng.toFixed(7);
+    document.getElementById('site').value = '标记位置';
 
+    get_Consituate_baseon_coord();
+    run();
+});
+
+//坐标框更改时，触发
+function coordChange() {
+    marker._latlng.lat = document.getElementById('lat').value;
+    marker._latlng.lng = document.getElementById('lng').value;
+    map.removeLayer(marker);
+    map.addLayer(marker);
+
+    get_Consituate_baseon_coord();
+    run();
+}
+
+function get_Consituate_baseon_coord() {
     // console.log(consituate);
+    var lng = document.getElementById('lng').value;
+    var lat = document.getElementById('lat').value;
+
     var seek = seeknear(lng, lat, consituate, cstlist);
     // console.log(seek);
 
@@ -111,8 +82,56 @@ map.on('click', function (e) {
         document.getElementById("canshu").value = res.join('\n');
 
     }
-    run();
-});
+    // run();
+}
+
+//-----------------------调和曲线并出图
+function run() {
+    var time_0 = new Date(document.getElementById('t1').value + ' 00:00');
+    var time_1 = new Date(document.getElementById('t2').value + ' 00:00');
+    // var time_0 = new Date("2021-12-12 00:00 GMT+0800");
+    // var time_1 = new Date("2021-12-14 00:00 GMT+0800");
+    var time_step = Number(document.getElementById('s0').value);
+    var phaseKey = 'phase';
+    // var phaseKey = 'phase_GMT';
+    console.log("time start:", time_0);
+    console.log("time  end :", time_1);
+
+    var text0 = [];
+    textstr = '';
+    var constituents = tableStringToArr('name amplitude	phase\n' + document.getElementById('canshu').value).objArr;
+
+    var time_j = time_0;
+
+    while (time_j <= time_1) {
+        var waterLevel = tidePredictor(constituents, { phaseKey: phaseKey }).getWaterLevelAtTime({
+            time: time_j,
+        });
+        text0.push(formatDateTime(waterLevel.time) + ',' + waterLevel.level.toFixed(3));
+        time_j.setMinutes(time_j.getMinutes() + time_step)
+    };
+    textstr = text0.join('\n');
+
+    textstr = "DateTime,WaterLevel(m)\n" + textstr;
+    document.getElementById('text').innerHTML = textstr;
+
+    //绘制图表
+    var g = new Dygraph(
+        document.getElementById("graphdiv"), 
+        textstr,
+        {
+            // legend: 'always',
+            title: document.getElementById('site').value + '潮位预报曲线 |' + ' 时区:-0800 (东8区) | 潮高基准面:平均海平面',
+            // showRoller: true,
+            // rollPeriod: 14,
+            // customBars: true,
+            ylabel: '潮汐高度 (m)',
+            xlabel: '时刻 (t)',
+        }
+    );
+}
+
+
 //------------寻找最近的可用的数据位置，并返回该位置的调和常数
 function seeknear(lng, lat, obj, list) {
     var xmin = 110;
