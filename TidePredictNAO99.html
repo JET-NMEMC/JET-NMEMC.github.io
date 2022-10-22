@@ -27,8 +27,8 @@
         </p>
         <p>时间步长 <input type="number" style="width:130px;" id="s0" oninput="value=value.replace(/[^\d]/g,'')" value="30"> 分钟</p>
         <p>潮位站名 <input type="text" style="width:130px;" id="site" value="青岛"></p>
-        <p>坐标经度 <input type="text" style="width:130px;" id="lng" value="120.37091"></p>
-        <p>坐标纬度 <input type="text" style="width:130px;" id="lat" value="36.051757"></p>
+        <p>坐标经度 <input type="text" style="width:130px;" id="lng" value="120.37091" onchange="coordChange()"></p>
+        <p>坐标纬度 <input type="text" style="width:130px;" id="lat" value="36.051757" onchange="coordChange()"></p>
         <p>
             <label style="color: blue;">分潮&emsp;</label>
             <label style="color: blue;"> 振幅(m)&emsp;</label>
