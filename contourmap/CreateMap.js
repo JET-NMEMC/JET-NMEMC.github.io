@@ -88,6 +88,12 @@ function initDemoMap() {
         corrdType: "gcj02",
         attribution: "&copy; 船讯网",
     });
+    // 滕恒谷歌影像 火星
+    var TenghengImage = L.tileLayer("http://1.tengheng123.top/maps/vt/lyrs=s,h&hl=zh-CN&gl=CN&src=app&x={x}&y={y}&z={z}&s=%7B$Galileo%7D&scale=1", {
+        corrdType: "gcj02",
+        attribution: "&copy; 船讯网",
+    });
+
     // 船讯网谷歌地图 火星
     var GoogleMap2 = L.tileLayer("http://gdtc.shipxy.com/tile.g?z={z}&x={x}&y={y}", {
         corrdType: "gcj02",
@@ -112,6 +118,7 @@ function initDemoMap() {
         "影像 Mapbox": MapBoxImagery,
         "影像 天地图": tianditu_img,
         "影像 谷歌": GoogleImage,
+        "影像 滕恒": TenghengImage,
         "影像 谷歌火星": GoogleImage2,
         "影像 高德火星": gaode,
         "Open Street": OpenStreetMap_Mapnik,
