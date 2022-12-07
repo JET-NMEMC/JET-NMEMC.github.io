@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="contourmap/index.css" />
 
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.min.js"></script>
-    <!-- <script src="https://cdn.bootcss.com/xlsx/0.12.6/xlsx.full.min.js"></script> -->
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
@@ -16,8 +15,8 @@
 
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
 
-    <link rel="stylesheet" href="contourmap/leaflet-geoman2.css" />
-    <script src="contourmap/leaflet-geoman.min2.js"></script>
+    <link rel="stylesheet" href="contourmap/leaflet-geoman.css" />
+    <script src="contourmap/leaflet-geoman.min.js"></script>
 
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"> -->
     <link rel="stylesheet" href="contourmap/L.Control.Locate.min.css" />
@@ -30,7 +29,8 @@
 <body>
     <div><canvas id="mycanvas" style="display: none;"></canvas></div>
     <div id="map" class="map"></div>
-    <button onclick="exportShp(map)" style="position: fixed; left:5px; bottom:60px;">导出shp</button>
+    <button onclick='exportShp(map,"shp")' style="position: fixed; left:5px; bottom:60px;">shp</button>
+    <button onclick='exportShp(map,"kml")' style="position: fixed; left:45px; bottom:60px;">kml</button>
     <!-- <button onclick="exportTiff()" style="position: fixed; left:65px; bottom:60px;">Tiff</button> -->
     <!-- <input type="file" id="selectdatafile2" accept=".csv,.xls,.xlsx" style="position: fixed; left:5px; bottom:100px;" /> -->
     <img src="contourmap/icon2/1-earthnet.png" width="40px" onclick="changemap()"
@@ -110,30 +110,21 @@
     <script
         src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
     <script src="contourmap/kriging0.js"></script>
-
     <script src="contourmap/gcoord.js"></script>
-    <script src="contourmap/leaflet.mapCorrection.js"></script>
 
     <script src="contourmap/L.KML.js"></script>
-    <script src="contourmap/CreateMap.js"></script>
+
+    <script src="contourmap/leaflet.mapCorrection.js"></script>
+    <script src="contourmap/BaseMap.js"></script>
     <script src="contourmap/Contourmap.js"></script>
     <script src="contourmap/CreateCoordMap.js"></script>
     <script src="contourmap/CreatePopupMap.js"></script>
-    <!-- <script src="contourmap/shapefile.js"></script> -->
-
-
-    <!-- <script src="https://unpkg.com/leaflet-image@latest/leaflet-image.js"></script> -->
+    <script src="contourmap/Tokml.js"></script>
 
     <script>
-        // new Shapefile({
-        //     shp: "contourmap/files/澳门特别行政区.shp",
-        //     dbf: "contourmap/files/澳门特别行政区.dbf"
-        // }, function (data) {
-        //     // features = parser.read(data.geojson);
-        // });
 
         //----------------------------------------------------------------------------------------------主程序
-        function exportShp(mapname) {
+        function exportShp(mapname, FileType) {
             var collection = {
                 "type": "FeatureCollection",
                 "features": []
@@ -145,14 +136,48 @@
                     collection.features.push(geojson)
                 }
             });
+
             if (collection.features.length !== 0) {
                 console.log(collection);
-                GeoShape.transformAndDownload(collection)
-            } else {
+                switch (FileType) {
+                    case "shp":
+                        GeoShape.transformAndDownload(collection)
+                        break;
+                    case "kml":
+                        createAndDownloadFile("kmlnew.kml", tokml(collection, {
+                            name: 'name',
+                            description: 'description'
+                        }))
+                        break;
+                    default:
+                        alert("wrong type")
+                }
+            }
+            else {
                 console.log(map._layers);
                 alert("当前图层没有可导出的要素")
             }
         }
+
+        // var kmlDocumentName = tokml(geojsonObject, {
+        //     documentName: 'My List Of Markers',
+        //     documentDescription: "One of the many places you are not I am"
+        // });
+
+        /**
+ * 创建并下载文件
+ * @param {String} fileName 文件名
+ * @param {String} content 文件内容
+ */
+        function createAndDownloadFile(fileName, content) {
+            var aTag = document.createElement('a');
+            var blob = new Blob([content]);
+            aTag.download = fileName;
+            aTag.href = URL.createObjectURL(blob);
+            aTag.click();
+            URL.revokeObjectURL(blob);
+        }
+
         //-----------------------------------------------------------------------KML JSON导入
         kmlFileInput.onchange = function (event) {
             var filename = kmlFileInput.files[0].name;
