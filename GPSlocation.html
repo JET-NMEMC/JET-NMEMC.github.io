@@ -13,6 +13,7 @@
     <div id="box"></div>
     <script>
         getLocation();
+
         function getLocation() {
             //获取GPS坐标
             if (navigator.geolocation) {
@@ -37,7 +38,8 @@
             console.log(locatime);
             document.getElementById("box").innerHTML = '经度:' + longitude + '<br>纬度:' + latitude +
                 '<br>定位精度:' + accuracy + '<br>方向:' + heading + '<br>速度:' + speed +
-                '<br>高度:' + altitude + '<br>高度精度:' + altitudeAccuracy
+                '<br>高度:' + altitude + '<br>高度精度:' + altitudeAccuracy;
+
         }
 
         function handleError(value) {
