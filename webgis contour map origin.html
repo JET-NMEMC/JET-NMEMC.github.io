@@ -31,6 +31,7 @@
     <div id="map" class="map"></div>
     <button onclick='exportShp(map,"shp")' style="position: fixed; left:5px; bottom:60px;">shp</button>
     <button onclick='exportShp(map,"kml")' style="position: fixed; left:45px; bottom:60px;">kml</button>
+    <button onclick='exportShp(map,"json")' style="position: fixed; left:85px; bottom:60px;">json</button>
     <!-- <button onclick="exportTiff()" style="position: fixed; left:65px; bottom:60px;">Tiff</button> -->
     <!-- <input type="file" id="selectdatafile2" accept=".csv,.xls,.xlsx" style="position: fixed; left:5px; bottom:100px;" /> -->
     <img src="contourmap/icon2/1-earthnet.png" width="40px" onclick="changemap()"
@@ -149,6 +150,9 @@
                             description: 'description'
                         }))
                         break;
+                    case "json":
+                        createAndDownloadFile("kmlnew.json", JSON.stringify(collection))
+                        break;
                     default:
                         alert("wrong type")
                 }
@@ -198,12 +202,14 @@
             showHide('showsetting');
             msg("导入kml文件" + filename);
         }
-
+        var clipAreaCoords;
         jsonFileInput.onchange = function (event) {
             var filename = jsonFileInput.files[0].name;
             var file = URL.createObjectURL(jsonFileInput.files[0]);
             $.getJSON(file, function (data) {
+                clipAreaCoords = data.features[0].geometry.coordinates;
                 var geojsonfeatures = L.geoJson(data).addTo(map);
+                geojsonfeatures;
                 layerControl2.addOverlay(geojsonfeatures, filename);
                 map.fitBounds(geojsonfeatures.getBounds());
             });
@@ -216,6 +222,7 @@
         function draw_CircleMarker() {
             var siteData = coord2shuzu('textarea');
             var layername = $("#NewlayerName").val();
+            var textheight = $("#textheight").val();
 
             var sites = L.featureGroup();
             for (var i = 1; i < siteData.length; i++) {
@@ -225,10 +232,10 @@
                     featureType: "CircleMarker",
                     name: siteData[i][0],
                     attribute: attribute,
-                    radius: 8,
+                    radius: textheight,
                     color: "#FFFFFF",
                     fillColor: "#F44334",//#F44334#27ae60
-                    weight: 1.5,
+                    weight: 1,
                     fillOpacity: 1
                 }).addTo(sites)
                 marker0.on('click', (e) => { popupA(e) });
