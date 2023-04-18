@@ -84,8 +84,8 @@ function initDemoMap() {
         attribution: "&copy; 高德地图"
     });
     // 船讯网谷歌影像 火星
-    var GoogleImage2 = L.tileLayer("http://gwxc.shipxy.com/tile.g?z={z}&x={x}&y={y}", {
-        corrdType: "gcj02",
+    var GoogleImage2 = L.tileLayer("https://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
+        corrdType: "gcj02",//https://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}
         attribution: "&copy; 船讯网",
     });
     // 滕恒谷歌影像 火星
