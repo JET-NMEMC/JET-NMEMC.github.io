@@ -100,13 +100,16 @@ function initDemoMap() {
         attribution: "&copy; 船讯网",
     });
     // 船讯网海图 未名坐标
-    // var haitu_chuanxun = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
-    //     attribution: "&copy; 船讯网",
-    //     corrdType: "gcj02",
-    // });
+    var haitu_chuanxun = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
+        attribution: "&copy; 船讯网",
+        corrdType: "gcj02",
+    });
     // 中国港海图 wgs84
+    //https://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}
+    //https://map.chinaports.com/map/getWorldSeaMap/{x}/{y}/{z}
     var haitu_chinaport = L.tileLayer("http://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}", {
-        attribution: "&copy; 中国港口网",
+        attribution: "&copy; 中国港口网",//https://map.chinaports.com/map/getWorldSeaMap/3447/1568/12
+        // corrdType: "gcj02",
     });
     // YE海图 wgs84
     var haitu_YE = L.tileLayer("https://118.25.187.132:8071/{z}/{y}/{x}.png", {
@@ -123,7 +126,8 @@ function initDemoMap() {
         "影像 高德火星": gaode,
         "Open Street": OpenStreetMap_Mapnik,
         "Jawg Street": Jawg_Streets,
-        "海图在线": haitu_chinaport,
+        "船讯海图": haitu_chuanxun,
+        "港口海图": haitu_chinaport,
         "海图 YE": haitu_YE,
         // "Esri海洋": Esri_worldTerrain,
         "谷歌地图 火星": GoogleMap2,
