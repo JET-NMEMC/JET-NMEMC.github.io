@@ -53,8 +53,10 @@ $('#selectdatafile').on('change', function () {
 
     var xrange = caldata.xrange;
     var yrange = caldata.yrange;
-    var area_clip_convexH = caldata.area_clip;//凸包裁剪范围;
-    var area_clip_range = caldata.data_range; //矩形裁剪范围;
+    var area_clip_convexH = (clipAreaCoords === undefined) ? caldata.area_clip : clipAreaCoords;
+    // var area_clip_convexH = caldata.area_clip;//凸包裁剪范围;
+    // var area_clip_convexH = clipAreaCoords;//geojson导入裁剪范围;
+    // var area_clip_range = caldata.data_range; //矩形裁剪范围;
     layerControl2.addOverlay(caldata.sitesLayer, "站位");
     layerControl2.addOverlay(caldata.clipLayer, "边界");
     map.fitBounds(caldata.clipLayer.getBounds());
