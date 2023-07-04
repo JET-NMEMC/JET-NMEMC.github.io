@@ -15,14 +15,14 @@ function initDemoMap() {
     var MapBoxImagery = L.tileLayer(
         // "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamhlbWJkIiwiYSI6ImNqcHpueHpyZjBlMjAzeG9kNG9oNzI2NTYifQ.K7fqhk2Z2YZ8NIV94M-5nA", {
         "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png256?access_token=pk.eyJ1IjoiamV0emhhbmc2NjYiLCJhIjoiY2wybHR4aG1oMGF3dzNqbzMzNHB0MnFlaSJ9.XX7c6An8IZPI0muNhrTf9w", {
-        maxZoom: 18,
+        // maxZoom: 18,
         attribution: "&copy; MapBox"
     });
 
     //Esri影像
     var Esri_WorldImagery = L.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-        maxZoom: 18,
+        // maxZoom: 18,
         attribution: "&copy; Esri"
     });
 
@@ -48,10 +48,10 @@ function initDemoMap() {
     //     attribution: "&copy; 天地图"
     // });
 
-    //OpenStreet街道
-    var xingtu_img = L.tileLayer('https://tiles3.geovisearth.com/base/v1/img/{z}/{x}/{y}?format=webp&tmsIds=w&token=170dbb165d761caf143c176ff1f51d59000a37051c6d86d4a05c5e7ceeb81504', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://datacloud.geovisearth.com/">星图地球</a>'
+    //星图地球
+    var xingtu_img = L.tileLayer('https://tiles2.geovisearth.com/base/v1/img/{z}/{x}/{y}?format=webp&tmsIds=w&token=170dbb165d761caf143c176ff1f51d59000a37051c6d86d4a05c5e7ceeb81504', {
+        // maxZoom: 19,
+        // attribution: '&copy; <a href="https://datacloud.geovisearth.com/">星图地球</a>'
     });
 // 
     // Google影像
@@ -62,16 +62,18 @@ function initDemoMap() {
 
     // 高德影像 火星
     var gaode = L.tileLayer("https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}", {
-        maxZoom: 18,
+        // maxZoom: 18,
         corrdType: "gcj02",
         subdomains: ["1", "2", "3", "4"],
         attribution: "&copy; 高德地图"
     });
-    // 船讯网谷歌影像 火星
-    var GoogleImage2 = L.tileLayer("https://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
-        corrdType: "gcj02",//https://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}
-        attribution: "&copy; 船讯网",
-    });
+
+    // // 船讯网谷歌影像 火星
+    // var GoogleImage2 = L.tileLayer("https://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
+    //     corrdType: "gcj02",//https://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}
+    //     attribution: "&copy; 船讯网",
+    // });
+
     // 滕恒谷歌影像 火星
     var TenghengImage = L.tileLayer("http://1.tengheng123.top/maps/vt/lyrs=s,h&hl=zh-CN&gl=CN&src=app&x={x}&y={y}&z={z}&s=%7B$Galileo%7D&scale=1", {
         corrdType: "gcj02",
@@ -80,15 +82,16 @@ function initDemoMap() {
 
     // 船讯网谷歌地图 火星
     var GoogleMap2 = L.tileLayer("http://gdtc.shipxy.com/tile.g?z={z}&x={x}&y={y}", {
-        corrdType: "gcj02",
+        // corrdType: "gcj02",
         attribution: "&copy; 船讯网 Google",
     });
     //----------------------------------------------------------------------------------------------------海图
     // 船讯网海图 未名坐标
     var haitu_chuanxun = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
         attribution: "&copy; 船讯网",
-        corrdType: "gcj02",
+        // corrdType: "gcj02",
     });
+
     // 中国港海图 wgs84
     //https://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}
     //https://map.chinaports.com/map/getWorldSeaMap/{x}/{y}/{z}
@@ -96,10 +99,11 @@ function initDemoMap() {
         attribution: "&copy; 中国港口网",//https://map.chinaports.com/map/getWorldSeaMap/3447/1568/12
         // corrdType: "gcj02",
     });
-    // YE海图 wgs84
-    var haitu_YE = L.tileLayer("https://118.25.187.132:8071/{z}/{y}/{x}.png", {
-        attribution: "&copy; YE海图",
-    });
+
+    // // YE海图 wgs84
+    // var haitu_YE = L.tileLayer("https://118.25.187.132:8071/{z}/{y}/{x}.png", {
+    //     attribution: "&copy; YE海图",
+    // });
 
     //geoq水系
     var HydroMap = L.tileLayer("https://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/WorldHydroMap/MapServer/tile/{z}/{y}/{x}", {
@@ -134,17 +138,17 @@ function initDemoMap() {
         "影像 星图": xingtu_img,
         "影像 谷歌": GoogleImage,
 
-        "影像 谷歌火星": GoogleImage2,
-        "影像 滕恒谷歌": TenghengImage,        
+        // "影像 谷歌火星": GoogleImage2,
+        "影像 谷歌火星": TenghengImage,        
         "影像 高德火星": gaode,
 
         "船讯海图": haitu_chuanxun,
         "港口海图": haitu_chinaport,
-        "海图 YE": haitu_YE,
+        // "海图 YE": haitu_YE,
 
         "谷歌地图 火星": GoogleMap2,
-        "Geoq暖色 火星": warm,
-        "Geoq水系 火星": HydroMap,
+        "智图暖色 火星": warm,
+        "智图水系 火星": HydroMap,
 
         "Open Street": OpenStreetMap_Mapnik,
         "Jawg Street": Jawg_Streets,
@@ -184,7 +188,7 @@ function initDemoMap() {
     var templayer = new L.layerGroup();
     var layerControl2 = L.control.layers().addTo(map);
     layerControl2.addOverlay(templayer, "临时绘图");
-    map.setView([37, 117], 4);
+    map.setView([39, 120], 8);
     return {
         map: map,
         layerControl: layerControl,
