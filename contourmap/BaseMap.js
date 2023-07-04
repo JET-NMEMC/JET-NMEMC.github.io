@@ -10,12 +10,6 @@ var templayer = mapStuff.templayer;
 // --------------------------------------map初始化程序--------------------------------
 // --------------------------------------map初始化程序--------------------------------
 function initDemoMap() {
-    //Esri影像
-    var Esri_WorldImagery = L.tileLayer(
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-        maxZoom: 18,
-        attribution: "&copy; Esri"
-    });
 
     //MapBox影像
     var MapBoxImagery = L.tileLayer(
@@ -25,51 +19,41 @@ function initDemoMap() {
         attribution: "&copy; MapBox"
     });
 
+    //Esri影像
+    var Esri_WorldImagery = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        maxZoom: 18,
+        attribution: "&copy; Esri"
+    });
+
     //Esri world TopoBathy 3D
     // var Esri_worldTopoBathy = L.tileLayer(
     //     "https://services.arcgisonline.com/arcgis/rest/services/WorldElevation3D/TopoBathy3D/ImageServer/tile/{z}/{y}/{x}", {
     //     // maxZoom: 18,
     //     attribution: "&copy; Esri"
     // });
-    var Esri_worldTerrain = L.tileLayer(
-        "https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}", {
-        // maxZoom: 18,
-        attribution: "&copy; Esri"
-    });
 
-    //geoq水系
-    var HydroMap = L.tileLayer("https://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/WorldHydroMap/MapServer/tile/{z}/{y}/{x}", {
-        corrdType: "gcj02",
-        attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
-    });
-    //geoq暖色
-    var warm = L.tileLayer("https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetWarm/MapServer/tile/{z}/{y}/{x}", {
-        corrdType: "gcj02",
-        attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
-    });
-
-    //OpenStreet街道
-    var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    });
-    //Jawg街道
-    var Jawg_Streets = L.tileLayer('https://{s}.tile.jawg.io/jawg-terrain/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
-        attribution: '<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 22,
-        subdomains: 'abcd',
-        accessToken: 'DGEPTrYpfvrfrjgNGAF1tziKZBqDBXP1ukNpvd7PEQ8tf6cvdMBI4Md4JetBfC7B'
-    });
+    // var Esri_worldTerrain = L.tileLayer(
+    //     "https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}", {
+    //     // maxZoom: 18,
+    //     attribution: "&copy; Esri"
+    // });
 
     // 天地图影像
     var tianditu_img = L.tileLayer("http://t0.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
         attribution: "&copy; 天地图"
     });
-    // 天地图地形
-    var tianditu_ter = L.tileLayer("http://t0.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
-        attribution: "&copy; 天地图"
-    });
+    // // 天地图地形
+    // var tianditu_ter = L.tileLayer("http://t0.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
+    //     attribution: "&copy; 天地图"
+    // });
 
+    //OpenStreet街道
+    var xingtu_img = L.tileLayer('https://tiles3.geovisearth.com/base/v1/img/{z}/{x}/{y}?format=webp&tmsIds=w&token=170dbb165d761caf143c176ff1f51d59000a37051c6d86d4a05c5e7ceeb81504', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://datacloud.geovisearth.com/">星图地球</a>'
+    });
+// 
     // Google影像
     var GoogleImage = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
@@ -91,14 +75,15 @@ function initDemoMap() {
     // 滕恒谷歌影像 火星
     var TenghengImage = L.tileLayer("http://1.tengheng123.top/maps/vt/lyrs=s,h&hl=zh-CN&gl=CN&src=app&x={x}&y={y}&z={z}&s=%7B$Galileo%7D&scale=1", {
         corrdType: "gcj02",
-        attribution: "&copy; 船讯网",
+        attribution: "&copy; Google",
     });
 
     // 船讯网谷歌地图 火星
     var GoogleMap2 = L.tileLayer("http://gdtc.shipxy.com/tile.g?z={z}&x={x}&y={y}", {
         corrdType: "gcj02",
-        attribution: "&copy; 船讯网",
+        attribution: "&copy; 船讯网 Google",
     });
+    //----------------------------------------------------------------------------------------------------海图
     // 船讯网海图 未名坐标
     var haitu_chuanxun = L.tileLayer("http://m12.shipxy.com/tile.c?l=Na&m=o&x={x}&y={y}&z={z}", {
         attribution: "&copy; 船讯网",
@@ -115,24 +100,54 @@ function initDemoMap() {
     var haitu_YE = L.tileLayer("https://118.25.187.132:8071/{z}/{y}/{x}.png", {
         attribution: "&copy; YE海图",
     });
+
+    //geoq水系
+    var HydroMap = L.tileLayer("https://thematic.geoq.cn/arcgis/rest/services/ThematicMaps/WorldHydroMap/MapServer/tile/{z}/{y}/{x}", {
+        corrdType: "gcj02",
+        attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
+    });
+
+    //geoq暖色
+    var warm = L.tileLayer("https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetWarm/MapServer/tile/{z}/{y}/{x}", {
+        corrdType: "gcj02",
+        attribution: '&copy; <a class="ol-attribution-geoqmap" ' + 'href="http://www.geoq.net/basemap.html">' + '智图地图</a>'
+    });
+
+    //OpenStreet街道
+    var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+
+    //Jawg街道
+    var Jawg_Streets = L.tileLayer('https://{s}.tile.jawg.io/jawg-terrain/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
+        attribution: '<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 22,
+        subdomains: 'abcd',
+        accessToken: 'DGEPTrYpfvrfrjgNGAF1tziKZBqDBXP1ukNpvd7PEQ8tf6cvdMBI4Md4JetBfC7B'
+    });
     //--------------------------设置主图层--------------------------------
     var baseLayers = {
         "影像 Esri": Esri_WorldImagery,
         "影像 Mapbox": MapBoxImagery,
         "影像 天地图": tianditu_img,
+        "影像 星图": xingtu_img,
         "影像 谷歌": GoogleImage,
-        "影像 滕恒": TenghengImage,
+
         "影像 谷歌火星": GoogleImage2,
+        "影像 滕恒谷歌": TenghengImage,        
         "影像 高德火星": gaode,
-        "Open Street": OpenStreetMap_Mapnik,
-        "Jawg Street": Jawg_Streets,
+
         "船讯海图": haitu_chuanxun,
         "港口海图": haitu_chinaport,
         "海图 YE": haitu_YE,
-        // "Esri海洋": Esri_worldTerrain,
+
         "谷歌地图 火星": GoogleMap2,
         "Geoq暖色 火星": warm,
         "Geoq水系 火星": HydroMap,
+
+        "Open Street": OpenStreetMap_Mapnik,
+        "Jawg Street": Jawg_Streets,
     };
     //------------------------------定义复选图层-----------------------------
     var tianditu_矢量注记 = L.tileLayer("http://t0.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=0a5d3fb2ad894a60ff2d3abccc7a7c51", {
