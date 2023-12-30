@@ -59,6 +59,11 @@ function initDemoMap() {
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
         attribution: "&copy; Google"
     });
+    // Google影像开源
+    var GoogleImagekaiyuan = L.tileLayer('https://gac-geo.googlecnapps.cn/maps/vt?lyrs=s&x={x}&y={y}&z={z}', {
+        // subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: "&copy; Google"
+    });
 
     // 高德影像 火星
     var gaode = L.tileLayer("https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}", {
@@ -93,10 +98,13 @@ function initDemoMap() {
     });
 
     // 中国港海图 wgs84
-    //https://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}
-    //https://map.chinaports.com/map/getWorldSeaMap/{x}/{y}/{z}
     var haitu_chinaport = L.tileLayer("http://gis.chinaports.com:5010/map/getMap/{x}/{y}/{z}", {
-        attribution: "&copy; 中国港口网",//https://map.chinaports.com/map/getWorldSeaMap/3447/1568/12
+        attribution: "&copy; 中国港口网",
+        // corrdType: "gcj02",
+    });
+    // 海事海图 wgs84
+    var haitu_haishi = L.tileLayer("https://ais.msa.gov.cn/chartService/service/rest/services/cf8cb8de21ad4acbad82699732eae3fc/wmts/tile/1.0.0/default/default028mm/{z}/{y}/{x}.png?token=62be2fb973554df7bd7648614a937bf2", {
+        attribution: "&copy; 海事导助航综合服务系统",
         // corrdType: "gcj02",
     });
 
@@ -137,6 +145,7 @@ function initDemoMap() {
         "影像 天地图": tianditu_img,
         "影像 星图": xingtu_img,
         "影像 谷歌": GoogleImage,
+        "影像 谷歌开源": GoogleImagekaiyuan,
 
         // "影像 谷歌火星": GoogleImage2,
         "影像 谷歌火星": TenghengImage,        
@@ -144,6 +153,7 @@ function initDemoMap() {
 
         "船讯海图": haitu_chuanxun,
         "港口海图": haitu_chinaport,
+        "海事海图": haitu_haishi,
         // "海图 YE": haitu_YE,
 
         "谷歌地图 火星": GoogleMap2,
