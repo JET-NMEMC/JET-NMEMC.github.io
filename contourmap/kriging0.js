@@ -637,8 +637,8 @@ kriging.plot = function (canvas, grid, xlim, ylim, colors, valuelist) {
 kriging.pixel_Grid_drawImage = function (polygons, canvas, variogram, xrange, yrange, colors, valuelist) {
 	var ctx = canvas.getContext("2d");
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	console.log(1);
-	console.log(polygons[0]);
+	// console.log(polygons[0]);
+	// console.log('valuelist',valuelist);
 
 	for (var pix_x = 0; pix_x < canvas.width; pix_x++) {
 		for (var pix_y = 0; pix_y < canvas.height; pix_y++) {
@@ -648,12 +648,15 @@ kriging.pixel_Grid_drawImage = function (polygons, canvas, variogram, xrange, yr
 				var pix_value = kriging.predict(pix_lng, pix_lat, variogram);
 				try {
 					for (var k = 0; k < valuelist.length; k++) {
-						if (pix_value >= valuelist[k] && pix_value < valuelist[k + 1]) {
+						if (pix_value >= valuelist[k] && pix_value <= valuelist[k + 1]) {
 							ctx.fillStyle = colors[k];
 							break
 						}
+						else if(pix_value < valuelist[0]){
+							// ctx.fillStyle = "#FFFFFF";
+						}
 						else {
-							ctx.fillStyle = "#FFFFFF";
+							// ctx.fillStyle = "#000000";
 						}
 					}
 				}
