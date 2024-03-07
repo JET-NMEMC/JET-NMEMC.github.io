@@ -60,24 +60,23 @@ var drawcoordrange = function () {
 
     var latbreak = getCoordBreaks(latmin, latmax, 1.8, "lat").breaks;
     var latstep = getCoordBreaks(latmin, latmax, 1.8, "lat").step;
-    // console.log("lngbreak", lngbreak,"lngstep", lngstep);
-    // console.log("latbreak", latbreak,"latsetp", latstep);
-    //读取map的像素坐标
+
+    //读取mapdiv的像素坐标
     var divrange = mapdiv.getBoundingClientRect();
     divbottom = divrange.bottom; divtop = divrange.top; divleft = divrange.left; divright = divrange.right;
+    // console.log(divrange)
     // console.log(divtop, divbottom, divleft, divright);
 
-    //--------------------------循环叠加，形成经度的图形--------------------------
+    //--------------------------循环叠加，形成经度标签div--------------------------
 
     for (var i = 0; i < lngbreak.length; i++) {
-        var Xpix = divleft + (lngbreak[i] - lngmin) * (divright - divleft) / (lngmax - lngmin)
-        // console.log("Xpix:", Xpix);
+        var Xpix = divleft + (lngbreak[i] - lngmin) * (divright - divleft) / (lngmax - lngmin);
         var divtext0 = coordmap.innerHTML;
         var divtextA0;
         if (drawNE == true) {
             if (Number(lngbreak[i]) > 0) { divtextA0 = ' E' }; if (Number(lngbreak[i]) < 0) { divtextA0 = ' W' }; if (Number(lngbreak[i]) == 0) { divtextA0 = '' };
         } else {
-            divtextA0 = ''
+            divtextA0 = '';
         }
         var divtextA, divtextAT;
         if (lngstep >= 1) {
@@ -107,16 +106,15 @@ var drawcoordrange = function () {
 
         coordmap.innerHTML = divtext0 + divtextA + divtextAT + divtextB + divtextBT;
     }
-    //--------------------------循环叠加，形成纬度的图形--------------------------
+    //--------------------------循环叠加，形成纬度标签div--------------------------
     for (var i = 0; i < latbreak.length; i++) {
-        var Ypix = divbottom - ((latbreak[i] - latmin) * (divbottom - divtop) / (latmax - latmin));
-        // console.log("Ypix:", Ypix);
+        var Ypix = divtop + map.latLngToContainerPoint(L.latLng([latbreak[i], lngmin])).y;
         var divtext0 = coordmap.innerHTML;
         var divtextA0;
         if (drawNE == true) {
             if (Number(latbreak[i]) > 0) { divtextA0 = ' N' }; if (Number(latbreak[i]) < 0) { divtextA0 = ' S' }; if (Number(latbreak[i]) == 0) { divtextA0 = '' };
         } else {
-            divtextA0 = ''
+            divtextA0 = '';
         }
         var divtextA, divtextAT;
         if (latstep >= 1) {
@@ -141,7 +139,7 @@ var drawcoordrange = function () {
             if (latstep < 0.016666667) {
                 divtextB = '<div><font style="position:fixed; left:' + (divright + coordHeight + 5) + 'px; top:' + (Ypix + 15) + 'px; font-size: ' + coordHeight + 'px;font-family: sans-serif;transform: rotate(270deg);transform-origin:left bottom" color="#000000">' + du2dufenmiao(latbreak[i], 0) + divtextA0 + '</font></div>'
             };
-            divtextBT = '<div><font style="position:fixed; left:' + (divright - 13) + 'px; top:' + (Ypix - 5) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">—</font></div>'
+            divtextBT = '<div><font style="position:fixed; left:' + (divright - 12) + 'px; top:' + (Ypix - 5) + 'px; font-size: 10px;font-family: sans-serif;" color="#000000">—</font></div>'
         }
 
         coordmap.innerHTML = divtext0 + divtextA + divtextAT + divtextB + divtextBT;
