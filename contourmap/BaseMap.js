@@ -26,13 +26,6 @@ function initDemoMap() {
         attribution: "&copy; Esri"
     });
 
-    //Esri world TopoBathy 3D
-    // var Esri_worldTopoBathy = L.tileLayer(
-    //     "https://services.arcgisonline.com/arcgis/rest/services/WorldElevation3D/TopoBathy3D/ImageServer/tile/{z}/{y}/{x}", {
-    //     // maxZoom: 18,
-    //     attribution: "&copy; Esri"
-    // });
-
     // var Esri_worldTerrain = L.tileLayer(
     //     "https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}", {
     //     // maxZoom: 18,
