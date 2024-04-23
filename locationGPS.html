@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="getLocation()">获取定位</button>
+    <div id="box"></div>
+    <script>
+        getLocation();
+
+        function getLocation() {
+            //获取GPS坐标
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showMap, handleError, { enableHighAccuracy: true, maximumAge: 1000 });
+
+            } else {
+                alert("您的浏览器不支持使用HTML 5来获取地理位置服务");
+            }
+        }
+
+        function showMap(value) {
+            var locatime = TimestampToDate(value.timestamp);
+            var longitude = value.coords.longitude;
+            var latitude = value.coords.latitude;
+            var accuracy = value.coords.accuracy;
+            var heading = value.coords.heading;
+            var speed = value.coords.speed;
+            var altitude = value.coords.altitude;
+            var altitudeAccuracy = value.coords.altitudeAccuracy;
+
+            console.log(value.coords);
+            console.log(locatime);
+            document.getElementById("box").innerHTML = '经度:' + longitude + '<br>纬度:' + latitude +
+                '<br>定位精度:' + accuracy + '<br>方向:' + heading + '<br>速度:' + speed +
+                '<br>高度:' + altitude + '<br>高度精度:' + altitudeAccuracy;
+
+        }
+
+        function handleError(value) {
+            switch (value.code) {
+                case 1:
+                    alert("位置服务被拒绝");
+                    break;
+                case 2:
+                    alert("暂时获取不到位置信息");
+                    break;
+                case 3:
+                    alert("获取信息超时");
+                    break;
+                case 4:
+                    alert("未知错误");
+                    break;
+
+            }
+
+        }
+        function TimestampToDate(Timestamp) {
+            let date1 = new Date(Timestamp);
+            return date1.toLocaleDateString().replace(/\//g, "-") + " " + date1.toTimeString().substr(0, 8);
+        }
+
+
+    </script>
+</body>
+
+</html>
