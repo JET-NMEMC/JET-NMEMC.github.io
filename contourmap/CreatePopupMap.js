@@ -68,13 +68,6 @@ function popupA(e) {
             });
         }
     });
-    // $('input[type=button][id=pop_printcoord]').onclick = function () {
-    //     console.log(aaa.coordoutput)
-    // };
-
-    // $('input[type=button][id=pop_printcoord]').on("click", function(){
-    //     console.log(aaa.coordoutput)
-    // });
 }
 //-------------------------生成popupHTML-----------------------------
 function MyPopup(layer, featuretype) {
@@ -146,10 +139,10 @@ function MyPopup(layer, featuretype) {
                     coordtext2.push(coord[i].lng.toFixed(9) + "&emsp;" + coord[i].lat.toFixed(9));
                     coordoutput.push([coord[i].lng.toFixed(9) + " " + coord[i].lat.toFixed(9)]);
                 };
-                if (coord.length <= 10) {
+                if (coord.length <= 30) {
                     coordtext = coordtext0 + coordtext1 + coordtext2.join("<br>") + "</div>";
                 } else {
-                    coordtext = coordtext0 + '数据量超过10个，不显示</div><br>' +
+                    coordtext = coordtext0 + '数据量超过30个，不显示</div><br>' +
                         '<div style="text-align: center;"><button id="pop_printcoord">打印到控制台</button></div><br>';
                 }
             }
