@@ -101,6 +101,11 @@ function initDemoMap() {
         attribution: "&copy; 海事导助航综合服务系统",
         // corrdType: "gcj02",
     });
+    // E航海综合服务系统海图 wgs84 
+    var haitu_ehanghai = L.tileLayer("https://enavapp.nhhb.org.cn/arcgis/services/SouthChinaENCWater?layer=SouthChinaENCWater&style=default&tilematrixset=default028mm&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}", {
+        attribution: "&copy; E航海综合服务系统",
+        // corrdType: "gcj02",
+    });
 
     // // YE海图 wgs84
     // var haitu_YE = L.tileLayer("https://118.25.187.132:8071/{z}/{y}/{x}.png", {
@@ -147,7 +152,8 @@ function initDemoMap() {
 
         "船讯海图": haitu_chuanxun,
         "港口海图": haitu_chinaport,
-        "海事海图": haitu_haishi,
+        // "海事海图": haitu_haishi,
+        // "航保海图": haitu_ehanghai,
         // "海图 YE": haitu_YE,
 
         "谷歌地图 火星": GoogleMap2,
