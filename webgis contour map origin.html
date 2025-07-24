@@ -291,10 +291,16 @@
                     // iconAnchor: [textheight / 2 * nLength, 0]//文字标注相对位置
                 });
 
-                var markers = L.marker([siteData[i][2], siteData[i][1]], { icon: markerIcon, type: "markerdivIcon" })
+                var markers = L.marker([siteData[i][2], siteData[i][1]], { 
+                    icon: markerIcon, 
+                    type: "markerdivIcon",
+                    attribute: {name: siteData[i][0]}                    
+                 })
                     .addTo(sitesLabel);
+                // markers.options.name = siteData[i][0];
 
                 markers.on('click', (e) => {
+                    console.log(e.target);
                     var iconOptions = e.target.options.icon.options;
                     var popupHtml = '<h3>名称: <input id="iconname" type="text" value="' + iconOptions.name + '" style="height:30px;" /></h3>' +
                         '<h3>颜色: <input id="iconcolor" type="color" value="' + iconOptions.textcolor + '" style="width:170px;" /></h3>' +
@@ -302,6 +308,7 @@
                     popup.setContent(popupHtml).setLatLng(e.latlng).addTo(map);
                     $("#iconname,#iconcolor,#iconheight").change(function () {
                         iconOptions.name = $("#iconname").val();
+                        e.target.options.attribute.name = $("#iconname").val();
                         iconOptions.textcolor = $("#iconcolor").val();
                         iconOptions.textheight = $("#iconheight").val();
                         iconOptions.iconSize = [iconOptions.textheight * iconOptions.name.length, iconOptions.textheight];
@@ -310,6 +317,7 @@
                         map.addLayer(e.target);
                     });
                 });
+
             };
             sitesLabel.addTo(map);
             layerControl2.addOverlay(sitesLabel, sitename + "-文字标注");
