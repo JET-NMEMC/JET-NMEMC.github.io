@@ -37,7 +37,7 @@ var popup = L.popup({ autoClose: true, offset: [0, -25], maxWidth: 600, minWidth
 //---------------------创建图形时，写入popup方法----------
 map.on('pm:create', ({ layer }) => {
     console.log("-----事件触发 图形创建--------");
-    // console.log(layer);
+    console.log(layer);
     layer.addTo(templayer);
     layer.on('click', (e) => {
         popupA(e);
