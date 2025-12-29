@@ -222,15 +222,9 @@ var Graticulelayer = L.latlngGraticule({
 })
 layerControl.addOverlay(Graticulelayer, '经纬网');
 // ------------------------------------------------------------添加 绘图工具
-// map.pm.addControls({
-//     position: 'topleft',
-//     drawCircle: false,
-//     drawCircleMarker: false,
-//     // drawLine: false,
-//     cutPolygon: false,
-// });
 map.pm.addControls({  
     position: 'topleft',  
+    // snappingOption: true, 
     // drawCircleMarker: false,
     // rotateMode: false,
   }); 
