@@ -50,6 +50,10 @@ map.on('pm:create', ({ layer }) => {
 //     console.log('Feature created:', event);
 //   });
 
+// map.on('gm:create', (event) => {
+//     console.log('Feature created:', event);
+//   });
+
 
 function popupA(e) {
     console.log("-----事件触发 图形点击-----");
@@ -89,22 +93,6 @@ function MyPopup(layer, featuretype) {
         nametext = '<h3>名称： Undefined</h3>'
     };
     featuretype = layer.pm._shape
-    // layer.styleEditor ? layer.styleEditor.type :
-    // layer.options.featureType ? layer.options.featureType : "unknow";
-    // if (layer.styleEditor) {
-    //     featuretype = layer.styleEditor.type
-    // } else if (e.target.featureType) {
-    //     featuretype = e.target.featureType
-    // } else {
-    //     console.log("图层没有type属性");
-    //     featuretype = "Unknown";
-    // }
-    // if (layer.styleEditor) {
-    //     featuretype = layer.styleEditor.type;
-    // } else {
-    //     console.log("图层没有type属性");
-    //     featuretype = "Unknown";
-    // }
 
     var typetext = '<h4 id="typetext" style="padding:10px 0 0 0; border-top:0.5px solid #000;">类型： ' +
         featuretype + '</h4>';
@@ -122,13 +110,14 @@ function MyPopup(layer, featuretype) {
         case 'Polygon':
         case 'Rectangle':
         case 'Polyline':
+        case 'Line':
             {
                 var SW = layer._bounds._southWest.lng.toFixed(9) + "&emsp;" + layer._bounds._southWest.lat.toFixed(9);
                 var NE = layer._bounds._northEast.lng.toFixed(9) + "&emsp;" + layer._bounds._northEast.lat.toFixed(9);
                 var rangetext = '<div id="rangetext"><h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">范围：<h4/>' +
                     '经度&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;纬度<br>' + SW + '<br>' + NE + '</div>';
 
-                if (featuretype == 'Polyline') {
+                if (featuretype == 'Polyline'||featuretype == 'Line') {
                     var coord = layer.getLatLngs();
                     var Lengthtext = '<h4 id="lengthtext" style="padding:10px 0 0 0; border-top:0.5px solid #000;">长度： ' + (calc(coord).length / 1000).toFixed(3) + ' km<h4/>';
                     var Areatext = '';
