@@ -37,13 +37,19 @@ var popup = L.popup({ autoClose: true, offset: [0, -25], maxWidth: 600, minWidth
 //---------------------创建图形时，写入popup方法----------
 map.on('pm:create', ({ layer }) => {
     console.log("-----事件触发 图形创建--------");
-    console.log(layer);
+    // console.log(layer);    
     layer.addTo(templayer);
+    
     layer.on('click', (e) => {
         popupA(e);
     });
     console.log("-----------结 束-------------");
 })
+
+// map.on('gm:create', (event) => {
+//     console.log('Feature created:', event);
+//   });
+
 
 function popupA(e) {
     console.log("-----事件触发 图形点击-----");
@@ -82,8 +88,9 @@ function MyPopup(layer, featuretype) {
     } else {
         nametext = '<h3>名称： Undefined</h3>'
     };
-    featuretype = layer.styleEditor ? layer.styleEditor.type :
-    layer.options.featureType ? layer.options.featureType : "unknow";
+    featuretype = layer.pm._shape
+    // layer.styleEditor ? layer.styleEditor.type :
+    // layer.options.featureType ? layer.options.featureType : "unknow";
     // if (layer.styleEditor) {
     //     featuretype = layer.styleEditor.type
     // } else if (e.target.featureType) {
@@ -149,6 +156,8 @@ function MyPopup(layer, featuretype) {
             break;
         case 'Marker':
         case 'CircleMarker':
+        case "Text":
+        case "Circle":
             var coord = layer.getLatLng();
             var Lengthtext = "", Areatext = "", rangetext = "";
             var coordtext = '<div id="coordtext"><h4 style="padding:10px 0 0 0; border-top:0.5px solid #000;">位置:<h4/>' +
