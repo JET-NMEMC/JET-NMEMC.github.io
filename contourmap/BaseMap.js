@@ -222,23 +222,31 @@ var Graticulelayer = L.latlngGraticule({
 })
 layerControl.addOverlay(Graticulelayer, '经纬网');
 // ------------------------------------------------------------添加 绘图工具
-map.pm.addControls({
-    position: 'topleft',
-    drawCircle: false,
-    drawCircleMarker: false,
-    // drawLine: false,
-    cutPolygon: false,
-});
-var styleEditor = L.control.styleEditor({
-    position: "topleft",
-    // colorRamp: ['#007FFF', '#7400A1', '#3CB371', '#7B68EE', '#0000CD', '#C71585', '#4169E1', '#22C32E', '#FFFF00', '#E60000'],
-    colorRamp: ['#E60000', '#FFFF00', '#00FF00', '#0000CD', '#8000FF', '#C71585', '#FF8000', '#22C32E', '#007FFF', '#7B68EE'],
-    showTooltip: false,
-    useGrouping: true,
-    defaultMarkerIcon: 'circle',
-    // ignoreLayerTypes :["Marker"],
-});
-map.addControl(styleEditor);
+// map.pm.addControls({
+//     position: 'topleft',
+//     drawCircle: false,
+//     drawCircleMarker: false,
+//     // drawLine: false,
+//     cutPolygon: false,
+// });
+map.pm.addControls({  
+    position: 'topleft',  
+    // drawCircleMarker: false,
+    // rotateMode: false,
+  }); 
+map.pm.setLang("zh");
+
+
+// var styleEditor = L.control.styleEditor({
+//     position: "topleft",
+//     // colorRamp: ['#007FFF', '#7400A1', '#3CB371', '#7B68EE', '#0000CD', '#C71585', '#4169E1', '#22C32E', '#FFFF00', '#E60000'],
+//     colorRamp: ['#E60000', '#FFFF00', '#00FF00', '#0000CD', '#8000FF', '#C71585', '#FF8000', '#22C32E', '#007FFF', '#7B68EE'],
+//     showTooltip: false,
+//     useGrouping: true,
+//     defaultMarkerIcon: 'circle',
+//     // ignoreLayerTypes :["Marker"],
+// });
+// map.addControl(styleEditor);
 
 // ----------------------------------------------------------添加 定位工具
 if (/Android|webOS|iPhone|iPad|BlackBerry/i.test(navigator.userAgent)) {
