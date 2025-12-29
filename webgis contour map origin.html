@@ -15,8 +15,11 @@
 
     <script src="contourmap/leaflet.latlng-graticule.js"></script>
 
-    <link rel="stylesheet" href="contourmap/leaflet-geoman.css" />
-    <script src="contourmap/leaflet-geoman.min.js"></script>
+    <!-- <link rel="stylesheet" href="contourmap/leaflet-geoman.css" />
+    <script src="contourmap/leaflet-geoman.min.js"></script> -->
+
+    <link  rel="stylesheet"  href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css"/>
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.js"></script>
 
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"> -->
     <link rel="stylesheet" href="contourmap/L.Control.Locate.min.css" />
@@ -108,8 +111,8 @@
 
     <select id="select" style="display: none;"></select>
 
-    <script
-        src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script>
+    <!-- <script
+        src="https://webapi.amap.com/maps?v=1.4.15&key=106280a19d653ff6eaf4d8075e348736&plugin=AMap.DistrictSearch"></script> -->
     <script src="contourmap/kriging0.js"></script>
     <script src="contourmap/gcoord.js"></script>
 
@@ -386,59 +389,59 @@
         };
 
         //-------------------------------------------------------------绘制行政区域边界来自高德
-        function drawrigon() {
-            var address = $("#rigon").val();
-            var opts = {
-                subdistrict: 0,   //获取边界不需要返回下级行政区
-                extensions: 'all',  //返回行政区边界坐标组等具体信息
-                level: 'district'  //查询行政级别为 市
-            };
-            var district = new AMap.DistrictSearch(opts);
-            district.setLevel("district");
-            district.search(address, function (status, result) {
-                polygons = L.featureGroup();
-                // console.log("result=",result);
-                var bounds = result.districtList[0].boundaries;
-                // console.log("bounds=");
-                // console.log(bounds);
-                if (bounds) {
-                    for (var i = 0, l = bounds.length; i < l; i++) {
-                        var polygon = bounds[i];
-                        var coord = [];
-                        for (var j = 0; j < polygon.length; j++) {
-                            coord.push([polygon[j].lng, polygon[j].lat])
-                        }
-                        var coord2 = '[' + JSON.stringify(coord) + ']';
-                        // console.log(coord2);
-                        var states = {
-                            "type": "Feature",
-                            "properties": {},
-                            "geometry": {
-                                "type": "Polygon",
-                                "coordinates": JSON.parse(coord2)
-                            }
-                        };
-                        // console.log(states.geometry.coordinates);
-                        gcoord.transform(states, gcoord.GCJ02, gcoord.WGS84);//输入为geojson时，直接转变输入对象的坐标值
-                        // console.log(states.geometry.coordinates);
-                        L.geoJSON(states, {
-                            style: function (feature) {
-                                return {
-                                    color: '#004CFF',
-                                    weight: 2,
-                                    fillColor: '#3F78FD',
-                                    fillOpacity: 0.3
-                                };
-                            }
-                        }).addTo(polygons);
-                    }
-                }
-                polygons.addTo(map);
-                layerControl2.addOverlay(polygons, address);
-                map.fitBounds(polygons.getBounds());
-            });
-            showHide('showsetting');
-        };
+        // function drawrigon() {
+        //     var address = $("#rigon").val();
+        //     var opts = {
+        //         subdistrict: 0,   //获取边界不需要返回下级行政区
+        //         extensions: 'all',  //返回行政区边界坐标组等具体信息
+        //         level: 'district'  //查询行政级别为 市
+        //     };
+        //     var district = new AMap.DistrictSearch(opts);
+        //     district.setLevel("district");
+        //     district.search(address, function (status, result) {
+        //         polygons = L.featureGroup();
+        //         // console.log("result=",result);
+        //         var bounds = result.districtList[0].boundaries;
+        //         // console.log("bounds=");
+        //         // console.log(bounds);
+        //         if (bounds) {
+        //             for (var i = 0, l = bounds.length; i < l; i++) {
+        //                 var polygon = bounds[i];
+        //                 var coord = [];
+        //                 for (var j = 0; j < polygon.length; j++) {
+        //                     coord.push([polygon[j].lng, polygon[j].lat])
+        //                 }
+        //                 var coord2 = '[' + JSON.stringify(coord) + ']';
+        //                 // console.log(coord2);
+        //                 var states = {
+        //                     "type": "Feature",
+        //                     "properties": {},
+        //                     "geometry": {
+        //                         "type": "Polygon",
+        //                         "coordinates": JSON.parse(coord2)
+        //                     }
+        //                 };
+        //                 // console.log(states.geometry.coordinates);
+        //                 gcoord.transform(states, gcoord.GCJ02, gcoord.WGS84);//输入为geojson时，直接转变输入对象的坐标值
+        //                 // console.log(states.geometry.coordinates);
+        //                 L.geoJSON(states, {
+        //                     style: function (feature) {
+        //                         return {
+        //                             color: '#004CFF',
+        //                             weight: 2,
+        //                             fillColor: '#3F78FD',
+        //                             fillOpacity: 0.3
+        //                         };
+        //                     }
+        //                 }).addTo(polygons);
+        //             }
+        //         }
+        //         polygons.addTo(map);
+        //         layerControl2.addOverlay(polygons, address);
+        //         map.fitBounds(polygons.getBounds());
+        //     });
+        //     showHide('showsetting');
+        // };
 
         //------------------------------------------------------------------父元素随子元素拖动
         dragFatherBySon('showsetting', 'showsettingTitle');
